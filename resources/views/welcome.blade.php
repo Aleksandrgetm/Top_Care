@@ -3,22 +3,13 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>TopCare | Fasāžu, jumtu un teritoriju tīrīšana Latvijā</title>
-        <meta
-            name="description"
-            content="TopCare nodrošina fasāžu, jumtu, bruģa un teritoriju tīrīšanas pakalpojumus klientiem visā Latvijā."
-        >
-        <meta
-            name="keywords"
-            content="fasāžu tīrīšana, jumtu tīrīšana, bruģa tīrīšana, īpašumu uzturēšana, Latvija, TopCare"
-        >
+        <title>{{ $title }}</title>
+        <meta name="description" content="{{ $description }}">
+        <meta name="keywords" content="fasazu tirsana, jumtu tirsana, brugja tirsana, metala jumtu tirsana, malkas pakalpojumi, ipasumu uzturesana, Latvija, TopCare">
         <meta name="theme-color" content="#06402B">
         <meta property="og:type" content="website">
-        <meta property="og:title" content="Top Care Group">
-        <meta
-            property="og:description"
-            content="TopCare nodrošina profesionālu fasāžu, jumtu un teritoriju tīrīšanu visā Latvijā."
-        >
+        <meta property="og:title" content="{{ $title }}">
+        <meta property="og:description" content="{{ $description }}">
         <meta property="og:image" content="{{ asset('images/logo.png') }}">
         <meta property="og:locale" content="lv_LV">
         <meta name="twitter:card" content="summary_large_image">
