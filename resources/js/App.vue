@@ -220,7 +220,7 @@ onBeforeUnmount(() => {
                     </a>
                     <a
                         :class="[
-                            'rounded-full border border-[rgba(6,64,43,0.12)] px-5 py-3 text-sm font-bold text-white transition-all duration-[250ms] ease-in-out',
+                            'rounded-full border border-[rgba(6,64,43,0.12)] px-5 py-3 text-sm font-semibold text-white transition-all duration-[250ms] ease-in-out',
                             useLightHeader
                                 ? 'bg-[#BFD730] text-[#0f241d] shadow-[0_8px_20px_rgba(6,64,43,0.18)] hover:translate-y-[-2px] hover:bg-[#d0ea3f] hover:shadow-[0_12px_28px_rgba(6,64,43,0.25)]'
                                 : 'bg-[#06402B] shadow-[0_8px_20px_rgba(6,64,43,0.18)] hover:translate-y-[-2px] hover:bg-[#0b5c3f] hover:shadow-[0_12px_28px_rgba(6,64,43,0.25)]',
@@ -265,7 +265,7 @@ onBeforeUnmount(() => {
                         {{ item.label }}
                     </a>
                     <a
-                        class="mt-2 rounded-full border border-[rgba(6,64,43,0.12)] bg-[#06402B] px-5 py-3 text-center text-sm font-bold text-white shadow-[0_8px_20px_rgba(6,64,43,0.18)] transition-all duration-[250ms] ease-in-out hover:translate-y-[-2px] hover:bg-[#0b5c3f] hover:shadow-[0_12px_28px_rgba(6,64,43,0.25)]"
+                        class="mt-2 rounded-full border border-[rgba(6,64,43,0.12)] bg-[#06402B] px-5 py-3 text-center text-sm font-semibold text-white shadow-[0_8px_20px_rgba(6,64,43,0.18)] transition-all duration-[250ms] ease-in-out hover:translate-y-[-2px] hover:bg-[#0b5c3f] hover:shadow-[0_12px_28px_rgba(6,64,43,0.25)]"
                         href="/kontakti"
                         @click="closeMenu"
                     >
@@ -338,7 +338,7 @@ onBeforeUnmount(() => {
                     <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                         <div data-reveal class="reveal grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
                             <div class="relative order-2 lg:order-1">
-                                <span class="section-kicker">ĪSI PAR TOPCARE</span>
+                                <span class="section-kicker">PAR MUMS</span>
                                 <h2 class="section-title mt-4 max-w-[500px]">
                                     Uzticams partneris īpašumu sakopšanā
                                 </h2>
