@@ -5,151 +5,137 @@ const isMenuOpen = ref(false);
 const isScrolled = ref(false);
 const heroOffset = ref(0);
 const brandLogo = '/images/logo.png';
+const teamPhoto = '/images/topcare-komanda.png';
 
 const navigation = [
     { label: 'Главная', href: '#hero' },
     { label: 'Наши работы', href: '#works' },
     { label: 'Услуги', href: '#services' },
+    { label: 'Par mums', href: '#about' },
     { label: 'До / После', href: '#before-after' },
     { label: 'Контакты', href: '#contacts' },
 ];
 
-const heroScenes = [
-    {
-        title: 'Кровельные работы',
-        image:
-            'https://images.unsplash.com/photo-1517581177682-a085bb7ffb15?auto=format&fit=crop&w=1200&q=80',
-    },
-    {
-        title: 'Промышленный альпинизм',
-        image:
-            'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=80',
-    },
-    {
-        title: 'Фасадные работы',
-        image:
-            'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1200&q=80',
-    },
-    {
-        title: 'Благоустройство',
-        image:
-            'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1200&q=80',
-    },
-];
+const heroImage = '/images/fasades-mazgasana-darba-process.png';
 
 const workGallery = [
     {
-        title: 'Объект 01',
-        category: 'Фасад',
-        image:
-            'https://images.unsplash.com/photo-1541976590-713941681591?auto=format&fit=crop&w=1200&q=80',
-        height: 'photo-tall',
+        title: 'Fasādes mazgāšana pirms un pēc',
+        category: 'Galvenais objekts',
+        image: '/images/fasada-mazgasana-pirms-pec.png',
+        width: 640,
+        height: 640,
+        alt: 'Fasādes mazgāšana pirms un pēc',
+        featured: true,
     },
     {
-        title: 'Объект 02',
-        category: 'Кровля',
-        image:
-            'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
-        height: 'photo-medium',
+        title: 'Jumta tīrīšana pirms un pēc',
+        category: 'Pirms / pēc',
+        image: '/images/jumta-tirisana-pirms-pec.png',
+        width: 512,
+        height: 358,
+        alt: 'Jumta tīrīšana pirms un pēc',
     },
     {
-        title: 'Объект 03',
-        category: 'Высотные работы',
-        image:
-            'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80',
-        height: 'photo-medium',
+        title: 'Metāla jumts pirms tīrīšanas',
+        category: 'Jumti',
+        image: '/images/metala-jumts-pirms-tirisanas.png',
+        width: 1152,
+        height: 2048,
+        alt: 'Metāla jumts pirms tīrīšanas',
     },
     {
-        title: 'Объект 04',
-        category: 'Благоустройство',
-        image:
-            'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80',
-        height: 'photo-short',
-    },
-    {
-        title: 'Объект 05',
-        category: 'Ремонт',
-        image:
-            'https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1200&q=80',
-        height: 'photo-tall',
-    },
-    {
-        title: 'Объект 06',
-        category: 'Фасад',
-        image:
-            'https://images.unsplash.com/photo-1502005097973-6a7082348e28?auto=format&fit=crop&w=1200&q=80',
-        height: 'photo-medium',
+        title: 'Malkas kraušana',
+        category: 'Teritorijas darbi',
+        image: '/images/malkas-krausana.png',
+        width: 1536,
+        height: 2040,
+        alt: 'Malkas kraušana',
     },
 ];
 
 const caseStudies = [
     {
-        title: 'Фасад многоквартирного дома',
-        service: 'Реставрация фасадов',
-        result: 'Обновили внешний контур здания, устранили дефекты покрытия и вернули аккуратный архитектурный вид.',
-        image:
-            'https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1400&q=80',
+        title: 'Fasādes mazgāšana',
+        service: 'Fasādes darbi',
+        result: 'Pirms un pēc rezultāts skaidri parāda virsmas atjaunošanu, tīrību un sakoptu ēkas izskatu.',
+        image: '/images/fasada-mazgasana-pirms-pec.png',
+        width: 640,
+        height: 640,
+        alt: 'Fasādes mazgāšana pirms un pēc',
     },
     {
-        title: 'Кровельный узел коммерческого объекта',
-        service: 'Кровельные и высотные работы',
-        result: 'Выполнили работы на высоте, усилили проблемные участки и подготовили объект к дальнейшей эксплуатации.',
-        image:
-            'https://images.unsplash.com/photo-1508450859948-4e04fabaa4ea?auto=format&fit=crop&w=1400&q=80',
+        title: 'Jumta tīrīšana',
+        service: 'Jumtu kopšana',
+        result: 'Objekts sagatavots turpmākai ekspluatācijai, ar redzamu vizuālu uzlabojumu jau no pirmā skata.',
+        image: '/images/jumta-tirisana-pirms-pec.png',
+        width: 512,
+        height: 358,
+        alt: 'Jumta tīrīšana pirms un pēc',
     },
     {
-        title: 'Двор и пешеходные зоны',
-        service: 'Брусчатка и благоустройство',
-        result: 'Пересобрали покрытие, выстроили читаемую геометрию территории и сделали пространство визуально чище.',
-        image:
-            'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1400&q=80',
+        title: 'Metāla jumta stāvoklis pirms darbu sākuma',
+        service: 'Apsekošana un sagatavošana',
+        result: 'Fotofiksācija palīdz skaidri parādīt objekta sākotnējo stāvokli un plānoto darbu apjomu.',
+        image: '/images/metala-jumts-pirms-tirisanas.png',
+        width: 1152,
+        height: 2048,
+        alt: 'Metāla jumts pirms tīrīšanas',
     },
 ];
 
 const beforeAfter = [
     {
-        title: 'Фасад до и после обновления',
-        before:
-            'https://images.unsplash.com/photo-1523413651479-597eb2da0ad6?auto=format&fit=crop&w=1200&q=80',
-        after:
-            'https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1200&q=80',
+        title: 'Fasādes mazgāšana',
+        before: '/images/fasada-mazgasana-pirms-pec.png',
+        after: '/images/fasada-mazgasana-pirms-pec.png',
+        beforeAlt: 'Fasādes mazgāšana pirms un pēc',
+        afterAlt: 'Fasādes mazgāšana pirms un pēc',
+        beforeWidth: 640,
+        beforeHeight: 640,
+        afterWidth: 640,
+        afterHeight: 640,
     },
     {
-        title: 'Покрытие территории до и после благоустройства',
-        before:
-            'https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1200&q=80',
-        after:
-            'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80',
+        title: 'Jumta tīrīšana',
+        before: '/images/jumta-tirisana-pirms-pec.png',
+        after: '/images/jumta-tirisana-pirms-pec.png',
+        beforeAlt: 'Jumta tīrīšana pirms un pēc',
+        afterAlt: 'Jumta tīrīšana pirms un pēc',
+        beforeWidth: 512,
+        beforeHeight: 358,
+        afterWidth: 512,
+        afterHeight: 358,
     },
 ];
 
 const services = [
     {
         title: 'Ремонт и внутренняя отделка',
-        description: 'От квартир и коммерческих помещений до точной отделки функциональных пространств.',
+        description: 'От частных помещений до точной отделки коммерческих пространств.',
     },
     {
         title: 'Реставрация фасадов',
-        description: 'Обновление, защита и визуальное восстановление фасадов жилых и коммерческих объектов.',
+        description: 'Очистка, обновление и восстановление внешнего вида фасадов.',
     },
     {
         title: 'Кровельные и высотные работы',
-        description: 'Безопасная работа на высоте, обслуживание сложных участков и промышленный альпинизм.',
+        description: 'Работы на высоте, очистка и обслуживание сложных участков.',
     },
     {
         title: 'Брусчатка и благоустройство',
-        description: 'Покрытия, дорожки, дворы и окружающая территория с акцентом на геометрию и долговечность.',
+        description: 'Территория, покрытия и уход за внешней средой объекта.',
     },
     {
         title: 'Обслуживание недвижимости',
-        description: 'Регулярный уход за объектами, сезонные работы и поддержка в эксплуатации.',
+        description: 'Регулярные работы и поддержка объектов в эксплуатации.',
     },
 ];
 
 const stats = [
-    { value: 100, suffix: '+', label: 'объектов и этапов работ' },
-    { value: 10, suffix: '+', label: 'лет практического опыта' },
-    { value: 4, suffix: '', label: 'ключевых направления работ' },
+    { value: 5, suffix: '', label: 'реальных фото работ на странице' },
+    { value: 3, suffix: '', label: 'основных фото-кейса в блоке проектов' },
+    { value: 1, suffix: '', label: 'командное фото в секции About Us' },
 ];
 
 const statValues = ref(stats.map(() => 0));
@@ -266,7 +252,7 @@ onBeforeUnmount(() => {
         >
             <div class="mx-auto flex max-w-[1320px] items-center justify-between px-5 py-4 sm:px-8 lg:px-10">
                 <button class="flex items-center gap-3" @click="smoothScroll('#hero')">
-                    <img :src="brandLogo" alt="Top Care Group" class="h-10 w-auto sm:h-11" />
+                    <img :src="brandLogo" alt="Top Care Group logo" class="h-10 w-auto sm:h-11" height="283" width="360" />
                     <div class="text-left">
                         <p class="font-display text-sm tracking-[0.28em] text-[#06402B]">TOP CARE</p>
                         <p class="text-xs uppercase tracking-[0.22em] text-[#60716a]">Group Latvia</p>
@@ -319,52 +305,58 @@ onBeforeUnmount(() => {
         </header>
 
         <main>
-            <section id="hero" class="relative isolate min-h-screen overflow-hidden bg-[#0b1a16]">
+            <section id="hero" class="relative isolate flex min-h-screen overflow-hidden bg-[#0b1a16]">
                 <div
-                    class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(191,215,48,0.14),transparent_30%),linear-gradient(180deg,rgba(4,16,12,0.08),rgba(4,16,12,0.78))]"
+                    class="absolute inset-0 bg-cover bg-center"
+                    :style="[
+                        heroStyle,
+                        {
+                            backgroundImage: `url(${heroImage})`,
+                        },
+                    ]"
                 />
+                <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,10,8,0.56),rgba(6,64,43,0.62))]" />
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(191,215,48,0.10),transparent_30%)]" />
 
-                <div class="mx-auto grid min-h-screen max-w-[1320px] px-5 pb-8 pt-28 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:px-10 lg:pb-10">
-                    <div class="relative z-10 flex flex-col justify-center py-8">
-                        <div data-reveal class="reveal">
-                            <p class="section-kicker text-[#BFD730]">Реальные направления работ</p>
-                            <h1 class="font-display mt-5 max-w-[720px] text-4xl leading-[0.92] text-white sm:text-6xl lg:text-7xl">
-                                Кровля, высота, фасады и благоустройство без лишней витрины
-                            </h1>
-                            <p class="mt-6 max-w-[560px] text-base leading-8 text-white/74 sm:text-lg">
-                                Сайт теперь построен вокруг объектов и визуального результата. Больше крупных кадров, меньше корпоративной упаковки и больше ощущения реальной работы на площадке.
-                            </p>
-                            <div class="mt-9 flex flex-col gap-3 sm:flex-row">
-                                <button
-                                    class="rounded-full bg-[#BFD730] px-7 py-4 text-sm font-semibold text-[#0f241d] transition hover:-translate-y-0.5 hover:bg-[#d0ea3f]"
-                                    @click="smoothScroll('#works')"
-                                >
-                                    Смотреть работы
-                                </button>
-                                <button
-                                    class="rounded-full border border-white/16 bg-white/8 px-7 py-4 text-sm font-semibold text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/14"
-                                    @click="smoothScroll('#contacts')"
-                                >
-                                    Обсудить объект
-                                </button>
+                <div class="relative z-10 mx-auto flex min-h-screen w-full max-w-[1320px] items-center px-5 py-28 sm:px-8 lg:px-10">
+                    <div data-reveal class="reveal max-w-[720px]">
+                        <h1 class="font-display text-4xl leading-[0.94] text-white sm:text-6xl lg:text-7xl">
+                            Profesionāla fasāžu un jumtu tīrīšana visā Latvijā
+                        </h1>
+                        <p class="mt-6 max-w-[620px] text-base leading-8 text-white/82 sm:text-xl">
+                            Atbrīvojam fasādes, jumtus un bruģi no netīrumiem, sūnām un aplikuma.
+                        </p>
+
+                        <div class="mt-8 grid gap-3 text-sm font-medium text-white/88 sm:max-w-[420px] sm:grid-cols-1">
+                            <div class="flex items-start gap-3">
+                                <span class="mt-0.5 text-[#BFD730]">✓</span>
+                                <span>Darbs visā Latvijā</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="mt-0.5 text-[#BFD730]">✓</span>
+                                <span>Bezmaksas objekta novērtējums</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="mt-0.5 text-[#BFD730]">✓</span>
+                                <span>Reāli paveikti darbi</span>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="relative mt-8 lg:mt-0">
-                        <div class="hero-grid" :style="heroStyle">
-                            <article
-                                v-for="scene in heroScenes"
-                                :key="scene.title"
-                                data-reveal
-                                class="reveal hero-card group"
+                        <div class="mt-10 flex flex-col gap-3 sm:flex-row">
+                            <button
+                                class="rounded-full bg-[#BFD730] px-7 py-4 text-sm font-semibold text-[#0f241d] transition hover:-translate-y-0.5 hover:bg-[#d0ea3f]"
+                                @click="smoothScroll('#contacts')"
                             >
-                                <img :src="scene.image" :alt="scene.title" class="hero-card__image" loading="lazy" />
-                                <div class="hero-card__overlay" />
-                                <div class="hero-card__caption">
-                                    <span>{{ scene.title }}</span>
-                                </div>
-                            </article>
+                                Saņemt cenu
+                            </button>
+                            <a
+                                class="inline-flex items-center justify-center rounded-full border border-white/18 bg-white/8 px-7 py-4 text-sm font-semibold text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/14"
+                                href="https://wa.me/37120000000"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Sazināties WhatsApp
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -374,24 +366,33 @@ onBeforeUnmount(() => {
                 <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                     <div data-reveal class="reveal flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                         <div>
-                            <p class="section-kicker">Наши работы</p>
+                            <p class="section-kicker">Mūsu darbi</p>
                             <h2 class="section-title mt-4 max-w-[620px]">
-                                Большая галерея объектов вместо длинных абзацев о компании
+                                Адаптивная галерея с фокусом на реальных объектах TopCare
                             </h2>
                         </div>
                         <p class="max-w-[460px] text-base leading-8 text-[#56665f]">
-                            Здесь лучше всего работают реальные фото Top Care. Секция уже перестроена под крупные кадры и кейсовое восприятие.
+                            Первым и самым заметным остаётся фасадный кейс. Галерея оптимизирована под мобильные устройства, lazy loading и аккуратный hover-эффект.
                         </p>
                     </div>
 
-                    <div class="photo-masonry mt-14">
+                    <div class="photo-grid mt-14">
                         <article
                             v-for="item in workGallery"
                             :key="item.title"
                             data-reveal
-                            :class="['reveal photo-card', item.height]"
+                            :class="['reveal photo-card', { 'photo-card--featured': item.featured }]"
                         >
-                            <img :src="item.image" :alt="item.title" class="photo-card__image" loading="lazy" />
+                            <img
+                                :src="item.image"
+                                :alt="item.alt"
+                                class="photo-card__image"
+                                :height="item.height"
+                                :width="item.width"
+                                decoding="async"
+                                loading="lazy"
+                                :sizes="item.featured ? '(min-width: 1280px) 56vw, (min-width: 768px) 62vw, 100vw' : '(min-width: 1280px) 28vw, (min-width: 768px) 31vw, 100vw'"
+                            />
                             <div class="photo-card__shade" />
                             <div class="photo-card__meta">
                                 <p class="photo-card__category">{{ item.category }}</p>
@@ -408,11 +409,11 @@ onBeforeUnmount(() => {
                         <div>
                             <p class="section-kicker">Реальные кейсы</p>
                             <h2 class="section-title mt-4 max-w-[640px]">
-                                Проекты поданы как выполненные объекты, а не как новостные карточки
+                                Проекты показаны как понятные визуальные кейсы, а не как текстовые анонсы
                             </h2>
                         </div>
                         <p class="max-w-[480px] text-base leading-8 text-[#56665f]">
-                            Визуальный фокус на результате: один объект, один кадр, одна короткая суть выполненной работы.
+                            Блок остался в прежнем стиле, но теперь использует локальные изображения компании и работает быстрее за счёт предсказуемой разметки.
                         </p>
                     </div>
 
@@ -424,7 +425,16 @@ onBeforeUnmount(() => {
                             class="reveal overflow-hidden rounded-[2rem] bg-white shadow-[0_18px_55px_rgba(6,64,43,0.08)]"
                         >
                             <div class="relative h-[420px] overflow-hidden">
-                                <img :src="item.image" :alt="item.title" class="h-full w-full object-cover" loading="lazy" />
+                                <img
+                                    :src="item.image"
+                                    :alt="item.alt"
+                                    class="h-full w-full object-cover"
+                                    :height="item.height"
+                                    :width="item.width"
+                                    decoding="async"
+                                    loading="lazy"
+                                    sizes="(min-width: 1024px) 30vw, 100vw"
+                                />
                                 <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,20,16,0.06),rgba(8,20,16,0.58))]" />
                                 <div class="absolute inset-x-0 bottom-0 p-6 text-white">
                                     <p class="text-xs uppercase tracking-[0.28em] text-[#BFD730]">{{ item.service }}</p>
@@ -445,7 +455,7 @@ onBeforeUnmount(() => {
                         <div data-reveal class="reveal">
                             <p class="section-kicker">Услуги</p>
                             <h2 class="section-title mt-4 max-w-[460px]">
-                                Основные направления без перегруженной корпоративной подачи
+                                Основные направления без лишних изменений в общей структуре сайта
                             </h2>
 
                             <div class="mt-10 grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
@@ -475,17 +485,46 @@ onBeforeUnmount(() => {
                 </div>
             </section>
 
+            <section id="about" class="bg-[#f7faf7] py-24 sm:py-28">
+                <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
+                    <div class="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+                        <div data-reveal class="reveal overflow-hidden rounded-[2rem] shadow-[0_20px_60px_rgba(6,64,43,0.08)]">
+                            <img
+                                :src="teamPhoto"
+                                alt="TopCare komanda"
+                                class="h-full w-full object-cover"
+                                width="1440"
+                                height="958"
+                                decoding="async"
+                                loading="lazy"
+                                sizes="(min-width: 1024px) 48vw, 100vw"
+                            />
+                        </div>
+
+                        <div data-reveal class="reveal rounded-[2rem] border border-[#06402B]/8 bg-white p-8 shadow-[0_18px_55px_rgba(6,64,43,0.05)] sm:p-10">
+                            <p class="section-kicker">Par mums / About Us</p>
+                            <h2 class="section-title mt-4 max-w-[520px]">
+                                Команда TopCare на своём месте: в секции о компании, а не в галерее работ
+                            </h2>
+                            <p class="mt-6 text-base leading-8 text-[#56665f]">
+                                Этот блок теперь поддерживает доверие к бренду через реальное фото команды и не конкурирует с галереей выполненных объектов. Так пользователю проще разделять работы компании и саму команду.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <section id="before-after" class="bg-[#0d1f19] py-24 text-white sm:py-28">
                 <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                     <div data-reveal class="reveal flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                         <div>
                             <p class="section-kicker text-[#BFD730]">До / После</p>
                             <h2 class="mt-4 max-w-[620px] font-display text-3xl leading-tight sm:text-5xl">
-                                Самый понятный формат для демонстрации эффекта выполненных работ
+                                Наглядная подача результата с использованием локальных изображений компании
                             </h2>
                         </div>
                         <p class="max-w-[480px] text-base leading-8 text-white/70">
-                            Здесь особенно важно заменить временные кадры на реальные фото Top Care с одинаковых ракурсов объектов.
+                            Секция сохранена, но теперь использует изображения TopCare и предсказуемые размеры, чтобы снизить сдвиги layout при загрузке.
                         </p>
                     </div>
 
@@ -500,11 +539,29 @@ onBeforeUnmount(() => {
                             <div class="grid gap-4 md:grid-cols-2">
                                 <div class="overflow-hidden rounded-[1.5rem]">
                                     <div class="before-after-label">До</div>
-                                    <img :src="item.before" :alt="`${item.title} до`" class="before-after-image" loading="lazy" />
+                                    <img
+                                        :src="item.before"
+                                        :alt="item.beforeAlt"
+                                        class="before-after-image"
+                                        :height="item.beforeHeight"
+                                        :width="item.beforeWidth"
+                                        decoding="async"
+                                        loading="lazy"
+                                        sizes="(min-width: 768px) 24vw, 100vw"
+                                    />
                                 </div>
                                 <div class="overflow-hidden rounded-[1.5rem]">
                                     <div class="before-after-label before-after-label--accent">После</div>
-                                    <img :src="item.after" :alt="`${item.title} после`" class="before-after-image" loading="lazy" />
+                                    <img
+                                        :src="item.after"
+                                        :alt="item.afterAlt"
+                                        class="before-after-image"
+                                        :height="item.afterHeight"
+                                        :width="item.afterWidth"
+                                        decoding="async"
+                                        loading="lazy"
+                                        sizes="(min-width: 768px) 24vw, 100vw"
+                                    />
                                 </div>
                             </div>
                         </article>
@@ -517,9 +574,9 @@ onBeforeUnmount(() => {
                     <div class="grid gap-8 xl:grid-cols-[0.8fr_1.2fr]">
                         <div data-reveal class="reveal">
                             <p class="section-kicker">Контакты</p>
-                            <h2 class="section-title mt-4 max-w-[520px]">Если у вас есть объект, можем обсудить задачу и запросить фото сразу на старте</h2>
+                            <h2 class="section-title mt-4 max-w-[520px]">Если у вас есть объект, можно обсудить задачу и приложить фото уже в первом сообщении</h2>
                             <p class="mt-6 max-w-[480px] text-base leading-8 text-[#56665f]">
-                                Контактный блок стал компактнее, чтобы главный акцент страницы оставался на фотографиях выполненных работ.
+                                Контактный блок сохранён, а основная оптимизация в этом обновлении сосредоточена именно на изображениях, скорости загрузки и удобстве просмотра работ.
                             </p>
 
                             <div class="mt-10 grid gap-4">
@@ -586,14 +643,14 @@ onBeforeUnmount(() => {
             <div class="mx-auto grid max-w-[1320px] gap-10 px-5 sm:px-8 lg:grid-cols-[1fr_0.8fr_0.8fr] lg:px-10">
                 <div>
                     <div class="flex items-center gap-3">
-                        <img :src="brandLogo" alt="Top Care Group" class="h-10 w-auto" />
+                        <img :src="brandLogo" alt="Top Care Group logo" class="h-10 w-auto" height="283" width="360" loading="lazy" decoding="async" />
                         <div>
                             <p class="font-display text-sm tracking-[0.28em]">TOP CARE</p>
                             <p class="text-xs uppercase tracking-[0.22em] text-white/62">Group Latvia</p>
                         </div>
                     </div>
                     <p class="mt-5 max-w-[360px] text-sm leading-7 text-white/64">
-                        Страница перестроена под реальную фотогалерею объектов и кейсовую подачу работ.
+                        Галерея, кейсы и секция About Us обновлены на реальных изображениях TopCare без лишних изменений общего дизайна.
                     </p>
                 </div>
 

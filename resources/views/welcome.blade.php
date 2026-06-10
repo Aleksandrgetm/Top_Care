@@ -22,7 +22,7 @@
         <meta property="og:image" content="{{ asset('images/logo.png') }}">
         <meta property="og:locale" content="ru_RU">
         <meta name="twitter:card" content="summary_large_image">
-        <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+        <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/png">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
