@@ -18,30 +18,46 @@ const navigation = [
     { label: 'Kontakti', path: '/kontakti' },
 ];
 
+const serviceIcons = {
+    facade:
+        'M4.5 21V7.5L12 3l7.5 4.5V21M9 21v-6h6v6M8 9h.01M12 9h.01M16 9h.01M8 12h.01M12 12h.01M16 12h.01',
+    roof: 'm3 20 7.5-13.5L14 12l3-4.5L21 20M14 12 9.5 20M17 7.5h.01',
+    paving: 'M4.5 7.5h15M4.5 12h15M4.5 16.5h15M7.5 4.5v15M12 4.5v15M16.5 4.5v15',
+    metal: 'M4 18 12 6l8 12M7 18h10M9.5 14h5',
+    wood: 'M6 8.5h12M7.5 12h9M9 15.5h6M5 19h14',
+    property: 'M12 3c2.5 2 5.75 3 9 3 0 8.25-3.75 12.75-9 15-5.25-2.25-9-6.75-9-15 3.25 0 6.5-1 9-3Zm-3.75 9 2.25 2.25 5.25-5.25',
+};
+
 const serviceCards = [
     {
         title: 'Fasāžu mazgāšana',
         description: 'Profesionāla fasāžu tīrīšana no netīrumiem, putekļiem un aplikuma.',
+        icon: 'facade',
     },
     {
         title: 'Jumtu tīrīšana',
         description: 'Jumtu attīrīšana no sūnām, netīrumiem un bioloģiskā aplikuma.',
+        icon: 'roof',
     },
     {
         title: 'Bruģa tīrīšana',
         description: 'Bruģa un celiņu tīrīšana, lai atjaunotu sakoptu teritorijas izskatu.',
+        icon: 'paving',
     },
     {
         title: 'Metāla jumtu tīrīšana',
         description: 'Metāla jumtu tīrīšana un sagatavošana turpmākai apkopei.',
+        icon: 'metal',
     },
     {
         title: 'Malkas pakalpojumi',
         description: 'Malkas skaldīšana, kraušana un piegādes risinājumi klientiem.',
+        icon: 'wood',
     },
     {
         title: 'Īpašumu uzturēšana',
         description: 'Regulāri īpašumu uzturēšanas un sakopšanas darbi.',
+        icon: 'property',
     },
 ];
 
@@ -96,6 +112,7 @@ const isServicesPage = computed(() => currentPath === '/pakalpojumi');
 const isAboutPage = computed(() => currentPath === '/par-mums');
 const isBeforeAfterPage = computed(() => currentPath === '/pirms-pec');
 const isContactsPage = computed(() => currentPath === '/kontakti');
+const useLightHeader = computed(() => isHomePage.value && !isScrolled.value);
 
 const closeMenu = () => {
     isMenuOpen.value = false;
@@ -103,7 +120,6 @@ const closeMenu = () => {
 
 const updateViewport = () => {
     const scrollY = window.scrollY;
-
     isScrolled.value = scrollY > 24;
     heroOffset.value = Math.min(scrollY, 240);
 };
@@ -156,9 +172,9 @@ onBeforeUnmount(() => {
         <header
             :class="[
                 'fixed inset-x-0 top-0 z-50 transition-all duration-300 ease-in-out',
-                isScrolled
-                    ? 'border-b border-[#06402B]/8 bg-white/95 shadow-[0_12px_36px_rgba(6,64,43,0.10)] backdrop-blur-xl'
-                    : 'bg-transparent backdrop-blur-[2px]',
+                useLightHeader
+                    ? 'bg-transparent backdrop-blur-[2px]'
+                    : 'border-b border-[#06402B]/8 bg-white/95 shadow-[0_12px_36px_rgba(6,64,43,0.10)] backdrop-blur-xl',
             ]"
         >
             <div class="mx-auto flex max-w-[1320px] items-center justify-between px-5 py-4 sm:px-8 lg:px-10">
@@ -168,7 +184,7 @@ onBeforeUnmount(() => {
                         <p
                             :class="[
                                 'font-display text-sm tracking-[0.28em] transition-colors duration-300 ease-in-out',
-                                isScrolled ? 'text-[#06402B]' : 'text-white',
+                                useLightHeader ? 'text-white' : 'text-[#06402B]',
                             ]"
                         >
                             TOP CARE
@@ -176,7 +192,7 @@ onBeforeUnmount(() => {
                         <p
                             :class="[
                                 'text-xs uppercase tracking-[0.22em] transition-colors duration-300 ease-in-out',
-                                isScrolled ? 'text-[#60716a]' : 'text-white/72',
+                                useLightHeader ? 'text-white/72' : 'text-[#60716a]',
                             ]"
                         >
                             Group Latvia
@@ -190,24 +206,24 @@ onBeforeUnmount(() => {
                         :key="item.path"
                         :href="item.path"
                         :class="[
-                            'text-sm font-medium transition-colors duration-300 ease-in-out',
+                            'nav-link text-sm font-medium transition-all duration-300 ease-in-out',
                             currentPath === item.path
-                                ? isScrolled
-                                    ? 'text-[#06402B]'
-                                    : 'text-[#BFD730]'
-                                : isScrolled
-                                  ? 'text-[#244338] hover:text-[#06402B]'
-                                  : 'text-white hover:text-[#BFD730]',
+                                ? useLightHeader
+                                    ? 'nav-link--active text-[#BFD730]'
+                                    : 'nav-link--active text-[#06402B]'
+                                : useLightHeader
+                                  ? 'text-white hover:text-[#BFD730]'
+                                  : 'text-[#244338] hover:text-[#06402B]',
                         ]"
                     >
                         {{ item.label }}
                     </a>
                     <a
                         :class="[
-                            'rounded-full px-5 py-3 text-sm font-semibold text-white transition-all duration-300 ease-in-out hover:-translate-y-0.5',
-                            isScrolled
-                                ? 'bg-[#06402B] hover:bg-[#0b5c3f] shadow-[0_10px_24px_rgba(6,64,43,0.18)]'
-                                : 'bg-[#BFD730] text-[#0f241d] hover:bg-[#d0ea3f] shadow-[0_10px_24px_rgba(0,0,0,0.18)]',
+                            'rounded-full border border-[rgba(6,64,43,0.12)] px-5 py-3 text-sm font-bold text-white transition-all duration-[250ms] ease-in-out',
+                            useLightHeader
+                                ? 'bg-[#BFD730] text-[#0f241d] shadow-[0_8px_20px_rgba(6,64,43,0.18)] hover:translate-y-[-2px] hover:bg-[#d0ea3f] hover:shadow-[0_12px_28px_rgba(6,64,43,0.25)]'
+                                : 'bg-[#06402B] shadow-[0_8px_20px_rgba(6,64,43,0.18)] hover:translate-y-[-2px] hover:bg-[#0b5c3f] hover:shadow-[0_12px_28px_rgba(6,64,43,0.25)]',
                         ]"
                         href="/kontakti"
                     >
@@ -218,9 +234,9 @@ onBeforeUnmount(() => {
                 <button
                     :class="[
                         'inline-flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 ease-in-out lg:hidden',
-                        isScrolled
-                            ? 'border border-[#06402B]/12 bg-white/80 text-[#06402B]'
-                            : 'border border-white/16 bg-white/8 text-white backdrop-blur-sm',
+                        useLightHeader
+                            ? 'border border-white/16 bg-white/8 text-white backdrop-blur-sm'
+                            : 'border border-[#06402B]/12 bg-white/80 text-[#06402B]',
                     ]"
                     @click="isMenuOpen = !isMenuOpen"
                 >
@@ -249,7 +265,7 @@ onBeforeUnmount(() => {
                         {{ item.label }}
                     </a>
                     <a
-                        class="mt-2 rounded-full bg-[#06402B] px-5 py-3 text-center text-sm font-semibold text-white transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-[#0b5c3f]"
+                        class="mt-2 rounded-full border border-[rgba(6,64,43,0.12)] bg-[#06402B] px-5 py-3 text-center text-sm font-bold text-white shadow-[0_8px_20px_rgba(6,64,43,0.18)] transition-all duration-[250ms] ease-in-out hover:translate-y-[-2px] hover:bg-[#0b5c3f] hover:shadow-[0_12px_28px_rgba(6,64,43,0.25)]"
                         href="/kontakti"
                         @click="closeMenu"
                     >
@@ -320,17 +336,48 @@ onBeforeUnmount(() => {
 
                 <section class="py-24 sm:py-28">
                     <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
-                        <div data-reveal class="reveal grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-                            <div>
-                                <p class="section-kicker">Īsi par TopCare</p>
-                                <h2 class="section-title mt-4 max-w-[480px]">
-                                    Tīrs, lakonisks un profesionāls risinājums īpašumu sakopšanai
+                        <div data-reveal class="reveal grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
+                            <div class="relative order-2 lg:order-1">
+                                <span class="section-kicker">ĪSI PAR TOPCARE</span>
+                                <h2 class="section-title mt-4 max-w-[500px]">
+                                    Uzticams partneris īpašumu sakopšanā
                                 </h2>
-                            </div>
-                            <div class="rounded-[2rem] border border-[#06402B]/8 bg-[#f7faf7] p-8 shadow-[0_16px_45px_rgba(6,64,43,0.05)] sm:p-10">
-                                <p class="text-base leading-8 text-[#56665f]">
-                                    TopCare nodrošina fasāžu, jumtu, bruģa un teritoriju tīrīšanas pakalpojumus privātpersonām un uzņēmumiem. Strādājam rūpīgi, atbildīgi un ar skaidru mērķi panākt kvalitatīvu rezultātu katrā objektā.
+                                <p class="mt-6 max-w-[520px] text-base leading-8 text-[#56665f]">
+                                    TopCare nodrošina fasāžu, jumtu, bruģa un teritoriju tīrīšanas pakalpojumus privātpersonām un uzņēmumiem, apvienojot rūpīgu izpildi, atbildīgu attieksmi un uzticamu rezultātu visā Latvijā.
                                 </p>
+
+                                <div class="mt-8 space-y-4">
+                                    <div class="flex items-start gap-3 text-sm font-medium text-[#244338]">
+                                        <span class="mt-0.5 text-[#BFD730]">✓</span>
+                                        <span>Pieredzējusi komanda</span>
+                                    </div>
+                                    <div class="flex items-start gap-3 text-sm font-medium text-[#244338]">
+                                        <span class="mt-0.5 text-[#BFD730]">✓</span>
+                                        <span>Darbs visā Latvijā</span>
+                                    </div>
+                                    <div class="flex items-start gap-3 text-sm font-medium text-[#244338]">
+                                        <span class="mt-0.5 text-[#BFD730]">✓</span>
+                                        <span>Reāli paveikti darbi</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div data-reveal class="reveal order-1 lg:order-2">
+                                <div class="relative ml-auto max-w-[620px]">
+                                    <div class="absolute -left-4 -top-4 h-28 w-28 rounded-[24px] bg-[#BFD730] lg:-left-6 lg:-top-6" />
+                                    <div class="relative overflow-hidden rounded-[24px] shadow-[0_24px_60px_rgba(6,64,43,0.16)]">
+                                        <img
+                                            :src="teamPhoto"
+                                            alt="TopCare komanda"
+                                            class="h-[420px] w-full object-cover sm:h-[520px]"
+                                            width="1440"
+                                            height="958"
+                                            decoding="async"
+                                            loading="lazy"
+                                            sizes="(min-width: 1024px) 44vw, 100vw"
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -347,15 +394,20 @@ onBeforeUnmount(() => {
                             </div>
                         </div>
 
-                        <div class="mt-14 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                        <div class="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-5">
                             <article
                                 v-for="service in previewServices"
                                 :key="service.title"
                                 data-reveal
-                                class="reveal rounded-[1.8rem] border border-[#06402B]/8 bg-white p-6 shadow-[0_16px_45px_rgba(6,64,43,0.05)]"
+                                class="reveal group flex min-h-[270px] flex-col rounded-[1.9rem] border border-[#06402B]/8 bg-white p-7 shadow-[0_16px_45px_rgba(6,64,43,0.05)] transition-all duration-300 hover:-translate-y-2 hover:border-[#BFD730]/50 hover:shadow-[0_24px_60px_rgba(6,64,43,0.10)]"
                             >
-                                <h3 class="text-lg font-semibold text-[#12261f]">{{ service.title }}</h3>
-                                <p class="mt-3 text-sm leading-7 text-[#5b6a63]">{{ service.description }}</p>
+                                <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#06402B] text-white transition-all duration-300 group-hover:bg-[#BFD730] group-hover:text-[#0f241d]">
+                                    <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" viewBox="0 0 24 24">
+                                        <path :d="serviceIcons[service.icon]" />
+                                    </svg>
+                                </div>
+                                <h3 class="mt-6 text-lg font-semibold text-[#12261f]">{{ service.title }}</h3>
+                                <p class="mt-4 text-sm leading-7 text-[#5b6a63]">{{ service.description }}</p>
                             </article>
                         </div>
                     </div>
