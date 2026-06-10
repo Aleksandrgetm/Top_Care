@@ -6,17 +6,16 @@ const isScrolled = ref(false);
 const heroOffset = ref(0);
 const brandLogo = '/images/logo.png';
 const teamPhoto = '/images/topcare-komanda.png';
+const heroImage = '/images/fasades-mazgasana-darba-process.png';
 
 const navigation = [
-    { label: 'Главная', href: '#hero' },
-    { label: 'Наши работы', href: '#works' },
-    { label: 'Услуги', href: '#services' },
+    { label: 'Sākums', href: '#hero' },
+    { label: 'Mūsu darbi', href: '#works' },
+    { label: 'Pakalpojumi', href: '#services' },
     { label: 'Par mums', href: '#about' },
-    { label: 'До / После', href: '#before-after' },
-    { label: 'Контакты', href: '#contacts' },
+    { label: 'Pirms / Pēc', href: '#before-after' },
+    { label: 'Kontakti', href: '#contacts' },
 ];
-
-const heroImage = '/images/fasades-mazgasana-darba-process.png';
 
 const workGallery = [
     {
@@ -56,32 +55,40 @@ const workGallery = [
 
 const caseStudies = [
     {
-        title: 'Fasādes mazgāšana',
-        service: 'Fasādes darbi',
-        result: 'Pirms un pēc rezultāts skaidri parāda virsmas atjaunošanu, tīrību un sakoptu ēkas izskatu.',
+        title: 'Fasādes mazgāšana pirms un pēc',
+        service: 'Fasāžu mazgāšana',
+        result: 'Redzams skaidrs un uzskatāms rezultāts pēc tīrīšanas darbiem, kas atjauno ēkas vizuālo kvalitāti.',
         image: '/images/fasada-mazgasana-pirms-pec.png',
         width: 640,
         height: 640,
         alt: 'Fasādes mazgāšana pirms un pēc',
     },
     {
-        title: 'Jumta tīrīšana',
-        service: 'Jumtu kopšana',
-        result: 'Objekts sagatavots turpmākai ekspluatācijai, ar redzamu vizuālu uzlabojumu jau no pirmā skata.',
+        title: 'Jumta tīrīšana pirms un pēc',
+        service: 'Jumtu tīrīšana',
+        result: 'Tīrīšanas darbi palīdz atjaunot jumta izskatu un sagatavot to turpmākai apkopei.',
         image: '/images/jumta-tirisana-pirms-pec.png',
         width: 512,
         height: 358,
         alt: 'Jumta tīrīšana pirms un pēc',
     },
     {
-        title: 'Metāla jumta stāvoklis pirms darbu sākuma',
-        service: 'Apsekošana un sagatavošana',
-        result: 'Fotofiksācija palīdz skaidri parādīt objekta sākotnējo stāvokli un plānoto darbu apjomu.',
+        title: 'Metāla jumts pirms tīrīšanas',
+        service: 'Metāla jumtu apkope',
+        result: 'Objekta sākotnējā stāvokļa fiksācija ļauj skaidri novērtēt nepieciešamo darbu apjomu.',
         image: '/images/metala-jumts-pirms-tirisanas.png',
         width: 1152,
         height: 2048,
         alt: 'Metāla jumts pirms tīrīšanas',
     },
+];
+
+const reasons = [
+    'Pieredzējusi komanda',
+    'Reāli paveikti darbi',
+    'Bezmaksas objekta novērtējums',
+    'Darbs visā Latvijā',
+    'Individuāla pieeja katram objektam',
 ];
 
 const beforeAfter = [
@@ -111,31 +118,35 @@ const beforeAfter = [
 
 const services = [
     {
-        title: 'Ремонт и внутренняя отделка',
-        description: 'От частных помещений до точной отделки коммерческих пространств.',
+        title: 'Fasāžu mazgāšana',
+        description: 'Profesionāla fasāžu tīrīšana no netīrumiem, putekļiem un aplikuma.',
     },
     {
-        title: 'Реставрация фасадов',
-        description: 'Очистка, обновление и восстановление внешнего вида фасадов.',
+        title: 'Jumtu tīrīšana',
+        description: 'Jumtu attīrīšana no sūnām, netīrumiem un bioloģiskā aplikuma.',
     },
     {
-        title: 'Кровельные и высотные работы',
-        description: 'Работы на высоте, очистка и обслуживание сложных участков.',
+        title: 'Bruģa tīrīšana',
+        description: 'Bruģa un celiņu tīrīšana, lai atjaunotu sakoptu teritorijas izskatu.',
     },
     {
-        title: 'Брусчатка и благоустройство',
-        description: 'Территория, покрытия и уход за внешней средой объекта.',
+        title: 'Metāla jumtu apkope',
+        description: 'Metāla jumtu tīrīšana un sagatavošana turpmākai apkopei.',
     },
     {
-        title: 'Обслуживание недвижимости',
-        description: 'Регулярные работы и поддержка объектов в эксплуатации.',
+        title: 'Malkas pakalpojumi',
+        description: 'Malkas skaldīšana, kraušana un piegādes risinājumi klientiem.',
+    },
+    {
+        title: 'Īpašumu uzturēšana',
+        description: 'Regulāri īpašumu uzturēšanas un sakopšanas darbi.',
     },
 ];
 
 const stats = [
-    { value: 5, suffix: '', label: 'реальных фото работ на странице' },
-    { value: 3, suffix: '', label: 'основных фото-кейса в блоке проектов' },
-    { value: 1, suffix: '', label: 'командное фото в секции About Us' },
+    { value: 5, suffix: '', label: 'reāli darbu piemēri vienā lapā' },
+    { value: 6, suffix: '', label: 'galvenie pakalpojumu virzieni' },
+    { value: 1, suffix: '', label: 'komandas foto sadaļā Par mums' },
 ];
 
 const statValues = ref(stats.map(() => 0));
@@ -244,18 +255,32 @@ onBeforeUnmount(() => {
     <div class="bg-white text-[#1f2933]">
         <header
             :class="[
-                'fixed inset-x-0 top-0 z-50 transition-all duration-500',
+                'fixed inset-x-0 top-0 z-50 transition-all duration-300 ease-in-out',
                 isScrolled
-                    ? 'border-b border-[#06402B]/8 bg-white/92 shadow-[0_18px_60px_rgba(6,64,43,0.12)] backdrop-blur-xl'
-                    : 'bg-transparent',
+                    ? 'border-b border-[#06402B]/8 bg-white/95 shadow-[0_12px_36px_rgba(6,64,43,0.10)] backdrop-blur-xl'
+                    : 'bg-transparent backdrop-blur-[2px]',
             ]"
         >
             <div class="mx-auto flex max-w-[1320px] items-center justify-between px-5 py-4 sm:px-8 lg:px-10">
                 <button class="flex items-center gap-3" @click="smoothScroll('#hero')">
-                    <img :src="brandLogo" alt="Top Care Group logo" class="h-10 w-auto sm:h-11" height="283" width="360" />
+                    <img :src="brandLogo" alt="TopCare logotips" class="h-10 w-auto sm:h-11" height="283" width="360" />
                     <div class="text-left">
-                        <p class="font-display text-sm tracking-[0.28em] text-[#06402B]">TOP CARE</p>
-                        <p class="text-xs uppercase tracking-[0.22em] text-[#60716a]">Group Latvia</p>
+                        <p
+                            :class="[
+                                'font-display text-sm tracking-[0.28em] transition-colors duration-300 ease-in-out',
+                                isScrolled ? 'text-[#06402B]' : 'text-white',
+                            ]"
+                        >
+                            TOP CARE
+                        </p>
+                        <p
+                            :class="[
+                                'text-xs uppercase tracking-[0.22em] transition-colors duration-300 ease-in-out',
+                                isScrolled ? 'text-[#60716a]' : 'text-white/72',
+                            ]"
+                        >
+                            Group Latvia
+                        </p>
                     </div>
                 </button>
 
@@ -263,24 +288,37 @@ onBeforeUnmount(() => {
                     <button
                         v-for="item in navigation"
                         :key="item.href"
-                        class="text-sm font-medium text-[#244338] transition hover:text-[#06402B]"
+                        :class="[
+                            'text-sm font-medium transition-colors duration-300 ease-in-out',
+                            isScrolled ? 'text-[#244338] hover:text-[#06402B]' : 'text-white hover:text-[#BFD730]',
+                        ]"
                         @click="smoothScroll(item.href)"
                     >
                         {{ item.label }}
                     </button>
                     <button
-                        class="rounded-full bg-[#06402B] px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#0b5c3f]"
+                        :class="[
+                            'rounded-full px-5 py-3 text-sm font-semibold text-white transition-all duration-300 ease-in-out hover:-translate-y-0.5',
+                            isScrolled
+                                ? 'bg-[#06402B] hover:bg-[#0b5c3f] shadow-[0_10px_24px_rgba(6,64,43,0.18)]'
+                                : 'bg-[#BFD730] text-[#0f241d] hover:bg-[#d0ea3f] shadow-[0_10px_24px_rgba(0,0,0,0.18)]',
+                        ]"
                         @click="smoothScroll('#contacts')"
                     >
-                        Получить предложение
+                        Saņemt piedāvājumu
                     </button>
                 </nav>
 
                 <button
-                    class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#06402B]/12 bg-white/80 text-[#06402B] lg:hidden"
+                    :class="[
+                        'inline-flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 ease-in-out lg:hidden',
+                        isScrolled
+                            ? 'border border-[#06402B]/12 bg-white/80 text-[#06402B]'
+                            : 'border border-white/16 bg-white/8 text-white backdrop-blur-sm',
+                    ]"
                     @click="isMenuOpen = !isMenuOpen"
                 >
-                    <span class="sr-only">Открыть меню</span>
+                    <span class="sr-only">Atvērt izvēlni</span>
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" />
                     </svg>
@@ -289,16 +327,22 @@ onBeforeUnmount(() => {
 
             <div
                 v-if="isMenuOpen"
-                class="border-t border-[#06402B]/8 bg-white/96 px-5 py-4 shadow-[0_18px_60px_rgba(6,64,43,0.12)] backdrop-blur-xl lg:hidden"
+                class="border-t border-[#06402B]/8 bg-white/96 px-5 py-4 shadow-[0_18px_60px_rgba(6,64,43,0.12)] backdrop-blur-xl transition-all duration-300 ease-in-out lg:hidden"
             >
                 <div class="mx-auto flex max-w-[1320px] flex-col gap-2">
                     <button
                         v-for="item in navigation"
                         :key="item.href"
-                        class="rounded-2xl px-4 py-3 text-left text-sm font-medium text-[#244338] transition hover:bg-[#f3f7f2]"
+                        class="rounded-2xl px-4 py-3 text-left text-sm font-medium text-[#244338] transition-all duration-300 ease-in-out hover:bg-[#f3f7f2] hover:text-[#06402B]"
                         @click="smoothScroll(item.href)"
                     >
                         {{ item.label }}
+                    </button>
+                    <button
+                        class="mt-2 rounded-full bg-[#06402B] px-5 py-3 text-sm font-semibold text-white transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-[#0b5c3f]"
+                        @click="smoothScroll('#contacts')"
+                    >
+                        Saņemt piedāvājumu
                     </button>
                 </div>
             </div>
@@ -368,11 +412,11 @@ onBeforeUnmount(() => {
                         <div>
                             <p class="section-kicker">Mūsu darbi</p>
                             <h2 class="section-title mt-4 max-w-[620px]">
-                                Адаптивная галерея с фокусом на реальных объектах TopCare
+                                Mūsu paveiktie darbi
                             </h2>
                         </div>
                         <p class="max-w-[460px] text-base leading-8 text-[#56665f]">
-                            Первым и самым заметным остаётся фасадный кейс. Галерея оптимизирована под мобильные устройства, lazy loading и аккуратный hover-эффект.
+                            Apskatiet reālus objektus, kuros veikta fasāžu, jumtu un teritoriju tīrīšana.
                         </p>
                     </div>
 
@@ -407,13 +451,13 @@ onBeforeUnmount(() => {
                 <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                     <div data-reveal class="reveal flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                         <div>
-                            <p class="section-kicker">Реальные кейсы</p>
+                            <p class="section-kicker">Reāli objekti</p>
                             <h2 class="section-title mt-4 max-w-[640px]">
-                                Проекты показаны как понятные визуальные кейсы, а не как текстовые анонсы
+                                Darbi, kuros rezultāts ir redzams uzreiz
                             </h2>
                         </div>
                         <p class="max-w-[480px] text-base leading-8 text-[#56665f]">
-                            Блок остался в прежнем стиле, но теперь использует локальные изображения компании и работает быстрее за счёт предсказуемой разметки.
+                            Katrs piemērs rāda skaidru, saprotamu un profesionāli paveiktu darbu uz reāla objekta.
                         </p>
                     </div>
 
@@ -453,9 +497,9 @@ onBeforeUnmount(() => {
                 <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                     <div class="grid gap-12 lg:grid-cols-[0.7fr_1.3fr]">
                         <div data-reveal class="reveal">
-                            <p class="section-kicker">Услуги</p>
+                            <p class="section-kicker">Pakalpojumi</p>
                             <h2 class="section-title mt-4 max-w-[460px]">
-                                Основные направления без лишних изменений в общей структуре сайта
+                                Mūsu pakalpojumi
                             </h2>
 
                             <div class="mt-10 grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
@@ -485,6 +529,29 @@ onBeforeUnmount(() => {
                 </div>
             </section>
 
+            <section class="bg-[#06402B] py-24 text-white sm:py-28">
+                <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
+                    <div data-reveal class="reveal grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+                        <div>
+                            <p class="section-kicker text-[#BFD730]">Kāpēc izvēlēties mūs</p>
+                            <h2 class="mt-4 max-w-[560px] font-display text-3xl leading-tight sm:text-5xl">
+                                Kāpēc izvēlēties TopCare?
+                            </h2>
+                        </div>
+
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <div
+                                v-for="reason in reasons"
+                                :key="reason"
+                                class="rounded-[1.8rem] border border-white/10 bg-white/8 p-5 text-base font-medium text-white/88 backdrop-blur-sm"
+                            >
+                                {{ reason }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <section id="about" class="bg-[#f7faf7] py-24 sm:py-28">
                 <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                     <div class="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
@@ -502,13 +569,18 @@ onBeforeUnmount(() => {
                         </div>
 
                         <div data-reveal class="reveal rounded-[2rem] border border-[#06402B]/8 bg-white p-8 shadow-[0_18px_55px_rgba(6,64,43,0.05)] sm:p-10">
-                            <p class="section-kicker">Par mums / About Us</p>
+                            <p class="section-kicker">Par mums</p>
                             <h2 class="section-title mt-4 max-w-[520px]">
-                                Команда TopCare на своём месте: в секции о компании, а не в галерее работ
+                                Par TopCare
                             </h2>
-                            <p class="mt-6 text-base leading-8 text-[#56665f]">
-                                Этот блок теперь поддерживает доверие к бренду через реальное фото команды и не конкурирует с галереей выполненных объектов. Так пользователю проще разделять работы компании и саму команду.
-                            </p>
+                            <div class="mt-6 space-y-5 text-base leading-8 text-[#56665f]">
+                                <p>
+                                    TopCare ir Latvijas uzņēmums, kas nodrošina fasāžu, jumtu, bruģa un teritoriju tīrīšanas pakalpojumus privātpersonām un uzņēmumiem. Mūsu komandu veido pieredzējuši speciālisti, kuri ikdienā strādā ar dažāda veida objektiem visā Latvijā.
+                                </p>
+                                <p>
+                                    Mēs strādājam rūpīgi, atbildīgi un ar mērķi panākt kvalitatīvu rezultātu katram klientam.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -518,13 +590,13 @@ onBeforeUnmount(() => {
                 <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                     <div data-reveal class="reveal flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                         <div>
-                            <p class="section-kicker text-[#BFD730]">До / После</p>
+                            <p class="section-kicker text-[#BFD730]">Pirms / Pēc</p>
                             <h2 class="mt-4 max-w-[620px] font-display text-3xl leading-tight sm:text-5xl">
-                                Наглядная подача результата с использованием локальных изображений компании
+                                Rezultāts, ko var redzēt
                             </h2>
                         </div>
                         <p class="max-w-[480px] text-base leading-8 text-white/70">
-                            Секция сохранена, но теперь использует изображения TopCare и предсказуемые размеры, чтобы снизить сдвиги layout при загрузке.
+                            Salīdziniet objektu pirms un pēc tīrīšanas darbiem.
                         </p>
                     </div>
 
@@ -538,7 +610,7 @@ onBeforeUnmount(() => {
                             <h3 class="px-2 pb-4 text-2xl font-semibold">{{ item.title }}</h3>
                             <div class="grid gap-4 md:grid-cols-2">
                                 <div class="overflow-hidden rounded-[1.5rem]">
-                                    <div class="before-after-label">До</div>
+                                    <div class="before-after-label">Pirms</div>
                                     <img
                                         :src="item.before"
                                         :alt="item.beforeAlt"
@@ -551,7 +623,7 @@ onBeforeUnmount(() => {
                                     />
                                 </div>
                                 <div class="overflow-hidden rounded-[1.5rem]">
-                                    <div class="before-after-label before-after-label--accent">После</div>
+                                    <div class="before-after-label before-after-label--accent">Pēc</div>
                                     <img
                                         :src="item.after"
                                         :alt="item.afterAlt"
@@ -573,19 +645,19 @@ onBeforeUnmount(() => {
                 <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                     <div class="grid gap-8 xl:grid-cols-[0.8fr_1.2fr]">
                         <div data-reveal class="reveal">
-                            <p class="section-kicker">Контакты</p>
-                            <h2 class="section-title mt-4 max-w-[520px]">Если у вас есть объект, можно обсудить задачу и приложить фото уже в первом сообщении</h2>
+                            <p class="section-kicker">Kontakti</p>
+                            <h2 class="section-title mt-4 max-w-[520px]">Sazinieties ar mums</h2>
                             <p class="mt-6 max-w-[480px] text-base leading-8 text-[#56665f]">
-                                Контактный блок сохранён, а основная оптимизация в этом обновлении сосредоточена именно на изображениях, скорости загрузки и удобстве просмотра работ.
+                                Ja jums ir objekts, kuru nepieciešams notīrīt vai sakopt, sazinieties ar mums un mēs sagatavosim piedāvājumu.
                             </p>
 
                             <div class="mt-10 grid gap-4">
                                 <div class="rounded-[1.8rem] border border-[#06402B]/8 bg-[#f7faf7] p-5">
-                                    <p class="text-xs uppercase tracking-[0.28em] text-[#06402B]">Телефон</p>
+                                    <p class="text-xs uppercase tracking-[0.28em] text-[#06402B]">Telefons</p>
                                     <a class="mt-3 block text-lg font-semibold text-[#12261f]" href="tel:+37120000000">+371 20 000 000</a>
                                 </div>
                                 <div class="rounded-[1.8rem] border border-[#06402B]/8 bg-[#f7faf7] p-5">
-                                    <p class="text-xs uppercase tracking-[0.28em] text-[#06402B]">Email</p>
+                                    <p class="text-xs uppercase tracking-[0.28em] text-[#06402B]">E-pasts</p>
                                     <a class="mt-3 block text-lg font-semibold text-[#12261f]" href="mailto:info@topcaregroup.lv">info@topcaregroup.lv</a>
                                 </div>
                             </div>
@@ -594,34 +666,35 @@ onBeforeUnmount(() => {
                         <div data-reveal class="reveal rounded-[2rem] border border-[#06402B]/8 bg-white p-6 shadow-[0_20px_65px_rgba(6,64,43,0.08)] sm:p-8">
                             <form class="grid gap-4 sm:grid-cols-2">
                                 <label class="form-field">
-                                    <span>Имя</span>
-                                    <input placeholder="Ваше имя" type="text" />
+                                    <span>Vārds</span>
+                                    <input placeholder="Ievadiet savu vārdu" type="text" />
                                 </label>
                                 <label class="form-field">
-                                    <span>Телефон</span>
-                                    <input placeholder="+371 ..." type="tel" />
+                                    <span>Telefons</span>
+                                    <input placeholder="Ievadiet tālruņa numuru" type="tel" />
                                 </label>
                                 <label class="form-field">
-                                    <span>Email</span>
-                                    <input placeholder="name@company.lv" type="email" />
+                                    <span>E-pasts</span>
+                                    <input placeholder="Ievadiet e-pastu" type="email" />
                                 </label>
                                 <label class="form-field">
-                                    <span>Услуга</span>
+                                    <span>Pakalpojums</span>
                                     <select>
-                                        <option>Выберите услугу</option>
-                                        <option>Ремонт и внутренняя отделка</option>
-                                        <option>Реставрация фасадов</option>
-                                        <option>Кровельные и высотные работы</option>
-                                        <option>Брусчатка и благоустройство</option>
-                                        <option>Обслуживание недвижимости</option>
+                                        <option>Izvēlieties pakalpojumu</option>
+                                        <option>Fasāžu mazgāšana</option>
+                                        <option>Jumtu tīrīšana</option>
+                                        <option>Bruģa tīrīšana</option>
+                                        <option>Metāla jumtu apkope</option>
+                                        <option>Malkas pakalpojumi</option>
+                                        <option>Īpašumu uzturēšana</option>
                                     </select>
                                 </label>
                                 <label class="form-field sm:col-span-2">
-                                    <span>Сообщение</span>
-                                    <textarea placeholder="Кратко опишите объект, задачу и желаемые сроки." rows="5" />
+                                    <span>Ziņojums</span>
+                                    <textarea placeholder="Aprakstiet objektu vai nepieciešamos darbus" rows="5" />
                                 </label>
                                 <label class="form-field sm:col-span-2">
-                                    <span>Фотография объекта</span>
+                                    <span>Augšupielādēt objekta foto</span>
                                     <input type="file" />
                                 </label>
                                 <div class="sm:col-span-2">
@@ -629,7 +702,7 @@ onBeforeUnmount(() => {
                                         class="inline-flex rounded-full bg-[#06402B] px-7 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#0b5c3f]"
                                         type="button"
                                     >
-                                        Отправить заявку
+                                        Nosūtīt pieteikumu
                                     </button>
                                 </div>
                             </form>
@@ -643,19 +716,19 @@ onBeforeUnmount(() => {
             <div class="mx-auto grid max-w-[1320px] gap-10 px-5 sm:px-8 lg:grid-cols-[1fr_0.8fr_0.8fr] lg:px-10">
                 <div>
                     <div class="flex items-center gap-3">
-                        <img :src="brandLogo" alt="Top Care Group logo" class="h-10 w-auto" height="283" width="360" loading="lazy" decoding="async" />
+                        <img :src="brandLogo" alt="TopCare logotips" class="h-10 w-auto" height="283" width="360" loading="lazy" decoding="async" />
                         <div>
                             <p class="font-display text-sm tracking-[0.28em]">TOP CARE</p>
                             <p class="text-xs uppercase tracking-[0.22em] text-white/62">Group Latvia</p>
                         </div>
                     </div>
                     <p class="mt-5 max-w-[360px] text-sm leading-7 text-white/64">
-                        Галерея, кейсы и секция About Us обновлены на реальных изображениях TopCare без лишних изменений общего дизайна.
+                        Fasāžu, jumtu un teritoriju tīrīšanas pakalpojumi Latvijā
                     </p>
                 </div>
 
                 <div>
-                    <p class="text-xs uppercase tracking-[0.28em] text-[#BFD730]">Навигация</p>
+                    <p class="text-xs uppercase tracking-[0.28em] text-[#BFD730]">Navigācija</p>
                     <div class="mt-5 flex flex-col gap-3 text-sm text-white/72">
                         <button v-for="item in navigation" :key="item.href" class="text-left transition hover:text-white" @click="smoothScroll(item.href)">
                             {{ item.label }}
@@ -664,17 +737,17 @@ onBeforeUnmount(() => {
                 </div>
 
                 <div>
-                    <p class="text-xs uppercase tracking-[0.28em] text-[#BFD730]">Контакты</p>
+                    <p class="text-xs uppercase tracking-[0.28em] text-[#BFD730]">Kontakti</p>
                     <div class="mt-5 space-y-3 text-sm leading-7 text-white/72">
-                        <p>Телефон: +371 20 000 000</p>
-                        <p>Email: info@topcaregroup.lv</p>
-                        <p>Рига, Латвия</p>
+                        <p>Telefons: +371 20 000 000</p>
+                        <p>E-pasts: info@topcaregroup.lv</p>
+                        <p>Rīga, Latvija</p>
                     </div>
                 </div>
             </div>
 
             <div class="mx-auto mt-10 max-w-[1320px] border-t border-white/10 px-5 pt-6 text-sm text-white/44 sm:px-8 lg:px-10">
-                © 2026 Top Care Group. All rights reserved.
+                © 2026 TopCare. Visas tiesības aizsargātas
             </div>
         </footer>
     </div>

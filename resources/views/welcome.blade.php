@@ -1,26 +1,26 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="lv">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Top Care Group | Строительство, ремонт и обслуживание недвижимости в Латвии</title>
+        <title>TopCare | Fasāžu, jumtu un teritoriju tīrīšana Latvijā</title>
         <meta
             name="description"
-            content="Top Care Group - строительная компания в Латвии. Ремонт, фасадные работы, кровля, высотные работы, благоустройство и обслуживание недвижимости."
+            content="TopCare nodrošina fasāžu, jumtu, bruģa un teritoriju tīrīšanas pakalpojumus klientiem visā Latvijā."
         >
         <meta
             name="keywords"
-            content="строительная компания Латвия, ремонт, фасадные работы, высотные работы, благоустройство, обслуживание недвижимости"
+            content="fasāžu tīrīšana, jumtu tīrīšana, bruģa tīrīšana, īpašumu uzturēšana, Latvija, TopCare"
         >
         <meta name="theme-color" content="#06402B">
         <meta property="og:type" content="website">
         <meta property="og:title" content="Top Care Group">
         <meta
             property="og:description"
-            content="Надёжный партнёр в строительстве, ремонте и обслуживании недвижимости по всей Латвии."
+            content="TopCare nodrošina profesionālu fasāžu, jumtu un teritoriju tīrīšanu visā Latvijā."
         >
         <meta property="og:image" content="{{ asset('images/logo.png') }}">
-        <meta property="og:locale" content="ru_RU">
+        <meta property="og:locale" content="lv_LV">
         <meta name="twitter:card" content="summary_large_image">
         <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/png">
         <link rel="preconnect" href="https://fonts.googleapis.com">
