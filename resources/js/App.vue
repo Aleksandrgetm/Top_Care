@@ -9,6 +9,7 @@ const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
 const brandLogo = '/images/logo.png';
 const teamPhoto = '/images/topcare-komanda.png';
 const heroImage = '/images/fasades-mazgasana-darba-process.png';
+const featurePhoto = '/images/fasades-mazgasana-darba-process.png';
 
 const navigation = [
     { label: 'Sākums', path: '/' },
@@ -19,49 +20,89 @@ const navigation = [
 ];
 
 const serviceIcons = {
+    renovation:
+        'M4 20h16M6.5 20v-7.5L12 7l5.5 5.5V20M10 20v-4h4v4',
     facade:
         'M4.5 21V7.5L12 3l7.5 4.5V21M9 21v-6h6v6M8 9h.01M12 9h.01M16 9h.01M8 12h.01M12 12h.01M16 12h.01',
     roof: 'm3 20 7.5-13.5L14 12l3-4.5L21 20M14 12 9.5 20M17 7.5h.01',
     paving: 'M4.5 7.5h15M4.5 12h15M4.5 16.5h15M7.5 4.5v15M12 4.5v15M16.5 4.5v15',
-    metal: 'M4 18 12 6l8 12M7 18h10M9.5 14h5',
-    wood: 'M6 8.5h12M7.5 12h9M9 15.5h6M5 19h14',
     property: 'M12 3c2.5 2 5.75 3 9 3 0 8.25-3.75 12.75-9 15-5.25-2.25-9-6.75-9-15 3.25 0 6.5-1 9-3Zm-3.75 9 2.25 2.25 5.25-5.25',
 };
 
 const serviceCards = [
     {
-        title: 'Fasāžu mazgāšana',
-        description: 'Profesionāla fasāžu tīrīšana no netīrumiem, putekļiem un aplikuma.',
+        title: 'Renovācijas un iekšdarbi',
+        description: 'No reģipša konstrukcijām un špaktelēšanas līdz flīzēšanai, grīdu ieklāšanai un apdares darbiem.',
+        icon: 'renovation',
+        items: [
+            'Reģipša konstrukciju izbūve',
+            'Špaktelēšana un krāsošana',
+            'Flīzēšanas darbi',
+            'Grīdas segumu ieklāšana',
+            'Durvju montāža',
+            'Dažādi remonta un apdares darbi',
+        ],
+    },
+    {
+        title: 'Fasāžu un koka konstrukciju atjaunošana',
+        description: 'Fasāžu, logu un koka elementu atjaunošana, saglabājot ēkas estētiku un ilgmūžību.',
         icon: 'facade',
+        items: [
+            'Fasāžu krāsošana',
+            'Koka fasāžu un žogu apstrāde',
+            'Logu restaurācija un krāsošana',
+            'Silikona šuvju atjaunošana',
+            'Dekoratīvo elementu remonts',
+        ],
     },
     {
-        title: 'Jumtu tīrīšana',
-        description: 'Jumtu attīrīšana no sūnām, netīrumiem un bioloģiskā aplikuma.',
+        title: 'Jumtu un augstuma darbi',
+        description: 'Augstuma darbi un industriālais alpīnisms objektos, kur nepieciešama precizitāte un operativitāte.',
         icon: 'roof',
+        items: [
+            'Industriālais alpīnisms',
+            'Jumtu mazgāšana',
+            'Noteku tīrīšana un remonts',
+            'Jumta seguma remontdarbi',
+            'Avārijas remontdarbi',
+        ],
     },
     {
-        title: 'Bruģa tīrīšana',
-        description: 'Bruģa un celiņu tīrīšana, lai atjaunotu sakoptu teritorijas izskatu.',
+        title: 'Bruģēšana un labiekārtošana',
+        description: 'Teritoriju izbūve un sakārtošana ar pārdomātiem risinājumiem privātiem un komerciāliem objektiem.',
         icon: 'paving',
-    },
-    {
-        title: 'Metāla jumtu tīrīšana',
-        description: 'Metāla jumtu tīrīšana un sagatavošana turpmākai apkopei.',
-        icon: 'metal',
-    },
-    {
-        title: 'Malkas pakalpojumi',
-        description: 'Malkas skaldīšana, kraušana un piegādes risinājumi klientiem.',
-        icon: 'wood',
+        items: [
+            'Bruģa ieklāšana',
+            'Apmaļu uzstādīšana',
+            'Pamatnes izbūve',
+            'Drenāžas risinājumi',
+            'Ceļu un stāvlaukumu izbūve',
+            'Terases un āra konstrukcijas',
+        ],
     },
     {
         title: 'Īpašumu uzturēšana',
-        description: 'Regulāri īpašumu uzturēšanas un sakopšanas darbi.',
+        description: 'Ikdienas uzturēšanas, apsaimniekošanas un operatīvo izsaukumu darbi dažāda mēroga īpašumiem.',
         icon: 'property',
+        items: [
+            'Sīkie remonta darbi',
+            'Daudzdzīvokļu māju apsaimniekošanas darbi',
+            'Avārijas izsaukumi',
+            'Regulāra īpašumu uzturēšana',
+        ],
     },
 ];
 
-const previewServices = computed(() => serviceCards.slice(0, 5));
+const previewServices = computed(() => serviceCards);
+
+const reasons = [
+    'Plašs pakalpojumu klāsts vienuviet',
+    'Pieredze dažādos būvniecības un renovācijas projektos',
+    'Kvalitatīvi materiāli un profesionāla pieeja',
+    'Atbildīga attieksme pret termiņiem un darbu izpildi',
+    'Individuāli risinājumi katram klientam',
+    'Darbi tiek veikti visā Latvijā',
+];
 
 const beforeAfterItems = [
     {
@@ -82,24 +123,24 @@ const beforeAfterItems = [
 
 const pageMeta = {
     '/': {
-        title: 'TopCare | Fasāžu, jumtu un teritoriju tīrīšana Latvijā',
-        description: 'TopCare nodrošina profesionālu fasāžu, jumtu un teritoriju tīrīšanu visā Latvijā.',
+        title: 'Top Care Group | Būvniecība, renovācija un īpašumu uzturēšana',
+        description: 'SIA Top Care Group nodrošina būvniecības, renovācijas un īpašumu uzturēšanas pakalpojumus privātpersonām, uzņēmumiem un namu apsaimniekotājiem visā Latvijā.',
     },
     '/pakalpojumi': {
-        title: 'TopCare pakalpojumi | Fasādes, jumti un bruģis',
-        description: 'Apskatiet visus TopCare pakalpojumus: fasāžu, jumtu, bruģa un metāla jumtu tīrīšanu, malkas pakalpojumus un īpašumu uzturēšanu.',
+        title: 'Top Care Group pakalpojumi | Renovācija, fasādes, jumti un labiekārtošana',
+        description: 'Apskatiet Top Care Group pakalpojumus: renovācijas un iekšdarbus, fasāžu atjaunošanu, jumtu darbus, bruģēšanu un īpašumu uzturēšanu.',
     },
     '/par-mums': {
-        title: 'Par TopCare | Pieredzējusi komanda visā Latvijā',
-        description: 'TopCare ir Latvijas uzņēmums ar pieredzējušu komandu, kas nodrošina fasāžu, jumtu, bruģa un teritoriju tīrīšanu visā Latvijā.',
+        title: 'Par Top Care Group | Pieredzējusi komanda visā Latvijā',
+        description: 'Top Care Group ir Latvijas uzņēmums ar pieredzējušu komandu, kas strādā pie būvniecības, renovācijas un īpašumu uzturēšanas projektiem visā Latvijā.',
     },
     '/pirms-pec': {
-        title: 'TopCare pirms un pēc | Redzami tīrīšanas rezultāti',
-        description: 'Salīdziniet objektus pirms un pēc TopCare fasāžu un jumtu tīrīšanas darbiem.',
+        title: 'Top Care Group pirms un pēc | Redzami rezultāti objektos',
+        description: 'Apskatiet redzamus fasāžu un jumtu darbu rezultātus pirms un pēc Top Care Group paveiktajiem darbiem.',
     },
     '/kontakti': {
-        title: 'TopCare kontakti | Saņemt piedāvājumu',
-        description: 'Sazinieties ar TopCare, lai saņemtu piedāvājumu fasāžu, jumtu, bruģa un teritoriju tīrīšanas darbiem.',
+        title: 'Top Care Group kontakti | Sazinieties un saņemiet piedāvājumu',
+        description: 'Sazinieties ar Top Care Group par būvniecības, renovācijas, jumtu, fasāžu un īpašumu uzturēšanas darbiem visā Latvijā.',
     },
 };
 
@@ -179,7 +220,7 @@ onBeforeUnmount(() => {
         >
             <div class="mx-auto flex max-w-[1320px] items-center justify-between px-5 py-4 sm:px-8 lg:px-10">
                 <a class="flex items-center gap-3" href="/">
-                    <img :src="brandLogo" alt="TopCare logotips" class="h-10 w-auto sm:h-11" height="283" width="360" />
+                    <img :src="brandLogo" alt="Top Care Group logotips" class="h-10 w-auto sm:h-11" height="283" width="360" />
                     <div class="text-left">
                         <p
                             :class="[
@@ -187,7 +228,7 @@ onBeforeUnmount(() => {
                                 useLightHeader ? 'text-white' : 'text-[#06402B]',
                             ]"
                         >
-                            TOP CARE
+                            TOP CARE GROUP
                         </p>
                         <p
                             :class="[
@@ -195,7 +236,7 @@ onBeforeUnmount(() => {
                                 useLightHeader ? 'text-white/72' : 'text-[#60716a]',
                             ]"
                         >
-                            Group Latvia
+                            Latvia
                         </p>
                     </div>
                 </a>
@@ -291,26 +332,26 @@ onBeforeUnmount(() => {
                     <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(191,215,48,0.10),transparent_30%)]" />
 
                     <div class="relative z-10 mx-auto flex min-h-screen w-full max-w-[1320px] items-center px-5 py-28 sm:px-8 lg:px-10">
-                        <div data-reveal class="reveal max-w-[720px]">
+                        <div data-reveal class="reveal max-w-[820px]">
                             <h1 class="font-display text-4xl leading-[0.94] text-white sm:text-6xl lg:text-7xl">
-                                Profesionāla fasāžu un jumtu tīrīšana visā Latvijā
+                                Uzticams partneris būvniecībā, renovācijā un īpašumu uzturēšanā
                             </h1>
-                            <p class="mt-6 max-w-[620px] text-base leading-8 text-white/82 sm:text-xl">
-                                Atbrīvojam fasādes, jumtus un bruģi no netīrumiem, sūnām un aplikuma.
+                            <p class="mt-6 max-w-[700px] text-base leading-8 text-white/82 sm:text-xl">
+                                SIA Top Care Group ir Latvijas uzņēmums, kas nodrošina plašu būvniecības, renovācijas un apsaimniekošanas pakalpojumu klāstu privātpersonām, uzņēmumiem un namu apsaimniekotājiem.
                             </p>
 
-                            <div class="mt-8 grid gap-3 text-sm font-medium text-white/88 sm:max-w-[420px]">
+                            <div class="mt-8 grid gap-3 text-sm font-medium text-white/88 sm:max-w-[520px]">
                                 <div class="flex items-start gap-3">
                                     <span class="mt-0.5 text-[#BFD730]">✓</span>
-                                    <span>Darbs visā Latvijā</span>
+                                    <span>Plašs pakalpojumu klāsts vienuviet</span>
                                 </div>
                                 <div class="flex items-start gap-3">
                                     <span class="mt-0.5 text-[#BFD730]">✓</span>
-                                    <span>Bezmaksas objekta novērtējums</span>
+                                    <span>Pieredzējusi komanda dažāda mēroga projektos</span>
                                 </div>
                                 <div class="flex items-start gap-3">
                                     <span class="mt-0.5 text-[#BFD730]">✓</span>
-                                    <span>Reāli paveikti darbi</span>
+                                    <span>Darbi tiek veikti visā Latvijā</span>
                                 </div>
                             </div>
 
@@ -338,12 +379,12 @@ onBeforeUnmount(() => {
                     <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                         <div data-reveal class="reveal grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
                             <div class="relative order-2 lg:order-1">
-                                <span class="section-kicker">PAR MUMS</span>
-                                <h2 class="section-title mt-4 max-w-[500px]">
-                                    Uzticams partneris īpašumu sakopšanā
+                                <span class="section-kicker">PAR TOP CARE GROUP</span>
+                                <h2 class="section-title mt-4 max-w-[560px]">
+                                    Kvalitatīvs darbs, atbildība un godīga attieksme
                                 </h2>
-                                <p class="mt-6 max-w-[520px] text-base leading-8 text-[#56665f]">
-                                    TopCare nodrošina fasāžu, jumtu, bruģa un teritoriju tīrīšanas pakalpojumus privātpersonām un uzņēmumiem, apvienojot rūpīgu izpildi, atbildīgu attieksmi un uzticamu rezultātu visā Latvijā.
+                                <p class="mt-6 max-w-[560px] text-base leading-8 text-[#56665f]">
+                                    Mūsu komandu veido pieredzējuši speciālisti, kuri ikdienā strādā pie dažāda mēroga projektiem visā Latvijā. Mēs ticam, ka kvalitatīvs darbs, atbildība un godīga attieksme ir pamats ilgtermiņa sadarbībai ar klientiem.
                                 </p>
 
                                 <div class="mt-8 space-y-4">
@@ -360,6 +401,13 @@ onBeforeUnmount(() => {
                                         <span>Reāli paveikti darbi</span>
                                     </div>
                                 </div>
+
+                                <div class="mt-8 flex flex-wrap gap-3">
+                                    <span class="service-pill"><span class="service-pill__dot" />Renovācija un iekšdarbi</span>
+                                    <span class="service-pill"><span class="service-pill__dot" />Fasādes un jumti</span>
+                                    <span class="service-pill"><span class="service-pill__dot" />Bruģēšana</span>
+                                    <span class="service-pill"><span class="service-pill__dot" />Darbs visā Latvijā</span>
+                                </div>
                             </div>
 
                             <div data-reveal class="reveal order-1 lg:order-2">
@@ -367,11 +415,11 @@ onBeforeUnmount(() => {
                                     <div class="absolute -left-4 -top-4 h-28 w-28 rounded-[24px] bg-[#BFD730] lg:-left-6 lg:-top-6" />
                                     <div class="relative overflow-hidden rounded-[24px] shadow-[0_24px_60px_rgba(6,64,43,0.16)]">
                                         <img
-                                            :src="teamPhoto"
-                                            alt="TopCare komanda"
+                                            :src="featurePhoto"
+                                            alt="Fasādes mazgāšanas process"
                                             class="h-[420px] w-full object-cover sm:h-[520px]"
-                                            width="1440"
-                                            height="958"
+                                            width="1600"
+                                            height="1200"
                                             decoding="async"
                                             loading="lazy"
                                             sizes="(min-width: 1024px) 44vw, 100vw"
@@ -387,21 +435,25 @@ onBeforeUnmount(() => {
                     <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                         <div data-reveal class="reveal flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                             <div>
-                                <p class="section-kicker">Pakalpojumu priekšskatījums</p>
-                                <h2 class="section-title mt-4 max-w-[560px]">
-                                    Galvenie TopCare pakalpojumi vienuviet
+                                <p class="section-kicker">MŪSU PAKALPOJUMI</p>
+                                <h2 class="section-title mt-4 max-w-[620px]">
+                                    Būtiskākie Top Care Group virzieni
                                 </h2>
                             </div>
                         </div>
 
                         <div class="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-5">
                             <article
-                                v-for="service in previewServices"
+                                v-for="(service, index) in previewServices"
                                 :key="service.title"
                                 data-reveal
-                                class="reveal group flex min-h-[270px] flex-col rounded-[1.9rem] border border-[#06402B]/8 bg-white p-7 shadow-[0_16px_45px_rgba(6,64,43,0.05)] transition-all duration-300 hover:-translate-y-2 hover:border-[#BFD730]/50 hover:shadow-[0_24px_60px_rgba(6,64,43,0.10)]"
+                                :class="[
+                                    'reveal service-preview-card group flex min-h-[300px] flex-col rounded-[1.9rem] border border-[#06402B]/8 bg-white p-7 shadow-[0_16px_45px_rgba(6,64,43,0.05)] transition-all duration-300',
+                                    [0, 2, 4].includes(index) ? 'lg:translate-y-5' : 'lg:-translate-y-4',
+                                ]"
                             >
-                                <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#06402B] text-white transition-all duration-300 group-hover:bg-[#BFD730] group-hover:text-[#0f241d]">
+                                <div class="service-preview-card__line" />
+                                <div class="service-preview-card__icon flex h-14 w-14 items-center justify-center rounded-2xl bg-[#06402B] text-white transition-all duration-300 group-hover:bg-[#BFD730] group-hover:text-[#0f241d]">
                                     <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" viewBox="0 0 24 24">
                                         <path :d="serviceIcons[service.icon]" />
                                     </svg>
@@ -417,13 +469,13 @@ onBeforeUnmount(() => {
             <template v-else-if="isServicesPage">
                 <section class="bg-[#f7faf7] pt-36 pb-24 sm:pt-40 sm:pb-28">
                     <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
-                        <div data-reveal class="reveal max-w-[760px]">
-                            <p class="section-kicker">Pakalpojumi</p>
+                        <div data-reveal class="reveal max-w-[820px]">
+                            <p class="section-kicker">MŪSU PAKALPOJUMI</p>
                             <h1 class="section-title mt-4">
-                                Visi TopCare pakalpojumi
+                                Pakalpojumi dažāda mēroga objektiem
                             </h1>
                             <p class="mt-6 text-base leading-8 text-[#56665f]">
-                                Izvēlieties sev piemērotāko tīrīšanas vai uzturēšanas pakalpojumu. Katrs virziens ir veidots kā atsevišķa skaidra un saprotama karte.
+                                No nelieliem remonta darbiem līdz pilna cikla būvniecības un renovācijas projektiem. Katra pakalpojumu grupa ir veidota kā atsevišķa karte ar konkrētu darbu piemēriem.
                             </p>
                         </div>
 
@@ -434,8 +486,19 @@ onBeforeUnmount(() => {
                                 data-reveal
                                 class="reveal rounded-[1.9rem] border border-[#06402B]/8 bg-white p-7 shadow-[0_16px_45px_rgba(6,64,43,0.05)]"
                             >
-                                <h2 class="text-2xl font-semibold text-[#12261f]">{{ service.title }}</h2>
+                                <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#06402B] text-white">
+                                    <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" viewBox="0 0 24 24">
+                                        <path :d="serviceIcons[service.icon]" />
+                                    </svg>
+                                </div>
+                                <h2 class="mt-6 text-2xl font-semibold text-[#12261f]">{{ service.title }}</h2>
                                 <p class="mt-4 text-sm leading-7 text-[#5b6a63]">{{ service.description }}</p>
+                                <ul class="mt-5 space-y-3 text-sm leading-7 text-[#56665f]">
+                                    <li v-for="item in service.items" :key="item" class="flex gap-3">
+                                        <span class="mt-1 text-[#BFD730]">•</span>
+                                        <span>{{ item }}</span>
+                                    </li>
+                                </ul>
                             </article>
                         </div>
                     </div>
@@ -449,7 +512,7 @@ onBeforeUnmount(() => {
                             <div data-reveal class="reveal overflow-hidden rounded-[2rem] shadow-[0_20px_60px_rgba(6,64,43,0.08)]">
                                 <img
                                     :src="teamPhoto"
-                                    alt="TopCare komanda"
+                                    alt="Top Care Group komanda"
                                     class="h-full w-full object-cover"
                                     width="1440"
                                     height="958"
@@ -460,13 +523,21 @@ onBeforeUnmount(() => {
                             </div>
 
                             <div data-reveal class="reveal rounded-[2rem] border border-[#06402B]/8 bg-white p-8 shadow-[0_18px_55px_rgba(6,64,43,0.05)] sm:p-10">
-                                <p class="section-kicker">Par mums</p>
-                                <h1 class="section-title mt-4 max-w-[520px]">
-                                    Par TopCare
+                                <p class="section-kicker">PAR MUMS</p>
+                                <h1 class="section-title mt-4 max-w-[560px]">
+                                    Top Care Group
                                 </h1>
-                                <p class="mt-6 text-base leading-8 text-[#56665f]">
-                                    TopCare ir Latvijas uzņēmums, kas nodrošina fasāžu, jumtu, bruģa un teritoriju tīrīšanas pakalpojumus privātpersonām un uzņēmumiem. Mūsu komandu veido pieredzējuši speciālisti, kuri ikdienā strādā ar dažāda veida objektiem visā Latvijā.
-                                </p>
+                                <div class="mt-6 space-y-5 text-base leading-8 text-[#56665f]">
+                                    <p>
+                                        SIA Top Care Group ir Latvijas uzņēmums, kas nodrošina plašu būvniecības, renovācijas un apsaimniekošanas pakalpojumu klāstu privātpersonām, uzņēmumiem un namu apsaimniekotājiem. Mūsu komandu veido pieredzējuši speciālisti, kuri ikdienā strādā pie dažāda mēroga projektiem visā Latvijā.
+                                    </p>
+                                    <p>
+                                        Mēs ticam, ka kvalitatīvs darbs, atbildība un godīga attieksme ir pamats ilgtermiņa sadarbībai ar klientiem.
+                                    </p>
+                                    <p>
+                                        Mūsu mērķis ir nepārtraukti attīstīties, pilnveidot savas prasmes un paplašināt pakalpojumu klāstu, lai klientiem spētu piedāvāt mūsdienīgus, kvalitatīvus un ilgtermiņā uzticamus risinājumus.
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -477,12 +548,12 @@ onBeforeUnmount(() => {
                 <section class="bg-[#0d1f19] pt-36 pb-24 text-white sm:pt-40 sm:pb-28">
                     <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                         <div data-reveal class="reveal max-w-[760px]">
-                            <p class="section-kicker text-[#BFD730]">Pirms / Pēc</p>
+                            <p class="section-kicker text-[#BFD730]">PIRMS / PĒC</p>
                             <h1 class="mt-4 font-display text-4xl leading-tight sm:text-6xl">
-                                Rezultāts, ko var redzēt
+                                Redzami rezultāti reālos objektos
                             </h1>
                             <p class="mt-6 text-base leading-8 text-white/72">
-                                Salīdziniet objektu pirms un pēc tīrīšanas darbiem.
+                                Salīdziniet fasāžu un jumtu darbu rezultātus pirms un pēc Top Care Group paveiktajiem darbiem.
                             </p>
                         </div>
 
@@ -517,13 +588,13 @@ onBeforeUnmount(() => {
                     <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                         <div class="grid gap-8 xl:grid-cols-[0.8fr_1.2fr]">
                             <div data-reveal class="reveal">
-                                <p class="section-kicker">Kontakti</p>
-                                <h1 class="section-title mt-4 max-w-[520px]">Sazinieties ar mums</h1>
-                                <p class="mt-6 max-w-[480px] text-base leading-8 text-[#56665f]">
-                                    Ja jums ir objekts, kuru nepieciešams notīrīt vai sakopt, sazinieties ar mums un mēs sagatavosim piedāvājumu.
+                                <p class="section-kicker">SAZINIETIES AR MUMS</p>
+                                <h1 class="section-title mt-4 max-w-[520px]">Top Care Group</h1>
+                                <p class="mt-6 max-w-[520px] text-base leading-8 text-[#56665f]">
+                                    Ja jums nepieciešami renovācijas, apdares, fasāžu, jumtu, bruģēšanas vai īpašumu uzturēšanas darbi, sazinieties ar mums un mēs sagatavosim piemērotu risinājumu.
                                 </p>
 
-                                <div class="mt-10 grid gap-4">
+                                <div class="mt-10 space-y-5">
                                     <div class="rounded-[1.8rem] border border-[#06402B]/8 bg-[#f7faf7] p-5">
                                         <p class="text-xs uppercase tracking-[0.28em] text-[#06402B]">Telefons</p>
                                         <a class="mt-3 block text-lg font-semibold text-[#12261f]" href="tel:+37120000000">+371 20 000 000</a>
@@ -531,6 +602,13 @@ onBeforeUnmount(() => {
                                     <div class="rounded-[1.8rem] border border-[#06402B]/8 bg-[#f7faf7] p-5">
                                         <p class="text-xs uppercase tracking-[0.28em] text-[#06402B]">E-pasts</p>
                                         <a class="mt-3 block text-lg font-semibold text-[#12261f]" href="mailto:info@topcaregroup.lv">info@topcaregroup.lv</a>
+                                    </div>
+                                    <div class="rounded-[1.8rem] border border-[#06402B]/8 bg-[#f7faf7] p-5 text-sm leading-7 text-[#56665f]">
+                                        <p>✔ Renovācija un apdares darbi</p>
+                                        <p>✔ Fasāžu un jumtu darbi</p>
+                                        <p>✔ Bruģēšana un labiekārtošana</p>
+                                        <p>✔ Industriālais alpīnisms</p>
+                                        <p>✔ Īpašumu uzturēšana</p>
                                     </div>
                                     <a
                                         class="inline-flex items-center justify-center rounded-[1.8rem] bg-[#BFD730] px-6 py-4 text-sm font-semibold text-[#0f241d] transition hover:-translate-y-0.5 hover:bg-[#d0ea3f]"
@@ -592,14 +670,14 @@ onBeforeUnmount(() => {
             <div class="mx-auto grid max-w-[1320px] gap-10 px-5 sm:px-8 lg:grid-cols-[1fr_0.8fr_0.8fr] lg:px-10">
                 <div>
                     <div class="flex items-center gap-3">
-                        <img :src="brandLogo" alt="TopCare logotips" class="h-10 w-auto" height="283" width="360" loading="lazy" decoding="async" />
+                        <img :src="brandLogo" alt="Top Care Group logotips" class="h-10 w-auto" height="283" width="360" loading="lazy" decoding="async" />
                         <div>
-                            <p class="font-display text-sm tracking-[0.28em]">TOP CARE</p>
-                            <p class="text-xs uppercase tracking-[0.22em] text-white/62">Group Latvia</p>
+                            <p class="font-display text-sm tracking-[0.28em]">TOP CARE GROUP</p>
+                            <p class="text-xs uppercase tracking-[0.22em] text-white/62">Latvia</p>
                         </div>
                     </div>
-                    <p class="mt-5 max-w-[360px] text-sm leading-7 text-white/64">
-                        Fasāžu, jumtu un teritoriju tīrīšanas pakalpojumi Latvijā
+                    <p class="mt-5 max-w-[420px] text-sm leading-7 text-white/64">
+                        Top Care Group – no nelieliem remontdarbiem līdz pilna cikla būvniecības un renovācijas projektiem.
                     </p>
                 </div>
 
@@ -617,13 +695,13 @@ onBeforeUnmount(() => {
                     <div class="mt-5 space-y-3 text-sm leading-7 text-white/72">
                         <p>Telefons: +371 20 000 000</p>
                         <p>E-pasts: info@topcaregroup.lv</p>
-                        <p>Rīga, Latvija</p>
+                        <p>Darbi tiek veikti visā Latvijā</p>
                     </div>
                 </div>
             </div>
 
             <div class="mx-auto mt-10 max-w-[1320px] border-t border-white/10 px-5 pt-6 text-sm text-white/44 sm:px-8 lg:px-10">
-                © 2026 TopCare. Visas tiesības aizsargātas
+                © 2026 Top Care Group. Visas tiesības aizsargātas
             </div>
         </footer>
     </div>

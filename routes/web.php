@@ -4,24 +4,24 @@ use Illuminate\Support\Facades\Route;
 
 $pages = [
     '/' => [
-        'title' => 'TopCare | Fasazu, jumtu un teritoriju tirsana Latvija',
-        'description' => 'TopCare nodrosina profesionalu fasazu, jumtu un teritoriju tirsanu visa Latvija.',
+        'title' => 'Top Care Group | Buvnieciba, renovacija un ipasumu uzturesana Latvija',
+        'description' => 'SIA Top Care Group nodrosina buvniecibas, renovacijas un ipasumu uzturesanas pakalpojumus privatpersonam, uznemumiem un namu apsaimniekotajiem visa Latvija.',
     ],
     '/pakalpojumi' => [
-        'title' => 'TopCare pakalpojumi | Fasazu, jumtu un brugja tirsana',
-        'description' => 'Apskatiet visus TopCare pakalpojumus: fasazu, jumtu, brugja un metala jumtu tirsanu, malkas pakalpojumus un ipasumu uzturesanu.',
+        'title' => 'Top Care Group pakalpojumi | Renovacija, fasades, jumti un labiekartosana',
+        'description' => 'Apskatiet Top Care Group pakalpojumus: renovacijas un ieksdarbus, fasazu atjaunosanu, jumtu darbus, brugesanu, labiekartosanu un ipasumu uzturesanu.',
     ],
     '/par-mums' => [
-        'title' => 'Par TopCare | Profesionala komanda visa Latvija',
-        'description' => 'TopCare ir Latvijas uznemums ar pieredzejusu komandu, kas strada ar fasazu, jumtu, brugja un teritoriju tirsanas objektiem visa Latvija.',
+        'title' => 'Par Top Care Group | Pieredzejusi komanda visa Latvija',
+        'description' => 'Top Care Group ir Latvijas uznemums ar pieredzejusu komandu, kas strada pie buvniecibas, renovacijas un ipasumu uzturesanas projektiem visa Latvija.',
     ],
     '/pirms-pec' => [
-        'title' => 'TopCare pirms un pec | Redzami tirsanas rezultati',
-        'description' => 'Salidziniet TopCare objektus pirms un pec fasazu un jumtu tirsanas darbiem.',
+        'title' => 'Top Care Group pirms un pec | Redzami rezultati objektos',
+        'description' => 'Apskatiet Top Care Group paveikto darbu rezultatus fasazu un jumtu objektos pirms un pec darbu izpildes.',
     ],
     '/kontakti' => [
-        'title' => 'TopCare kontakti | Sanemiet piedavajumu',
-        'description' => 'Sazinieties ar TopCare, lai sanemtu piedavajumu fasazu, jumtu, brugja un teritoriju tirsanas darbiem.',
+        'title' => 'Top Care Group kontakti | Sanemiet piedavajumu',
+        'description' => 'Sazinieties ar Top Care Group par renovacijas, fasazu, jumtu, brugesanas, labiekartosanas un ipasumu uzturesanas darbiem visa Latvija.',
     ],
 ];
 

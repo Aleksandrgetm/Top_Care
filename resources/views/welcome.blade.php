@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ $title }}</title>
         <meta name="description" content="{{ $description }}">
-        <meta name="keywords" content="fasazu tirsana, jumtu tirsana, brugja tirsana, metala jumtu tirsana, malkas pakalpojumi, ipasumu uzturesana, Latvija, TopCare">
+        <meta name="keywords" content="buvnieciba, renovacija, ieksdarbi, fasazu darbi, jumtu darbi, industriālais alpīnisms, brugesana, labiekartosana, ipasumu uzturesana, Latvija, Top Care Group">
         <meta name="theme-color" content="#06402B">
         <meta property="og:type" content="website">
         <meta property="og:title" content="{{ $title }}">
