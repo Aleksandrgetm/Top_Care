@@ -126,6 +126,44 @@ const aboutStats = [
     },
 ];
 
+const companyValues = [
+    {
+        title: 'Kvalitāte',
+        description: 'Strādājam rūpīgi un koncentrējamies uz ilgtermiņa rezultātu.',
+    },
+    {
+        title: 'Atbildība',
+        description: 'Ievērojam termiņus un uzņemamies atbildību par paveikto darbu.',
+    },
+    {
+        title: 'Uzticēšanās',
+        description: 'Veidojam ilgtermiņa sadarbību ar klientiem visā Latvijā.',
+    },
+];
+
+const workApproachSteps = [
+    {
+        number: '01',
+        title: 'Objekta novērtēšana',
+        description: 'Bezmaksas konsultācija un apskate',
+    },
+    {
+        number: '02',
+        title: 'Piedāvājuma sagatavošana',
+        description: 'Precīzs darbu plāns un izmaksas',
+    },
+    {
+        number: '03',
+        title: 'Darbu izpilde',
+        description: 'Kvalitatīva un savlaicīga realizācija',
+    },
+    {
+        number: '04',
+        title: 'Rezultāta nodošana klientam',
+        description: 'Objekta pārbaude un nodošana klientam',
+    },
+];
+
 const beforeAfterItems = [
     {
         title: 'Fasādes mazgāšana pirms un pēc',
@@ -730,6 +768,78 @@ onBeforeUnmount(() => {
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-white py-24 sm:py-28">
+                    <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
+                        <div data-reveal class="reveal max-w-[620px]">
+                            <p class="section-kicker">MŪSU VĒRTĪBAS</p>
+                            <h2 class="section-title mt-4">Principi, uz kuriem balstām katru projektu</h2>
+                        </div>
+
+                        <div class="mt-12 grid gap-y-10 border-y border-[#06402B]/10 py-8 lg:grid-cols-3 lg:gap-x-10 lg:py-10">
+                            <div
+                                v-for="(value, index) in companyValues"
+                                :key="value.title"
+                                data-reveal
+                                class="reveal relative lg:px-8"
+                                :style="{ transitionDelay: `${index * 80}ms` }"
+                            >
+                                <span
+                                    v-if="index < companyValues.length - 1"
+                                    class="absolute right-0 top-1/2 hidden h-16 w-px -translate-y-1/2 bg-[#06402B]/10 lg:block"
+                                />
+                                <p class="text-[1.7rem] font-semibold text-[#12261f]">
+                                    {{ value.title }}
+                                </p>
+                                <p class="mt-5 max-w-[19rem] text-base leading-8 text-[#5a6b64]">
+                                    {{ value.description }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-[#f4f7f4] py-24 sm:py-28">
+                    <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
+                        <div data-reveal class="reveal max-w-[620px]">
+                            <p class="section-kicker">MŪSU PIEEJA DARBAM</p>
+                            <h2 class="section-title mt-4">Skaidrs process no pirmās sarunas līdz rezultāta nodošanai</h2>
+                        </div>
+
+                        <div class="relative mt-14">
+                            <span class="absolute left-0 right-0 top-5 hidden h-px bg-[#06402B]/18 xl:block" />
+                            <div class="grid gap-y-10 md:grid-cols-2 md:gap-x-10 xl:grid-cols-4 xl:gap-x-0">
+                            <div
+                                v-for="(step, index) in workApproachSteps"
+                                :key="step.number"
+                                data-reveal
+                                class="reveal relative xl:pr-10"
+                                :style="{ transitionDelay: `${index * 110}ms`, transitionDuration: '760ms' }"
+                            >
+                                <div class="relative pb-1">
+                                    <span class="absolute left-0 right-0 top-5 h-px bg-[#06402B]/18 xl:right-10" />
+                                    <span class="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border border-[#06402B]/14 bg-white text-[0.95rem] font-semibold text-[#06402B]">
+                                        <span class="sr-only">Solis</span>
+                                    </span>
+                                </div>
+                                <span
+                                    v-if="index < workApproachSteps.length - 1"
+                                    class="absolute right-0 top-5 hidden h-px w-10 bg-[#06402B]/18 xl:block"
+                                />
+                                <p class="mt-7 font-display text-[2.3rem] font-extrabold leading-none tracking-[0.04em] text-[#06402B] sm:text-[2.55rem]">
+                                    {{ step.number }}
+                                </p>
+                                <h3 class="mt-4 max-w-[220px] text-[1.55rem] font-semibold leading-tight text-[#12261f]">
+                                    {{ step.title }}
+                                </h3>
+                                <p class="mt-4 max-w-[240px] text-sm leading-7 text-[#5a6b64]">
+                                    {{ step.description }}
+                                </p>
+                            </div>
                             </div>
                         </div>
                     </div>
