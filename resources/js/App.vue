@@ -104,6 +104,28 @@ const reasons = [
     'Darbi tiek veikti visā Latvijā',
 ];
 
+const aboutHighlights = [
+    'Pieredzējusi komanda',
+    'Darbi visā Latvijā',
+    'Individuāla pieeja',
+    'Kvalitatīvs rezultāts',
+];
+
+const aboutStats = [
+    {
+        value: '100+',
+        label: 'Pabeigti objekti',
+    },
+    {
+        value: '5+',
+        label: 'Pakalpojumu veidi',
+    },
+    {
+        value: 'Visa',
+        label: 'Latvija',
+    },
+];
+
 const beforeAfterItems = [
     {
         title: 'Fasādes mazgāšana pirms un pēc',
@@ -644,37 +666,69 @@ onBeforeUnmount(() => {
             </template>
 
             <template v-else-if="isAboutPage">
-                <section class="bg-[#f7faf7] pt-36 pb-24 sm:pt-40 sm:pb-28">
+                <section class="bg-[#f7faf7] pt-32 pb-32 sm:pt-36 sm:pb-36 lg:pt-[7.75rem] lg:pb-[7.75rem]">
                     <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
-                        <div class="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-                            <div data-reveal class="reveal overflow-hidden rounded-[2rem] shadow-[0_20px_60px_rgba(6,64,43,0.08)]">
-                                <img
-                                    :src="teamPhoto"
-                                    alt="Top Care Group komanda"
-                                    class="h-full w-full object-cover"
-                                    width="1440"
-                                    height="958"
-                                    decoding="async"
-                                    loading="lazy"
-                                    sizes="(min-width: 1024px) 48vw, 100vw"
-                                />
+                        <div class="grid gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-14">
+                            <div data-reveal class="reveal">
+                                <div class="relative">
+                                    <div class="absolute -left-5 -top-5 h-24 w-24 rounded-[22px] bg-[#BFD730] sm:-left-6 sm:-top-6 sm:h-28 sm:w-28" />
+                                    <div class="relative overflow-hidden rounded-[24px] shadow-[0_24px_60px_rgba(6,64,43,0.14)]">
+                                        <img
+                                            :src="teamPhoto"
+                                            alt="Top Care Group komanda"
+                                            class="h-full w-full object-cover"
+                                            width="1440"
+                                            height="958"
+                                            decoding="async"
+                                            loading="lazy"
+                                            sizes="(min-width: 1024px) 48vw, 100vw"
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
-                            <div data-reveal class="reveal rounded-[2rem] border border-[#06402B]/8 bg-white p-8 shadow-[0_18px_55px_rgba(6,64,43,0.05)] sm:p-10">
-                                <p class="section-kicker">PAR MUMS</p>
-                                <h1 class="section-title mt-4 max-w-[560px]">
-                                    Top Care Group
-                                </h1>
-                                <div class="mt-6 space-y-5 text-base leading-8 text-[#56665f]">
-                                    <p>
-                                        SIA Top Care Group ir Latvijas uzņēmums, kas nodrošina plašu būvniecības, renovācijas un apsaimniekošanas pakalpojumu klāstu privātpersonām, uzņēmumiem un namu apsaimniekotājiem. Mūsu komandu veido pieredzējuši speciālisti, kuri ikdienā strādā pie dažāda mēroga projektiem visā Latvijā.
-                                    </p>
-                                    <p>
-                                        Mēs ticam, ka kvalitatīvs darbs, atbildība un godīga attieksme ir pamats ilgtermiņa sadarbībai ar klientiem.
-                                    </p>
-                                    <p>
-                                        Mūsu mērķis ir nepārtraukti attīstīties, pilnveidot savas prasmes un paplašināt pakalpojumu klāstu, lai klientiem spētu piedāvāt mūsdienīgus, kvalitatīvus un ilgtermiņā uzticamus risinājumus.
-                                    </p>
+                            <div data-reveal class="reveal lg:pl-10">
+                                <div class="flex gap-6 lg:gap-8">
+                                    <span class="mt-1 hidden w-px shrink-0 bg-[#BFD730] lg:block" />
+                                    <div>
+                                        <p class="section-kicker">PAR MUMS</p>
+                                        <h1 class="mt-4 max-w-[560px] font-display text-5xl font-bold leading-[0.96] text-[#12261f] sm:text-[3.5rem] lg:text-[4rem]">
+                                            Top Care Group
+                                        </h1>
+                                        <div class="mt-8 max-w-[560px] space-y-4 text-base leading-8 text-[#56665f]">
+                                            <p>
+                                                SIA Top Care Group nodrošina būvniecības, renovācijas un īpašumu uzturēšanas pakalpojumus privātpersonām, uzņēmumiem un namu apsaimniekotājiem visā Latvijā.
+                                            </p>
+                                            <p>
+                                                Mūsu komandu veido pieredzējuši speciālisti, kuri strādā ar precizitāti, atbildību un skaidru izpratni par kvalitāti katrā projekta posmā.
+                                            </p>
+                                            <p>
+                                                Mēs veidojam ilgtermiņā uzticamus risinājumus un pieeju, kas pielāgota klienta objektam, termiņiem un darba apjomam.
+                                            </p>
+                                        </div>
+
+                                        <div class="mt-10 grid gap-4 sm:grid-cols-2">
+                                            <div
+                                                v-for="item in aboutHighlights"
+                                                :key="item"
+                                                class="flex items-start gap-3 text-sm font-medium text-[#244338]"
+                                            >
+                                                <span class="mt-0.5 text-[#BFD730]">✓</span>
+                                                <span>{{ item }}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-10 grid gap-6 border-t border-[#06402B]/10 pt-8 sm:grid-cols-3 sm:gap-8">
+                                            <div v-for="item in aboutStats" :key="item.label">
+                                                <p class="font-display text-[2.15rem] font-extrabold leading-none text-[#06402B] sm:text-[2.4rem]">
+                                                    {{ item.value }}
+                                                </p>
+                                                <p class="mt-3 text-sm font-medium leading-6 text-[#5a6b64]">
+                                                    {{ item.label }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
