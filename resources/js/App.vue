@@ -955,11 +955,11 @@ onBeforeUnmount(() => {
                                 <div class="mt-10 space-y-5">
                                     <div class="rounded-[1.8rem] border border-[#06402B]/8 bg-[#f7faf7] p-5">
                                         <p class="text-xs uppercase tracking-[0.28em] text-[#06402B]">Telefons</p>
-                                        <a class="mt-3 block text-lg font-semibold text-[#12261f]" href="tel:+37120000000">+371 20 000 000</a>
+                                        <a class="mt-3 block text-lg font-semibold text-[#12261f]" href="tel:+37128842265">+371 28 842 265</a>
                                     </div>
                                     <div class="rounded-[1.8rem] border border-[#06402B]/8 bg-[#f7faf7] p-5">
                                         <p class="text-xs uppercase tracking-[0.28em] text-[#06402B]">E-pasts</p>
-                                        <a class="mt-3 block text-lg font-semibold text-[#12261f]" href="mailto:info@topcaregroup.lv">info@topcaregroup.lv</a>
+                                        <a class="mt-3 block text-lg font-semibold text-[#12261f]" href="mailto:topcare.lv@gmail.com">topcare.lv@gmail.com</a>
                                     </div>
                                     <div class="rounded-[1.8rem] border border-[#06402B]/8 bg-[#f7faf7] p-5 text-sm leading-7 text-[#56665f]">
                                         <p>✔ Renovācija un apdares darbi</p>
@@ -968,14 +968,6 @@ onBeforeUnmount(() => {
                                         <p>✔ Industriālais alpīnisms</p>
                                         <p>✔ Īpašumu uzturēšana</p>
                                     </div>
-                                    <a
-                                        class="inline-flex items-center justify-center rounded-[1.8rem] bg-[#BFD730] px-6 py-4 text-sm font-semibold text-[#0f241d] transition hover:-translate-y-0.5 hover:bg-[#d0ea3f]"
-                                        href="https://wa.me/37120000000"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        Sazināties WhatsApp
-                                    </a>
                                 </div>
                             </div>
 
@@ -1003,10 +995,6 @@ onBeforeUnmount(() => {
                                     <label class="form-field sm:col-span-2">
                                         <span>Ziņojums</span>
                                         <textarea placeholder="Aprakstiet objektu vai nepieciešamos darbus" rows="5" />
-                                    </label>
-                                    <label class="form-field sm:col-span-2">
-                                        <span>Augšupielādēt objekta foto</span>
-                                        <input type="file" />
                                     </label>
                                     <div class="sm:col-span-2">
                                         <button
@@ -1051,8 +1039,8 @@ onBeforeUnmount(() => {
                 <div>
                     <p class="text-xs uppercase tracking-[0.28em] text-[#BFD730]">Kontakti</p>
                     <div class="mt-5 space-y-3 text-sm leading-7 text-white/72">
-                        <p>Telefons: +371 20 000 000</p>
-                        <p>E-pasts: info@topcaregroup.lv</p>
+                        <p>Telefons: +371 28 842 265</p>
+                        <p>E-pasts: topcare.lv@gmail.com</p>
                         <p>Darbi tiek veikti visā Latvijā</p>
                     </div>
                 </div>
