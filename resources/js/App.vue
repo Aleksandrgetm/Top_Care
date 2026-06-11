@@ -10,6 +10,7 @@ const brandLogo = '/images/logo.png';
 const teamPhoto = '/images/topcare-komanda.png';
 const heroImage = '/images/fasades-mazgasana-darba-process.png';
 const featurePhoto = '/images/fasades-mazgasana-darba-process.png';
+const beforeAfterHeroPhoto = '/images/jumta-tirisana-latvija.jpg';
 
 const navigation = [
     { label: 'Sākums', path: '/' },
@@ -166,14 +167,16 @@ const workApproachSteps = [
 
 const beforeAfterItems = [
     {
-        title: 'Fasādes mazgāšana pirms un pēc',
+        title: 'Fasādes mazgāšana',
+        description: 'Privātmājas fasādes attīrīšana no netīrumiem un bioloģiskā aplikuma.',
         image: '/images/fasada-mazgasana-pirms-pec.png',
         width: 640,
         height: 640,
         alt: 'Fasādes mazgāšana pirms un pēc',
     },
     {
-        title: 'Jumta tīrīšana pirms un pēc',
+        title: 'Jumta tīrīšana',
+        description: 'Jumta seguma attīrīšana no nosēdumiem, sūnām un uzkrātajiem netīrumiem.',
         image: '/images/jumta-tirisana-pirms-pec.png',
         width: 512,
         height: 358,
@@ -847,37 +850,90 @@ onBeforeUnmount(() => {
             </template>
 
             <template v-else-if="isBeforeAfterPage">
-                <section class="bg-[#0d1f19] pt-36 pb-24 text-white sm:pt-40 sm:pb-28">
+                <section class="bg-[#f7faf7] pt-32 pb-10 sm:pt-36 sm:pb-12">
                     <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
-                        <div data-reveal class="reveal max-w-[760px]">
-                            <p class="section-kicker text-[#BFD730]">PIRMS / PĒC</p>
-                            <h1 class="mt-4 font-display text-4xl leading-tight sm:text-6xl">
-                                Redzami rezultāti reālos objektos
-                            </h1>
-                            <p class="mt-6 text-base leading-8 text-white/72">
-                                Salīdziniet fasāžu un jumtu darbu rezultātus pirms un pēc Top Care Group paveiktajiem darbiem.
-                            </p>
-                        </div>
+                        <div class="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-center lg:gap-12">
+                            <div data-reveal class="reveal max-w-[640px]">
+                                <p class="section-kicker">PIRMS / PĒC</p>
+                                <h1 class="mt-4 font-display text-4xl font-bold leading-[0.96] text-[#12261f] sm:text-6xl lg:text-[4.2rem]">
+                                    Redzami rezultāti
+                                    <br />
+                                    reālos objektos
+                                </h1>
+                                <p class="mt-6 max-w-[620px] text-base leading-8 text-[#5a6b64] sm:text-lg">
+                                    Salīdziniet mūsu paveikto darbu rezultātus fasāžu, jumtu un teritoriju tīrīšanā visā Latvijā.
+                                </p>
+                            </div>
 
-                        <div class="mt-14 grid gap-6 xl:grid-cols-2">
-                            <article
-                                v-for="item in beforeAfterItems"
-                                :key="item.title"
-                                data-reveal
-                                class="reveal overflow-hidden rounded-[2rem] border border-white/10 bg-white/6 p-4 backdrop-blur-sm sm:p-5"
-                            >
-                                <h2 class="px-2 pb-4 text-2xl font-semibold">{{ item.title }}</h2>
-                                <div class="overflow-hidden rounded-[1.5rem]">
+                            <div data-reveal class="reveal">
+                                <div class="relative overflow-hidden rounded-[24px] border border-[#06402B]/8 bg-white shadow-[0_24px_55px_rgba(6,64,43,0.08)]">
+                                    <div class="absolute inset-y-0 left-0 z-10 hidden w-32 bg-gradient-to-r from-[#f7faf7] via-[#f7faf7]/65 to-transparent lg:block" />
                                     <img
-                                        :src="item.image"
-                                        :alt="item.alt"
-                                        class="before-after-image h-auto min-h-[360px]"
-                                        :height="item.height"
-                                        :width="item.width"
+                                        :src="beforeAfterHeroPhoto"
+                                        alt="Jumta tīrīšanas objekts Latvijā"
+                                        class="h-[380px] w-full object-cover sm:h-[460px]"
+                                        width="1600"
+                                        height="1200"
                                         decoding="async"
                                         loading="lazy"
-                                        sizes="(min-width: 1024px) 44vw, 100vw"
+                                        sizes="(min-width: 1024px) 52vw, 100vw"
                                     />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-[#f7faf7] pb-24 pt-12 sm:pb-28 sm:pt-14">
+                    <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
+                        <div class="space-y-8 lg:space-y-10">
+                            <article
+                                v-for="(item, index) in beforeAfterItems"
+                                :key="item.title"
+                                data-reveal
+                                class="reveal overflow-hidden rounded-[24px] border border-[#06402B]/8 bg-white shadow-[0_18px_40px_rgba(6,64,43,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_50px_rgba(6,64,43,0.08)]"
+                                :style="{ transitionDelay: `${index * 90}ms` }"
+                            >
+                                <div
+                                    :class="[
+                                        'grid gap-8 p-5 sm:p-6 lg:items-center lg:gap-10 lg:p-8',
+                                        index % 2 === 0 ? 'lg:grid-cols-[1.15fr_0.85fr]' : 'lg:grid-cols-[0.85fr_1.15fr]',
+                                    ]"
+                                >
+                                    <div
+                                        :class="[
+                                            'overflow-hidden rounded-[1.5rem] border border-[#06402B]/8 bg-[#edf3ef]',
+                                            index % 2 === 0 ? 'lg:order-1' : 'lg:order-2',
+                                        ]"
+                                    >
+                                        <img
+                                            :src="item.image"
+                                            :alt="item.alt"
+                                            class="before-after-image h-auto min-h-[360px]"
+                                            :height="item.height"
+                                            :width="item.width"
+                                            decoding="async"
+                                            loading="lazy"
+                                            sizes="(min-width: 1024px) 50vw, 100vw"
+                                        />
+                                    </div>
+
+                                    <div
+                                        :class="[
+                                            'flex flex-col justify-center',
+                                            index % 2 === 0 ? 'lg:order-2' : 'lg:order-1 lg:pl-4',
+                                        ]"
+                                    >
+                                        <p class="text-xs font-semibold uppercase tracking-[0.28em] text-[#06402B]/55">
+                                            Top Care Group
+                                        </p>
+                                        <h2 class="mt-5 text-[2rem] font-semibold leading-tight text-[#12261f] sm:text-[2.2rem]">
+                                            {{ item.title }}
+                                        </h2>
+                                        <p class="mt-5 max-w-[420px] text-base leading-8 text-[#5a6b64]">
+                                            {{ item.description }}
+                                        </p>
+                                    </div>
                                 </div>
                             </article>
                         </div>
