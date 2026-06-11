@@ -1047,7 +1047,15 @@ onBeforeUnmount(() => {
             </div>
 
             <div class="mx-auto mt-10 max-w-[1320px] border-t border-white/10 px-5 pt-6 text-sm text-white/44 sm:px-8 lg:px-10">
-                © 2026 Top Care Group. Visas tiesības aizsargātas
+                © 2026 Top Care Group. Visas tiesības aizsargātas ·
+                <a
+                    class="text-white/36 transition hover:text-white/52"
+                    href="https://getmanenko.lv"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Izstrādāja Getmanenko
+                </a>
             </div>
         </footer>
     </div>
