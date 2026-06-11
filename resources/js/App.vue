@@ -121,6 +121,36 @@ const beforeAfterItems = [
     },
 ];
 
+const companyStats = [
+    {
+        label: 'Pabeigti objekti',
+        value: 100,
+        suffix: '+',
+        type: 'number',
+    },
+    {
+        label: 'Pakalpojumu veidi',
+        value: 5,
+        suffix: '+',
+        type: 'number',
+    },
+    {
+        label: 'Individuāla pieeja',
+        value: 100,
+        suffix: '%',
+        type: 'number',
+    },
+    {
+        label: 'Latvija',
+        value: 'Visa',
+        type: 'text',
+    },
+];
+
+const displayedStats = ref(
+    companyStats.map((stat) => (stat.type === 'number' ? 0 : stat.value)),
+);
+
 const pageMeta = {
     '/': {
         title: 'Top Care Group | Būvniecība, renovācija un īpašumu uzturēšana',
@@ -166,6 +196,46 @@ const updateViewport = () => {
 };
 
 let revealObserver;
+let statsObserver;
+let statsAnimationStarted = false;
+const statsAnimationFrames = [];
+
+const animateStatValue = (index, targetValue) => {
+    const duration = 1400;
+    const startTime = performance.now();
+
+    const tick = (currentTime) => {
+        const progress = Math.min((currentTime - startTime) / duration, 1);
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+
+        displayedStats.value[index] = Math.round(targetValue * easedProgress);
+
+        if (progress < 1) {
+            const frameId = requestAnimationFrame(tick);
+            statsAnimationFrames[index] = frameId;
+            return;
+        }
+
+        displayedStats.value[index] = targetValue;
+    };
+
+    const frameId = requestAnimationFrame(tick);
+    statsAnimationFrames[index] = frameId;
+};
+
+const startStatsAnimation = () => {
+    if (statsAnimationStarted) {
+        return;
+    }
+
+    statsAnimationStarted = true;
+
+    companyStats.forEach((stat, index) => {
+        if (stat.type === 'number') {
+            animateStatValue(index, stat.value);
+        }
+    });
+};
 
 onMounted(() => {
     updateViewport();
@@ -200,11 +270,33 @@ onMounted(() => {
     document.querySelectorAll('[data-reveal]').forEach((element) => {
         revealObserver.observe(element);
     });
+
+    statsObserver = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    startStatsAnimation();
+                    statsObserver?.unobserve(entry.target);
+                }
+            });
+        },
+        { threshold: 0.35 },
+    );
+
+    document.querySelectorAll('[data-stats-section]').forEach((element) => {
+        statsObserver.observe(element);
+    });
 });
 
 onBeforeUnmount(() => {
     window.removeEventListener('scroll', updateViewport);
     revealObserver?.disconnect();
+    statsObserver?.disconnect();
+    statsAnimationFrames.forEach((frameId) => {
+        if (frameId) {
+            cancelAnimationFrame(frameId);
+        }
+    });
 });
 </script>
 
@@ -426,6 +518,52 @@ onBeforeUnmount(() => {
                                         />
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section
+                    data-stats-section
+                    class="border-y border-white/12 bg-[#042c1f] py-14 sm:py-15 lg:py-16"
+                >
+                    <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
+                        <div data-reveal class="reveal text-center">
+                            <p class="text-xs font-semibold uppercase tracking-[0.32em] text-white/75 sm:text-[0.82rem]">
+                                MŪSU PIEREDZE
+                            </p>
+                        </div>
+
+                        <div class="mt-8 grid min-h-[180px] content-center gap-y-10 sm:grid-cols-2 sm:gap-x-10 md:min-h-[196px] lg:grid-cols-4 lg:gap-x-14">
+                            <div
+                                v-for="(stat, index) in companyStats"
+                                :key="stat.label"
+                                data-reveal
+                                class="reveal relative flex min-h-[80px] flex-col justify-center text-center"
+                                :style="{ transitionDelay: `${index * 100}ms`, transitionDuration: '720ms' }"
+                            >
+                                <span
+                                    v-if="index < companyStats.length - 1"
+                                    class="absolute right-[-1.75rem] top-1/2 hidden h-14 w-px -translate-y-1/2 bg-white/12 lg:block"
+                                />
+                                <p
+                                    :class="[
+                                        'font-display font-extrabold leading-none tracking-normal text-white',
+                                        stat.type === 'number'
+                                            ? 'text-[3rem] sm:text-[3.35rem] lg:text-[3.8rem]'
+                                            : 'text-[2.65rem] sm:text-[2.9rem] lg:text-[3.15rem]',
+                                    ]"
+                                >
+                                    <template v-if="stat.type === 'number'">
+                                        {{ displayedStats[index] }}{{ stat.suffix }}
+                                    </template>
+                                    <template v-else>
+                                        {{ stat.value }}
+                                    </template>
+                                </p>
+                                <p class="mt-3 text-sm font-medium leading-6 text-white/82 sm:text-[0.95rem]">
+                                    {{ stat.label }}
+                                </p>
                             </div>
                         </div>
                     </div>
