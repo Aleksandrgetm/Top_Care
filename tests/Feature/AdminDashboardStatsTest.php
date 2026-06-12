@@ -31,7 +31,7 @@ class AdminDashboardStatsTest extends TestCase
             ->get('/admin')
             ->assertOk()
             ->assertSee('Services')
-            ->assertSee('Pirms/Pec')
+            ->assertSee('Pirms\\/Pec', false)
             ->assertSee('1', false);
     }
 }

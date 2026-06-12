@@ -10,7 +10,8 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
+{
+    if (!Schema::hasTable('before_after_items')) {
         Schema::create('before_after_items', function (Blueprint $table) {
             $table->id();
             $table->string('title');
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+}
 
     /**
      * Reverse the migrations.

@@ -43,6 +43,8 @@ foreach ($pages as $path => $meta) {
     });
 }
 
+Route::get('/login', fn () => redirect()->route('admin.login'))->name('login');
+
 Route::prefix('admin')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('admin.login');
