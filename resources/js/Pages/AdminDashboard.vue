@@ -27,6 +27,9 @@ const quickLinks = [
         status: 'Next step',
     },
 ];
+
+const brandLogo = '/images/logo.png';
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
 </script>
 
 <template>
@@ -36,7 +39,7 @@ const quickLinks = [
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(191,215,48,0.18),transparent_36%)]"></div>
                 <div class="relative flex h-full flex-col">
                     <div class="flex items-center gap-3">
-                        <img src="/images/logo.png" alt="Top Care Group" class="h-12 w-auto rounded-lg bg-white/95 p-1.5" />
+                        <img :src="brandLogo" alt="Top Care Group" class="h-12 w-auto rounded-lg bg-white/95 p-1.5" />
                         <div>
                             <div class="text-sm font-semibold tracking-[0.24em]">TOP CARE GROUP</div>
                             <div class="text-xs uppercase tracking-[0.2em] text-white/60">Admin</div>
@@ -62,7 +65,7 @@ const quickLinks = [
                         <p class="mt-1 text-sm text-white/64">{{ user.email }}</p>
 
                         <form method="POST" action="/admin/logout" class="mt-5">
-                            <input type="hidden" name="_token" :value="document.querySelector('meta[name=csrf-token]')?.content">
+                            <input type="hidden" name="_token" :value="csrfToken">
                             <button type="submit" class="inline-flex w-full items-center justify-center rounded-full border border-white/14 px-4 py-3 text-sm font-semibold transition hover:bg-white/10">
                                 Log out
                             </button>
