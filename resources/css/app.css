@@ -333,6 +333,55 @@
         box-shadow: 0 0 0 4px rgba(191, 215, 48, 0.18);
         transform: translateY(-1px);
     }
+
+    .cookie-toggle {
+        position: relative;
+        display: inline-flex;
+        width: 3.35rem;
+        min-width: 3.35rem;
+        height: 2rem;
+        align-items: center;
+        border-radius: 999px;
+        border: 1px solid rgba(0, 60, 40, 0.1);
+        padding: 0.2rem;
+        transition:
+            background-color 0.25s ease,
+            border-color 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+    .cookie-toggle--off {
+        background: #dfe7e2;
+    }
+
+    .cookie-toggle--on {
+        border-color: rgba(6, 64, 43, 0.18);
+        background: #06402b;
+    }
+
+    .cookie-toggle--disabled {
+        cursor: not-allowed;
+        opacity: 0.82;
+    }
+
+    .cookie-toggle__thumb {
+        display: block;
+        width: 1.45rem;
+        height: 1.45rem;
+        border-radius: 999px;
+        background: #ffffff;
+        box-shadow: 0 4px 14px rgba(0, 40, 25, 0.18);
+        transition: transform 0.25s ease;
+    }
+
+    .cookie-toggle--on .cookie-toggle__thumb {
+        transform: translateX(1.3rem);
+    }
+
+    .cookie-toggle:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(191, 215, 48, 0.2);
+    }
 }
 
 @media (min-width: 768px) {

@@ -4,6 +4,13 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 const isMenuOpen = ref(false);
 const isScrolled = ref(false);
 const heroOffset = ref(0);
+const showCookieBanner = ref(false);
+const showCookiePreferences = ref(false);
+const cookiePreferences = ref({
+    analytics: false,
+    marketing: false,
+});
+const savedCookieConsent = ref(null);
 
 const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
 const brandLogo = '/images/logo.png';
@@ -12,6 +19,13 @@ const heroImage = '/images/fasades-mazgasana-darba-process.png';
 const featurePhoto = '/images/fasades-mazgasana-darba-process.png';
 const beforeAfterHeroPhoto = '/images/jumta-tirisana-latvija.jpg';
 const privacyPolicyPath = '/privatuma-politika';
+const cookieConsentStorageKey = 'topcare_cookie_consent';
+const defaultCookieConsent = {
+    necessary: true,
+    analytics: false,
+    marketing: false,
+    acceptedAt: null,
+};
 
 const privacySections = [
     {
@@ -345,6 +359,87 @@ const isContactsPage = computed(() => currentPath === '/kontakti');
 const isPrivacyPage = computed(() => currentPath === privacyPolicyPath);
 const useLightHeader = computed(() => isHomePage.value && !isScrolled.value);
 
+const readCookieConsent = () => {
+    try {
+        const storedConsent = window.localStorage.getItem(cookieConsentStorageKey);
+
+        if (!storedConsent) {
+            return null;
+        }
+
+        const parsedConsent = JSON.parse(storedConsent);
+
+        return {
+            necessary: true,
+            analytics: Boolean(parsedConsent.analytics),
+            marketing: Boolean(parsedConsent.marketing),
+            acceptedAt: parsedConsent.acceptedAt ?? null,
+        };
+    } catch {
+        return null;
+    }
+};
+
+const syncCookiePreferenceDraft = (consent = defaultCookieConsent) => {
+    cookiePreferences.value = {
+        analytics: Boolean(consent.analytics),
+        marketing: Boolean(consent.marketing),
+    };
+};
+
+const lockScrollForCookieModal = (locked) => {
+    document.body.style.overflow = locked ? 'hidden' : '';
+};
+
+const persistCookieConsent = (consent) => {
+    const normalizedConsent = {
+        necessary: true,
+        analytics: Boolean(consent.analytics),
+        marketing: Boolean(consent.marketing),
+        acceptedAt: new Date().toISOString(),
+    };
+
+    window.localStorage.setItem(cookieConsentStorageKey, JSON.stringify(normalizedConsent));
+    savedCookieConsent.value = normalizedConsent;
+    syncCookiePreferenceDraft(normalizedConsent);
+    showCookieBanner.value = false;
+    showCookiePreferences.value = false;
+    lockScrollForCookieModal(false);
+};
+
+const hasAnalyticsConsent = () => Boolean(savedCookieConsent.value?.analytics);
+const hasMarketingConsent = () => Boolean(savedCookieConsent.value?.marketing);
+
+const openCookiePreferences = () => {
+    syncCookiePreferenceDraft(savedCookieConsent.value ?? defaultCookieConsent);
+    showCookiePreferences.value = true;
+    lockScrollForCookieModal(true);
+};
+
+const acceptAllCookies = () => {
+    persistCookieConsent({
+        necessary: true,
+        analytics: true,
+        marketing: true,
+    });
+};
+
+const rejectAllCookies = () => {
+    persistCookieConsent({
+        necessary: true,
+        analytics: false,
+        marketing: false,
+    });
+};
+
+const saveCookiePreferences = () => {
+    persistCookieConsent({
+        necessary: true,
+        analytics: cookiePreferences.value.analytics,
+        marketing: cookiePreferences.value.marketing,
+    });
+};
+
 const closeMenu = () => {
     isMenuOpen.value = false;
 };
@@ -400,6 +495,14 @@ const startStatsAnimation = () => {
 onMounted(() => {
     updateViewport();
     window.addEventListener('scroll', updateViewport, { passive: true });
+    savedCookieConsent.value = readCookieConsent();
+    syncCookiePreferenceDraft(savedCookieConsent.value ?? defaultCookieConsent);
+    showCookieBanner.value = !savedCookieConsent.value;
+    window.TopCareCookieConsent = {
+        hasAnalyticsConsent,
+        hasMarketingConsent,
+        openCookiePreferences,
+    };
 
     const meta = pageMeta[currentPath];
 
@@ -454,6 +557,8 @@ onBeforeUnmount(() => {
     window.removeEventListener('scroll', updateViewport);
     revealObserver?.disconnect();
     statsObserver?.disconnect();
+    lockScrollForCookieModal(false);
+    delete window.TopCareCookieConsent;
     statsAnimationFrames.forEach((frameId) => {
         if (frameId) {
             cancelAnimationFrame(frameId);
@@ -618,7 +723,7 @@ onBeforeUnmount(() => {
                                 </a>
                                 <a
                                     class="inline-flex items-center justify-center rounded-full border border-white/18 bg-white/8 px-7 py-4 text-sm font-semibold text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/14"
-                                    href="https://wa.me/37120000000"
+                                    href="https://wa.me/37128842265"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
@@ -1275,6 +1380,14 @@ onBeforeUnmount(() => {
                     Privātuma politika
                 </a>
                 <span aria-hidden="true">·</span>
+                <button
+                    class="cursor-pointer text-white/64 transition hover:text-white"
+                    type="button"
+                    @click="openCookiePreferences"
+                >
+                    Sīkdatņu iestatījumi
+                </button>
+                <span aria-hidden="true">·</span>
                 <a
                     class="text-white/36 transition hover:text-white/52"
                     href="https://getmanenko.lv"
@@ -1285,5 +1398,164 @@ onBeforeUnmount(() => {
                 </a>
             </div>
         </footer>
+
+        <transition
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="translate-y-5 opacity-0"
+            enter-to-class="translate-y-0 opacity-100"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="translate-y-0 opacity-100"
+            leave-to-class="translate-y-5 opacity-0"
+        >
+            <div v-if="showCookieBanner" class="fixed inset-x-0 bottom-0 z-[70] px-4 pb-4 sm:px-6 sm:pb-6">
+                <div class="mx-auto w-full max-w-[1180px] rounded-[24px] border border-[rgba(0,60,40,0.10)] bg-white px-5 py-5 text-[#12261f] shadow-[0_24px_70px_rgba(0,40,25,0.14)] sm:px-7 sm:py-6">
+                    <div class="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
+                        <div>
+                            <p class="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-[#06402B]/62">
+                                SĪKDATŅU PAZIŅOJUMS
+                            </p>
+                            <p class="mt-3 max-w-[760px] text-sm leading-7 text-[#244338] sm:text-base">
+                                Mēs izmantojam sīkdatnes, lai uzlabotu vietnes darbību, analizētu apmeklējumu un nodrošinātu labāku lietošanas pieredzi.
+                            </p>
+                            <a
+                                class="mt-3 inline-flex text-sm font-semibold text-[#06402B] underline decoration-[#BFD730] decoration-2 underline-offset-4 transition hover:text-[#0b5c3f]"
+                                :href="privacyPolicyPath"
+                            >
+                                Privātuma politika
+                            </a>
+                        </div>
+
+                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center lg:justify-end">
+                            <button
+                                class="inline-flex min-h-12 items-center justify-center rounded-full border border-[#06402B] bg-[#06402B] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#0b5c3f]"
+                                type="button"
+                                @click="acceptAllCookies"
+                            >
+                                Pieņemt visas
+                            </button>
+                            <button
+                                class="inline-flex min-h-12 items-center justify-center rounded-full border border-[#06402B]/24 bg-white px-6 py-3 text-sm font-semibold text-[#06402B] transition hover:-translate-y-0.5 hover:border-[#06402B]/40 hover:bg-[#f7faf7]"
+                                type="button"
+                                @click="rejectAllCookies"
+                            >
+                                Noraidīt
+                            </button>
+                            <button
+                                class="inline-flex min-h-12 items-center justify-center text-sm font-semibold text-[#06402B] decoration-[#BFD730] decoration-2 underline-offset-4 transition hover:text-[#0b5c3f] hover:underline sm:px-2"
+                                type="button"
+                                @click="openCookiePreferences"
+                            >
+                                Sīkāka informācija
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </transition>
+
+        <transition
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+        >
+            <div v-if="showCookiePreferences" class="fixed inset-0 z-[80] flex items-end justify-center bg-[rgba(10,30,22,0.35)] p-4 backdrop-blur-md sm:items-center sm:p-6">
+                <div class="max-h-[92vh] w-full max-w-[860px] overflow-y-auto rounded-[28px] border border-[rgba(0,60,40,0.10)] bg-white p-6 text-[#12261f] shadow-[0_40px_100px_rgba(0,40,25,0.18)] sm:p-10">
+                    <div class="border-b border-[#06402B]/10 pb-6">
+                        <p class="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-[#06402B]/62">
+                            PIEKRIŠANAS IESTATĪJUMI
+                        </p>
+                        <h2 class="mt-3 text-[1.75rem] font-semibold leading-tight text-[#12261f] sm:text-[2.25rem]">
+                            Pārvaldiet sīkdatņu kategorijas
+                        </h2>
+                        <p class="mt-4 max-w-[680px] text-sm leading-7 text-[#42534c] sm:text-base">
+                            Jūs jebkurā brīdī varat izvēlēties, kurām papildu sīkdatnēm piekrītat. Nepieciešamās sīkdatnes vienmēr paliek aktīvas.
+                        </p>
+                    </div>
+
+                    <div class="mt-6 space-y-4">
+                        <div class="rounded-[20px] border border-[rgba(0,60,40,0.08)] bg-[#F4F7F4] px-5 py-5 sm:px-6 sm:py-[22px]">
+                            <div class="flex items-start justify-between gap-5">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-[#12261f]">Nepieciešamās sīkdatnes</h3>
+                                    <p class="mt-2 max-w-[600px] text-sm leading-7 text-[#42534c] sm:text-base">
+                                        Šīs sīkdatnes nodrošina vietnes pamatfunkcijas un vienmēr ir aktīvas.
+                                    </p>
+                                </div>
+                                <span class="cookie-toggle cookie-toggle--on cookie-toggle--disabled" aria-hidden="true">
+                                    <span class="cookie-toggle__thumb" />
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="rounded-[20px] border border-[rgba(0,60,40,0.08)] bg-[#F4F7F4] px-5 py-5 sm:px-6 sm:py-[22px]">
+                            <div class="flex items-start justify-between gap-5">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-[#12261f]">Analītikas sīkdatnes</h3>
+                                    <p class="mt-2 max-w-[600px] text-sm leading-7 text-[#42534c] sm:text-base">
+                                        Palīdz saprast, kā apmeklētāji izmanto vietni, lai varētu uzlabot saturu un darbību.
+                                    </p>
+                                </div>
+                                <button
+                                    :class="['cookie-toggle', cookiePreferences.analytics ? 'cookie-toggle--on' : 'cookie-toggle--off']"
+                                    :aria-pressed="cookiePreferences.analytics"
+                                    type="button"
+                                    @click="cookiePreferences.analytics = !cookiePreferences.analytics"
+                                >
+                                    <span class="sr-only">Pārslēgt analītikas sīkdatnes</span>
+                                    <span class="cookie-toggle__thumb" />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="rounded-[20px] border border-[rgba(0,60,40,0.08)] bg-[#F4F7F4] px-5 py-5 sm:px-6 sm:py-[22px]">
+                            <div class="flex items-start justify-between gap-5">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-[#12261f]">Mārketinga sīkdatnes</h3>
+                                    <p class="mt-2 max-w-[600px] text-sm leading-7 text-[#42534c] sm:text-base">
+                                        Tiek izmantotas personalizētai saziņai un turpmākām reklāmas integrācijām pēc piekrišanas.
+                                    </p>
+                                </div>
+                                <button
+                                    :class="['cookie-toggle', cookiePreferences.marketing ? 'cookie-toggle--on' : 'cookie-toggle--off']"
+                                    :aria-pressed="cookiePreferences.marketing"
+                                    type="button"
+                                    @click="cookiePreferences.marketing = !cookiePreferences.marketing"
+                                >
+                                    <span class="sr-only">Pārslēgt mārketinga sīkdatnes</span>
+                                    <span class="cookie-toggle__thumb" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
+                        <button
+                            class="inline-flex min-h-12 items-center justify-center rounded-full border border-[#06402B]/24 bg-white px-6 py-3 text-sm font-semibold text-[#06402B] transition hover:-translate-y-0.5 hover:border-[#06402B]/40 hover:bg-[#f7faf7]"
+                            type="button"
+                            @click="rejectAllCookies"
+                        >
+                            Noraidīt
+                        </button>
+                        <button
+                            class="inline-flex min-h-12 items-center justify-center rounded-full border border-[#06402B]/24 bg-white px-6 py-3 text-sm font-semibold text-[#06402B] transition hover:-translate-y-0.5 hover:border-[#06402B]/40 hover:bg-[#f7faf7]"
+                            type="button"
+                            @click="saveCookiePreferences"
+                        >
+                            Saglabāt iestatījumus
+                        </button>
+                        <button
+                            class="inline-flex min-h-12 items-center justify-center rounded-full border border-[#06402B] bg-[#06402B] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#0b5c3f]"
+                            type="button"
+                            @click="acceptAllCookies"
+                        >
+                            Pieņemt visas
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </transition>
     </div>
 </template>
