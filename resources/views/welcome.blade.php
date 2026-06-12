@@ -13,6 +13,7 @@
         <meta property="og:image" content="{{ asset('images/logo.png') }}">
         <meta property="og:locale" content="lv_LV">
         <meta name="twitter:card" content="summary_large_image">
+        <link rel="canonical" href="{{ url($canonical ?? request()->getPathInfo()) }}">
         <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/png">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

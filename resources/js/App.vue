@@ -11,6 +11,92 @@ const teamPhoto = '/images/topcare-komanda.png';
 const heroImage = '/images/fasades-mazgasana-darba-process.png';
 const featurePhoto = '/images/fasades-mazgasana-darba-process.png';
 const beforeAfterHeroPhoto = '/images/jumta-tirisana-latvija.jpg';
+const privacyPolicyPath = '/privatuma-politika';
+
+const privacySections = [
+    {
+        number: '1.',
+        title: 'Vispārīga informācija',
+        paragraphs: [
+            'SIA “Top Care Group” (turpmāk – Uzņēmums) rūpējas par Jūsu personas datu aizsardzību un apstrādā personas datus saskaņā ar Eiropas Parlamenta un Padomes Regulu (ES) 2016/679 (Vispārīgā datu aizsardzības regula jeb GDPR) un Latvijas Republikas normatīvajiem aktiem.',
+        ],
+        contactCard: true,
+    },
+    {
+        number: '2.',
+        title: 'Kādus personas datus mēs apstrādājam',
+        intro: 'Mēs varam apstrādāt šādus personas datus:',
+        items: [
+            'vārdu un uzvārdu;',
+            'tālruņa numuru;',
+            'e-pasta adresi;',
+            'objekta adresi;',
+            'informāciju par pieprasītajiem pakalpojumiem;',
+            'sarakstes saturu;',
+            'informāciju, kuru Jūs brīvprātīgi iesniedzat, aizpildot kontaktformu vai sazinoties ar mums.',
+        ],
+    },
+    {
+        number: '3.',
+        title: 'Personas datu apstrādes mērķi',
+        intro: 'Personas dati tiek apstrādāti, lai:',
+        items: [
+            'sniegtu informāciju par pakalpojumiem;',
+            'sagatavotu piedāvājumus un tāmes;',
+            'noslēgtu un izpildītu līgumus;',
+            'nodrošinātu pakalpojumu sniegšanu;',
+            'izrakstītu rēķinus;',
+            'izpildītu normatīvajos aktos noteiktās prasības;',
+            'uzlabotu mājaslapas darbību un lietotāju pieredzi.',
+        ],
+    },
+    {
+        number: '4.',
+        title: 'Personas datu glabāšana',
+        paragraphs: [
+            'Personas dati tiek glabāti tikai tik ilgi, cik tas nepieciešams attiecīgo mērķu sasniegšanai vai cik to paredz Latvijas Republikas normatīvie akti.',
+        ],
+    },
+    {
+        number: '5.',
+        title: 'Personas datu nodošana trešajām personām',
+        intro: 'Uzņēmums nenodod personas datus trešajām personām, izņemot gadījumus, kad:',
+        items: [
+            'to paredz normatīvie akti;',
+            'tas nepieciešams grāmatvedības, IT vai citu pakalpojumu nodrošinātāju darbībai;',
+            'informāciju pieprasa kompetentas valsts vai pašvaldību iestādes.',
+        ],
+    },
+    {
+        number: '6.',
+        title: 'Personas datu drošība',
+        paragraphs: [
+            'SIA “Top Care Group” veic atbilstošus organizatoriskus un tehniskus drošības pasākumus, lai aizsargātu personas datus pret nesankcionētu piekļuvi, izpaušanu, nozaudēšanu vai iznīcināšanu.',
+        ],
+    },
+    {
+        number: '7.',
+        title: 'Sīkdatnes (Cookies)',
+        paragraphs: [
+            'Mājaslapā var tikt izmantotas sīkdatnes, lai nodrošinātu tās darbību, analizētu lietotāju paradumus un uzlabotu vietnes funkcionalitāti.',
+            'Lietotājs jebkurā laikā var mainīt sīkdatņu iestatījumus savā interneta pārlūkprogrammā.',
+        ],
+    },
+    {
+        number: '8.',
+        title: 'Jūsu tiesības',
+        intro: 'Jums ir tiesības:',
+        items: [
+            'pieprasīt informāciju par savu personas datu apstrādi;',
+            'pieprasīt datu labošanu;',
+            'pieprasīt datu dzēšanu, ja tam ir tiesisks pamats;',
+            'ierobežot datu apstrādi;',
+            'iebilst pret datu apstrādi;',
+            'atsaukt piekrišanu datu apstrādei;',
+            'iesniegt sūdzību Datu valsts inspekcijā.',
+        ],
+    },
+];
 
 const navigation = [
     { label: 'Sākums', path: '/' },
@@ -218,22 +304,32 @@ const pageMeta = {
     '/': {
         title: 'Top Care Group | Būvniecība, renovācija un īpašumu uzturēšana',
         description: 'SIA Top Care Group nodrošina būvniecības, renovācijas un īpašumu uzturēšanas pakalpojumus privātpersonām, uzņēmumiem un namu apsaimniekotājiem visā Latvijā.',
+        canonical: '/',
     },
     '/pakalpojumi': {
         title: 'Top Care Group pakalpojumi | Renovācija, fasādes, jumti un labiekārtošana',
         description: 'Apskatiet Top Care Group pakalpojumus: renovācijas un iekšdarbus, fasāžu atjaunošanu, jumtu darbus, bruģēšanu un īpašumu uzturēšanu.',
+        canonical: '/pakalpojumi',
     },
     '/par-mums': {
         title: 'Par Top Care Group | Pieredzējusi komanda visā Latvijā',
         description: 'Top Care Group ir Latvijas uzņēmums ar pieredzējušu komandu, kas strādā pie būvniecības, renovācijas un īpašumu uzturēšanas projektiem visā Latvijā.',
+        canonical: '/par-mums',
     },
     '/pirms-pec': {
         title: 'Top Care Group pirms un pēc | Redzami rezultāti objektos',
         description: 'Apskatiet redzamus fasāžu un jumtu darbu rezultātus pirms un pēc Top Care Group paveiktajiem darbiem.',
+        canonical: '/pirms-pec',
     },
     '/kontakti': {
         title: 'Top Care Group kontakti | Sazinieties un saņemiet piedāvājumu',
         description: 'Sazinieties ar Top Care Group par būvniecības, renovācijas, jumtu, fasāžu un īpašumu uzturēšanas darbiem visā Latvijā.',
+        canonical: '/kontakti',
+    },
+    '/privatuma-politika': {
+        title: 'Privātuma politika | Top Care Group',
+        description: 'Privātuma politika un informācija par personas datu apstrādi uzņēmumā Top Care Group.',
+        canonical: '/privatuma-politika',
     },
 };
 
@@ -246,6 +342,7 @@ const isServicesPage = computed(() => currentPath === '/pakalpojumi');
 const isAboutPage = computed(() => currentPath === '/par-mums');
 const isBeforeAfterPage = computed(() => currentPath === '/pirms-pec');
 const isContactsPage = computed(() => currentPath === '/kontakti');
+const isPrivacyPage = computed(() => currentPath === privacyPolicyPath);
 const useLightHeader = computed(() => isHomePage.value && !isScrolled.value);
 
 const closeMenu = () => {
@@ -312,10 +409,12 @@ onMounted(() => {
         const descriptionTag = document.querySelector('meta[name="description"]');
         const ogDescriptionTag = document.querySelector('meta[property="og:description"]');
         const ogTitleTag = document.querySelector('meta[property="og:title"]');
+        const canonicalTag = document.querySelector('link[rel="canonical"]');
 
         descriptionTag?.setAttribute('content', meta.description);
         ogDescriptionTag?.setAttribute('content', meta.description);
         ogTitleTag?.setAttribute('content', meta.title);
+        canonicalTag?.setAttribute('href', new URL(meta.canonical, window.location.origin).toString());
     }
 
     revealObserver = new IntersectionObserver(
@@ -1010,6 +1109,123 @@ onBeforeUnmount(() => {
                     </div>
                 </section>
             </template>
+
+            <template v-else-if="isPrivacyPage">
+                <section class="bg-[#f7faf7] pt-32 pb-3 sm:pt-36 sm:pb-4">
+                    <div class="mx-auto max-w-[1200px] px-5 sm:px-8">
+                        <div data-reveal class="reveal rounded-[2rem] border border-[#06402B]/8 bg-white px-6 py-9 shadow-[0_18px_50px_rgba(6,64,43,0.05)] sm:px-10 sm:py-10 lg:px-14 lg:py-11">
+                            <p class="section-kicker">PRIVĀTUMA POLITIKA</p>
+                            <h1 class="section-title mt-4">Privātuma politika</h1>
+                            <p class="mt-5 max-w-[760px] text-base leading-8 text-[#56665f] sm:text-lg">
+                                Informācija par personas datu apstrādi un aizsardzību.
+                            </p>
+                            <div class="mt-8 h-px w-full bg-[#06402B]/10" />
+                            <p class="mt-5 text-xs font-medium uppercase tracking-[0.14em] text-[#06402B]/50 sm:text-[0.82rem]">
+                                Pēdējo reizi atjaunināta: 12.06.2026.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-[#f7faf7] pb-24 pt-8 sm:pb-28 sm:pt-10">
+                    <div class="mx-auto max-w-[1200px] px-5 sm:px-8">
+                        <div class="rounded-[2rem] border border-[#06402B]/8 bg-white px-6 py-8 shadow-[0_18px_50px_rgba(6,64,43,0.05)] sm:px-10 sm:py-10 lg:px-14 lg:py-12">
+                            <div class="text-[#42534c]">
+                                <section data-reveal class="reveal">
+                                    <div class="space-y-0">
+                                        <article
+                                            v-for="(section, index) in privacySections"
+                                            :key="section.title"
+                                            :class="[
+                                                'py-10 sm:py-12',
+                                                index < privacySections.length - 1 ? 'border-b border-[#06402B]/10' : '',
+                                            ]"
+                                        >
+                                            <div class="min-w-0">
+                                                <h2 class="text-[1.65rem] font-semibold leading-tight text-[#12261f] sm:text-[2rem]">
+                                                    {{ section.number }} {{ section.title }}
+                                                </h2>
+
+                                                <div v-if="section.paragraphs" class="mt-5 space-y-4">
+                                                    <p
+                                                        v-for="paragraph in section.paragraphs"
+                                                        :key="paragraph"
+                                                        class="max-w-[980px] text-base leading-8 text-[#42534c] sm:text-[1.05rem]"
+                                                    >
+                                                        {{ paragraph }}
+                                                    </p>
+                                                </div>
+
+                                                <p v-if="section.intro" class="mt-5 max-w-[980px] text-base leading-8 text-[#42534c] sm:text-[1.05rem]">
+                                                    {{ section.intro }}
+                                                </p>
+
+                                                <ul v-if="section.items" class="mt-5 space-y-3">
+                                                    <li
+                                                        v-for="item in section.items"
+                                                        :key="item"
+                                                        class="flex items-start gap-3 text-base leading-8 text-[#42534c] sm:text-[1.05rem]"
+                                                    >
+                                                        <span class="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-[#06402B]" />
+                                                        <span>{{ item }}</span>
+                                                    </li>
+                                                </ul>
+
+                                                <div
+                                                    v-if="section.contactCard && section.title === 'Vispārīga informācija'"
+                                                    class="mt-7 rounded-[20px] border border-[#06402B]/8 bg-[#f4f7f4] p-5 sm:p-6"
+                                                >
+                                                    <p class="text-xs font-semibold uppercase tracking-[0.24em] text-[#06402B]/65">Datu pārzinis</p>
+                                                    <div class="mt-4 space-y-2 text-base leading-8 text-[#244338] sm:text-[1.05rem]">
+                                                        <p class="font-semibold text-[#12261f]">SIA “Top Care Group”</p>
+                                                        <p>Reģ. Nr. 40203667648</p>
+                                                        <p>PVN Nr. LV40203667648</p>
+                                                        <p>Juridiskā adrese: Raiņa iela 79-48, Jūrmala, LV-2011</p>
+                                                        <p>
+                                                            Tālrunis:
+                                                            <a class="font-semibold text-[#06402B] transition hover:text-[#0b5c3f]" href="tel:+37128842265">+371 28842265</a>
+                                                        </p>
+                                                        <p>
+                                                            E-pasts:
+                                                            <a class="font-semibold text-[#06402B] transition hover:text-[#0b5c3f]" href="mailto:topcare.lv@gmail.com">topcare.lv@gmail.com</a>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </article>
+
+                                        <article class="border-t border-[#06402B]/10 py-10 sm:py-12">
+                                            <h2 class="text-[1.65rem] font-semibold leading-tight text-[#12261f] sm:text-[2rem]">9. Kontaktinformācija</h2>
+                                            <p class="mt-5 max-w-[980px] text-base leading-8 text-[#42534c] sm:text-[1.05rem]">
+                                                Ja Jums rodas jautājumi par personas datu apstrādi, lūdzu, sazinieties ar:
+                                            </p>
+                                            <div class="mt-7 rounded-[20px] border border-[#06402B]/8 bg-[#f4f7f4] p-5 sm:p-6">
+                                                <div class="space-y-3 text-base leading-8 text-[#244338] sm:text-[1.05rem]">
+                                                    <p class="font-semibold text-[#12261f]">SIA “Top Care Group”</p>
+                                                    <p>Reģ. Nr. 40203667648</p>
+                                                    <p>Raiņa iela 79-48, Jūrmala, LV-2011</p>
+                                                    <p>
+                                                        Tālrunis:
+                                                        <a class="font-semibold text-[#06402B] transition hover:text-[#0b5c3f]" href="tel:+37128842265">+371 28842265</a>
+                                                    </p>
+                                                    <p>
+                                                        E-pasts:
+                                                        <a class="font-semibold text-[#06402B] transition hover:text-[#0b5c3f]" href="mailto:topcare.lv@gmail.com">topcare.lv@gmail.com</a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </article>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+
+                        <div data-reveal class="reveal mt-8 rounded-[24px] border border-[#BFD730]/30 bg-[#edf7d3] px-6 py-5 text-base leading-8 text-[#244338] sm:mt-10 sm:px-8 sm:py-6 sm:text-[1.05rem]">
+                            Izmantojot mājaslapu, Jūs apliecināt, ka esat iepazinies ar šo privātuma politiku un piekrītat tajā noteiktajiem nosacījumiem.
+                        </div>
+                    </div>
+                </section>
+            </template>
         </main>
 
         <footer class="bg-[#042c1f] py-10 text-white">
@@ -1046,8 +1262,19 @@ onBeforeUnmount(() => {
                 </div>
             </div>
 
-            <div class="mx-auto mt-10 max-w-[1320px] border-t border-white/10 px-5 pt-6 text-sm text-white/44 sm:px-8 lg:px-10">
-                © 2026 Top Care Group. Visas tiesības aizsargātas ·
+            <div class="mx-auto mt-10 flex max-w-[1320px] flex-wrap items-center gap-x-2 gap-y-3 border-t border-white/10 px-5 pt-6 text-sm text-white/44 sm:px-8 lg:px-10">
+                <span>© 2026 Top Care Group. Visas tiesības aizsargātas</span>
+                <span aria-hidden="true">·</span>
+                <a
+                    :class="[
+                        'transition',
+                        isPrivacyPage ? 'text-white nav-link nav-link--active' : 'text-white/64 hover:text-white',
+                    ]"
+                    :href="privacyPolicyPath"
+                >
+                    Privātuma politika
+                </a>
+                <span aria-hidden="true">·</span>
                 <a
                     class="text-white/36 transition hover:text-white/52"
                     href="https://getmanenko.lv"
