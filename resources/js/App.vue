@@ -15,9 +15,9 @@ const savedCookieConsent = ref(null);
 const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
 const brandLogo = '/images/logo.png';
 const teamPhoto = '/images/topcare-komanda.png';
-const heroImage = '/images/fasades-mazgasana-darba-process.png';
-const featurePhoto = '/images/fasades-mazgasana-darba-process.png';
-const beforeAfterHeroPhoto = '/images/jumta-tirisana-latvija.jpg';
+const heroImage = '/images/profesionala-koka-logu-restauracija-jurmala.jpeg';
+const featurePhoto = '/images/privatmajas-renovacija-latvija.jpeg';
+const beforeAfterHeroPhoto = '/images/fasades-mazgasana-privatmaja-jurmala.jpeg';
 const privacyPolicyPath = '/privatuma-politika';
 const cookieConsentStorageKey = 'topcare_cookie_consent';
 const defaultCookieConsent = {
@@ -281,6 +281,24 @@ const beforeAfterItems = [
         width: 512,
         height: 358,
         alt: 'Jumta tīrīšana pirms un pēc',
+    },
+];
+
+const servicesShowcaseImages = [
+    {
+        src: '/images/koka-logu-restauracija-jurmala.jpeg',
+        alt: 'Koka logu restaurācija Jūrmalā',
+        label: 'Logu restaurācija',
+    },
+    {
+        src: '/images/logu-restauracijas-darbi-latvija.jpeg',
+        alt: 'Logu restaurācijas darbi Latvijā',
+        label: 'Koka elementu atjaunošana',
+    },
+    {
+        src: '/images/majas-eksterjera-atjaunosana.jpeg',
+        alt: 'Mājas eksterjera atjaunošana',
+        label: 'Eksterjera darbi',
     },
 ];
 
@@ -775,7 +793,7 @@ onBeforeUnmount(() => {
                                     <div class="relative overflow-hidden rounded-[24px] shadow-[0_24px_60px_rgba(6,64,43,0.16)]">
                                         <img
                                             :src="featurePhoto"
-                                            alt="Fasādes mazgāšanas process"
+                                            alt="Top Care Group komanda"
                                             class="h-[420px] w-full object-cover sm:h-[520px]"
                                             width="1600"
                                             height="1200"
@@ -884,6 +902,34 @@ onBeforeUnmount(() => {
                             </p>
                         </div>
 
+                        <div class="mt-12 grid gap-5 md:grid-cols-3">
+                            <article
+                                v-for="(image, index) in servicesShowcaseImages"
+                                :key="image.src"
+                                data-reveal
+                                class="reveal group overflow-hidden rounded-[24px] border border-[#06402B]/8 bg-white shadow-[0_18px_45px_rgba(6,64,43,0.08)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_55px_rgba(6,64,43,0.12)]"
+                                :style="{ transitionDelay: `${index * 80}ms` }"
+                            >
+                                <div class="overflow-hidden">
+                                    <img
+                                        :src="image.src"
+                                        :alt="image.alt"
+                                        class="h-[280px] w-full object-cover transition duration-500 group-hover:scale-[1.03] sm:h-[320px]"
+                                        width="1200"
+                                        height="900"
+                                        decoding="async"
+                                        loading="lazy"
+                                        sizes="(min-width: 768px) 33vw, 100vw"
+                                    />
+                                </div>
+                                <div class="px-5 py-4 sm:px-6 sm:py-5">
+                                    <p class="text-sm font-semibold tracking-[0.01em] text-[#163127]">
+                                        {{ image.label }}
+                                    </p>
+                                </div>
+                            </article>
+                        </div>
+
                         <div class="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                             <article
                                 v-for="service in serviceCards"
@@ -920,7 +966,7 @@ onBeforeUnmount(() => {
                                     <div class="relative overflow-hidden rounded-[24px] shadow-[0_24px_60px_rgba(6,64,43,0.14)]">
                                         <img
                                             :src="teamPhoto"
-                                            alt="Top Care Group komanda"
+                                            alt="Privātmājas renovācija Latvijā"
                                             class="h-full w-full object-cover"
                                             width="1440"
                                             height="958"
@@ -1074,7 +1120,7 @@ onBeforeUnmount(() => {
                                     <div class="absolute inset-y-0 left-0 z-10 hidden w-32 bg-gradient-to-r from-[#f7faf7] via-[#f7faf7]/65 to-transparent lg:block" />
                                     <img
                                         :src="beforeAfterHeroPhoto"
-                                        alt="Jumta tīrīšanas objekts Latvijā"
+                                        alt="Privātmājas fasādes mazgāšana Jūrmalā"
                                         class="h-[380px] w-full object-cover sm:h-[460px]"
                                         width="1600"
                                         height="1200"
