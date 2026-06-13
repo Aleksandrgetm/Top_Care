@@ -22,6 +22,7 @@
             window.TopCarePageSlug = @json($pageSlug ?? null);
             window.TopCarePageContent = @json($pageContent ?? []);
             window.TopCareGalleryImages = @json($galleryImages ?? []);
+            window.TopCareBeforeAfterItems = @json($beforeAfterItems ?? []);
         </script>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])

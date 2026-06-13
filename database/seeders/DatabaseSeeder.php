@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(PageSeeder::class);
         $this->call(GalleryImageSeeder::class);
+        $this->call(BeforeAfterSeeder::class);
 
         User::updateOrCreate(
             ['email' => 'admin@topcaregroup.lv'],

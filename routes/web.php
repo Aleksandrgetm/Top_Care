@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Admin\BeforeAfterItemController;
 use App\Http\Controllers\Admin\GalleryImageController;
 use App\Http\Controllers\Admin\PageController;
+use App\Models\BeforeAfterItem;
 use App\Models\GalleryImage;
 use App\Models\Page;
 use Illuminate\Support\Facades\Route;
@@ -75,18 +77,38 @@ foreach ($pages as $path => $meta) {
                 ->values()
                 ->all()
             : [];
+        $beforeAfterItems = $pageSlug === 'pirms-pec' && Schema::hasTable('before_after_items')
+            ? BeforeAfterItem::query()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->orderByDesc('created_at')
+                ->get()
+                ->map(fn (BeforeAfterItem $item) => [
+                    'title' => $item->title,
+                    'description' => $item->description,
+                    'image' => $item->image ?: $item->before_image,
+                ])
+                ->values()
+                ->all()
+            : [];
 
         return view('welcome', [
             ...$meta,
             'pageSlug' => $pageSlug,
             'pageContent' => array_replace($defaults, $page?->content ?? []),
             'galleryImages' => $galleryImages,
+            'beforeAfterItems' => $beforeAfterItems,
         ]);
     });
 }
 
 Route::get('/media/{path}', function (string $path) {
-    abort_unless(str_starts_with($path, 'pages/') || str_starts_with($path, 'gallery/'), 404);
+    abort_unless(
+        str_starts_with($path, 'pages/')
+        || str_starts_with($path, 'gallery/')
+        || str_starts_with($path, 'before-after/'),
+        404
+    );
     abort_unless(Storage::disk('public')->exists($path), 404);
 
     return Storage::disk('public')->response($path);
@@ -107,6 +129,10 @@ Route::prefix('admin')->group(function () {
         Route::post('/gallery-images', [GalleryImageController::class, 'store'])->name('admin.gallery-images.store');
         Route::put('/gallery-images/{galleryImage}', [GalleryImageController::class, 'update'])->name('admin.gallery-images.update');
         Route::delete('/gallery-images/{galleryImage}', [GalleryImageController::class, 'destroy'])->name('admin.gallery-images.destroy');
+        Route::get('/before-after-items', [BeforeAfterItemController::class, 'index'])->name('admin.before-after-items.index');
+        Route::post('/before-after-items', [BeforeAfterItemController::class, 'store'])->name('admin.before-after-items.store');
+        Route::put('/before-after-items/{beforeAfterItem}', [BeforeAfterItemController::class, 'update'])->name('admin.before-after-items.update');
+        Route::delete('/before-after-items/{beforeAfterItem}', [BeforeAfterItemController::class, 'destroy'])->name('admin.before-after-items.destroy');
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('admin.logout');
     });
 });

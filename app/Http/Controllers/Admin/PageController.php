@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\BeforeAfterItem;
 use App\Models\GalleryImage;
 use App\Models\Page;
 use Illuminate\Http\RedirectResponse;
@@ -44,6 +45,9 @@ class PageController extends Controller
             'content' => array_replace($definition['defaults'] ?? [], $page->content ?? []),
             'galleryImages' => $page->slug === 'galerija' && Schema::hasTable('gallery_images')
                 ? GalleryImage::query()->orderBy('sort_order')->orderBy('created_at')->get()
+                : collect(),
+            'beforeAfterItems' => $page->slug === 'pirms-pec' && Schema::hasTable('before_after_items')
+                ? BeforeAfterItem::query()->orderBy('sort_order')->orderByDesc('created_at')->get()
                 : collect(),
         ]);
     }

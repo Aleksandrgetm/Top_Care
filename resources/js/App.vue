@@ -17,6 +17,7 @@ const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
 const serverPageSlug = window.TopCarePageSlug ?? null;
 const serverPageContent = window.TopCarePageContent ?? {};
 const serverGalleryImages = window.TopCareGalleryImages ?? [];
+const serverBeforeAfterItems = window.TopCareBeforeAfterItems ?? [];
 const brandLogo = '/images/logo.png';
 const privacyPolicyPath = '/privatuma-politika';
 const cookieConsentStorageKey = 'topcare_cookie_consent';
@@ -257,7 +258,7 @@ const serviceCards = [
         title: 'Mobilā malkas skaldīšana',
         description: 'Piedāvājam mobilo malkas skaldīšanu klienta īpašumā, izmantojot profesionālu malkas skaldāmo iekārtu. Pakalpojums piemērots privātmājām, lauku īpašumiem un sezonālai malkas sagatavošanai.',
         icon: 'property',
-        image: '/images/malkas-skaldisana-un-piegade.jpeg',
+        image: '/images/malkas-skaldisana-1.jpeg',
         alt: 'Mobilā malkas skaldīšana ar profesionālu iekārtu',
         homeHidden: true,
         items: [
@@ -360,6 +361,21 @@ const beforeAfterItems = [
     },
 ];
 
+const publicBeforeAfterItems = serverBeforeAfterItems.length
+    ? serverBeforeAfterItems.map((item) => {
+        const imagePath = item.image || '/images/fasada-mazgasana-pirms-pec.png';
+
+        return {
+            title: item.title || 'Top Care Group',
+            description: item.description || '',
+            image: getPageImage('pirms-pec', 'image', imagePath),
+            width: 640,
+            height: 640,
+            alt: `${item.title || 'Top Care Group'} pirms un pēc`,
+        };
+    })
+    : beforeAfterItems;
+
 const fallbackGalleryImages = [
     {
         src: '/images/profesionala-koka-logu-restauracija-jurmala.jpeg',
@@ -418,7 +434,7 @@ const fallbackGalleryImages = [
         size: 'project-medium',
     },
     {
-        src: '/images/malkas-skaldisana-un-piegade.jpeg',
+        src: '/images/malkas-skaldisana-1.jpeg',
         alt: 'Mobilā malkas skaldīšana ar profesionālu iekārtu',
         title: 'Mobilā malkas skaldīšana',
         category: 'Papildu pakalpojumi',
@@ -1394,7 +1410,7 @@ onBeforeUnmount(() => {
                     <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                         <div class="space-y-8 lg:space-y-10">
                             <article
-                                v-for="(item, index) in beforeAfterItems"
+                                v-for="(item, index) in publicBeforeAfterItems"
                                 :key="item.title"
                                 data-reveal
                                 class="reveal overflow-hidden rounded-[24px] border border-[#06402B]/8 bg-white shadow-[0_18px_40px_rgba(6,64,43,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_50px_rgba(6,64,43,0.08)]"
