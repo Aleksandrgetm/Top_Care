@@ -21,6 +21,7 @@
         <script>
             window.TopCarePageSlug = @json($pageSlug ?? null);
             window.TopCarePageContent = @json($pageContent ?? []);
+            window.TopCareGalleryImages = @json($galleryImages ?? []);
         </script>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])

@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(PageSeeder::class);
+        $this->call(GalleryImageSeeder::class);
 
         User::updateOrCreate(
             ['email' => 'admin@topcaregroup.lv'],

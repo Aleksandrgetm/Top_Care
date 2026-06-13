@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\GalleryImage;
 use App\Models\Page;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -40,6 +42,9 @@ class PageController extends Controller
             'page' => $page,
             'fields' => $definition['fields'] ?? [],
             'content' => array_replace($definition['defaults'] ?? [], $page->content ?? []),
+            'galleryImages' => $page->slug === 'galerija' && Schema::hasTable('gallery_images')
+                ? GalleryImage::query()->orderBy('sort_order')->orderBy('created_at')->get()
+                : collect(),
         ]);
     }
 

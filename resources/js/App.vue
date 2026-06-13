@@ -16,6 +16,7 @@ const savedCookieConsent = ref(null);
 const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
 const serverPageSlug = window.TopCarePageSlug ?? null;
 const serverPageContent = window.TopCarePageContent ?? {};
+const serverGalleryImages = window.TopCareGalleryImages ?? [];
 const brandLogo = '/images/logo.png';
 const privacyPolicyPath = '/privatuma-politika';
 const cookieConsentStorageKey = 'topcare_cookie_consent';
@@ -359,7 +360,7 @@ const beforeAfterItems = [
     },
 ];
 
-const galleryImages = [
+const fallbackGalleryImages = [
     {
         src: '/images/profesionala-koka-logu-restauracija-jurmala.jpeg',
         alt: 'Profesionāla koka logu restaurācija Jūrmalā',
@@ -431,6 +432,18 @@ const galleryImages = [
         size: 'project-short',
     },
 ];
+
+const galleryCardSizes = ['project-tall', 'project-medium', 'project-short', 'project-medium'];
+
+const galleryImages = serverGalleryImages.length
+    ? serverGalleryImages.map((image, index) => ({
+        src: getPageImage('galerija', 'image', image.image),
+        alt: image.title || image.category || 'Top Care Group galerijas attēls',
+        title: image.title || 'Top Care Group',
+        category: image.category || 'Galerija',
+        size: galleryCardSizes[index % galleryCardSizes.length],
+    }))
+    : fallbackGalleryImages;
 
 const homePageContent = {
     heroTitle: getPageValue('sakums', 'hero_title', 'Uzticams partneris būvniecībā, renovācijā un īpašumu uzturēšanā'),

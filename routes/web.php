@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Admin\GalleryImageController;
 use App\Http\Controllers\Admin\PageController;
+use App\Models\GalleryImage;
 use App\Models\Page;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
@@ -59,17 +61,32 @@ foreach ($pages as $path => $meta) {
         $page = $pageSlug && Schema::hasTable('pages')
             ? Page::query()->where('slug', $pageSlug)->first()
             : null;
+        $galleryImages = $pageSlug === 'galerija' && Schema::hasTable('gallery_images')
+            ? GalleryImage::query()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->orderBy('created_at')
+                ->get(['title', 'category', 'image'])
+                ->map(fn (GalleryImage $image) => [
+                    'title' => $image->title,
+                    'category' => $image->category,
+                    'image' => $image->image,
+                ])
+                ->values()
+                ->all()
+            : [];
 
         return view('welcome', [
             ...$meta,
             'pageSlug' => $pageSlug,
             'pageContent' => array_replace($defaults, $page?->content ?? []),
+            'galleryImages' => $galleryImages,
         ]);
     });
 }
 
 Route::get('/media/{path}', function (string $path) {
-    abort_unless(str_starts_with($path, 'pages/'), 404);
+    abort_unless(str_starts_with($path, 'pages/') || str_starts_with($path, 'gallery/'), 404);
     abort_unless(Storage::disk('public')->exists($path), 404);
 
     return Storage::disk('public')->response($path);
@@ -86,6 +103,10 @@ Route::prefix('admin')->group(function () {
         Route::get('/pages', [PageController::class, 'index'])->name('admin.pages.index');
         Route::get('/pages/{page}/edit', [PageController::class, 'edit'])->name('admin.pages.edit');
         Route::put('/pages/{page}', [PageController::class, 'update'])->name('admin.pages.update');
+        Route::get('/gallery-images', [GalleryImageController::class, 'index'])->name('admin.gallery-images.index');
+        Route::post('/gallery-images', [GalleryImageController::class, 'store'])->name('admin.gallery-images.store');
+        Route::put('/gallery-images/{galleryImage}', [GalleryImageController::class, 'update'])->name('admin.gallery-images.update');
+        Route::delete('/gallery-images/{galleryImage}', [GalleryImageController::class, 'destroy'])->name('admin.gallery-images.destroy');
         Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('admin.logout');
     });
 });
