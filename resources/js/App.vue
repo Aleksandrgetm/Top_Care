@@ -299,12 +299,16 @@ const aboutStats = [
         label: 'Pabeigti objekti',
     },
     {
-        value: '5+',
+        value: '6+',
         label: 'Pakalpojumu veidi',
     },
     {
-        value: 'Visa',
-        label: 'Latvija',
+        value: '10+',
+        label: 'Pieredzējuši speciālisti',
+    },
+    {
+        value: '5 gadi',
+        label: 'Garantija darbiem',
     },
 ];
 
@@ -520,19 +524,19 @@ const companyStats = [
     },
     {
         label: 'Pakalpojumu veidi',
-        value: 5,
+        value: 6,
         suffix: '+',
         type: 'number',
     },
     {
-        label: 'Individuāla pieeja',
-        value: 100,
-        suffix: '%',
+        label: 'Pieredzējuši speciālisti',
+        value: 10,
+        suffix: '+',
         type: 'number',
     },
     {
-        label: 'Latvija',
-        value: 'Visa',
+        label: 'Garantija darbiem',
+        value: '5 gadi',
         type: 'text',
     },
 ];

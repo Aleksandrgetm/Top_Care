@@ -31,15 +31,30 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('admin.pages.index');
         }
 
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
+        $validated = $request->validate([
+            'login' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        $login = trim($validated['login']);
+        $remember = $request->boolean('remember');
+
+        $authenticated = Auth::attempt([
+            'name' => $login,
+            'password' => $validated['password'],
+        ], $remember);
+
+        if (! $authenticated && filter_var($login, FILTER_VALIDATE_EMAIL)) {
+            $authenticated = Auth::attempt([
+                'email' => $login,
+                'password' => $validated['password'],
+            ], $remember);
+        }
+
+        if (! $authenticated) {
             return back()
-                ->withErrors(['email' => 'Incorrect email or password.'])
-                ->onlyInput('email');
+                ->withErrors(['login' => 'Incorrect login or password.'])
+                ->onlyInput('login');
         }
 
         $request->session()->regenerate();
@@ -50,8 +65,8 @@ class AuthenticatedSessionController extends Controller
             $request->session()->regenerateToken();
 
             return back()
-                ->withErrors(['email' => 'You do not have access to the admin panel.'])
-                ->onlyInput('email');
+                ->withErrors(['login' => 'You do not have access to the admin panel.'])
+                ->onlyInput('login');
         }
 
         return redirect()->intended(route('admin.pages.index'));

@@ -22,8 +22,8 @@ class DatabaseSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'admin@topcaregroup.lv'],
             [
-                'name' => 'Admin',
-                'password' => 'password',
+                'name' => 'topcare',
+                'password' => 'Topcaregroup123!',
                 'is_admin' => true,
             ]
         );

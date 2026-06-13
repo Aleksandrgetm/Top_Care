@@ -53,9 +53,9 @@
                     @csrf
 
                     <div>
-                        <label for="email" class="mb-2 block text-sm font-medium text-[#244338]">Email</label>
-                        <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus class="w-full rounded-2xl border border-[#06402B]/12 bg-[#f9fbf8] px-4 py-3.5 text-sm outline-none transition focus:border-[#06402B] focus:bg-white">
-                        @error('email')
+                        <label for="login" class="mb-2 block text-sm font-medium text-[#244338]">Login</label>
+                        <input id="login" name="login" type="text" value="{{ old('login') }}" required autofocus class="w-full rounded-2xl border border-[#06402B]/12 bg-[#f9fbf8] px-4 py-3.5 text-sm outline-none transition focus:border-[#06402B] focus:bg-white">
+                        @error('login')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
