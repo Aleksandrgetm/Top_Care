@@ -15,6 +15,11 @@ $pages = [
         'description' => 'Apskatiet Top Care Group pakalpojumus: renovacijas un ieksdarbus, fasazu atjaunosanu, jumtu darbus, brugesanu, labiekartosanu un ipasumu uzturesanu.',
         'canonical' => '/pakalpojumi',
     ],
+    '/galerija' => [
+        'title' => 'Top Care Group galerija | Darbi un ikdienas process',
+        'description' => 'Apskatiet Top Care Group paveiktos darbus, darba procesu un ikdienas objektos visa Latvija.',
+        'canonical' => '/galerija',
+    ],
     '/par-mums' => [
         'title' => 'Par Top Care Group | Pieredzejusi komanda visa Latvija',
         'description' => 'Top Care Group ir Latvijas uznemums ar pieredzejusu komandu, kas strada pie buvniecibas, renovacijas un ipasumu uzturesanas projektiem visa Latvija.',

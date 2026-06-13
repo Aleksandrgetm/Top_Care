@@ -6,6 +6,7 @@ const isScrolled = ref(false);
 const heroOffset = ref(0);
 const showCookieBanner = ref(false);
 const showCookiePreferences = ref(false);
+const activeGalleryImage = ref(null);
 const cookiePreferences = ref({
     analytics: false,
     marketing: false,
@@ -115,6 +116,7 @@ const privacySections = [
 const navigation = [
     { label: 'Sākums', path: '/' },
     { label: 'Pakalpojumi', path: '/pakalpojumi' },
+    { label: 'Galerija', path: '/galerija' },
     { label: 'Par mums', path: '/par-mums' },
     { label: 'Pirms / Pēc', path: '/pirms-pec' },
     { label: 'Kontakti', path: '/kontakti' },
@@ -135,6 +137,8 @@ const serviceCards = [
         title: 'Renovācijas un iekšdarbi',
         description: 'No reģipša konstrukcijām un špaktelēšanas līdz flīzēšanai, grīdu ieklāšanai un apdares darbiem.',
         icon: 'renovation',
+        image: '/images/privatmajas-renovacija-latvija.jpeg',
+        alt: 'Privātmājas renovācijas darbi Latvijā',
         items: [
             'Reģipša konstrukciju izbūve',
             'Špaktelēšana un krāsošana',
@@ -148,6 +152,8 @@ const serviceCards = [
         title: 'Fasāžu un koka konstrukciju atjaunošana',
         description: 'Fasāžu, logu un koka elementu atjaunošana, saglabājot ēkas estētiku un ilgmūžību.',
         icon: 'facade',
+        image: '/images/logu-restauracijas-darbi-latvija.jpeg',
+        alt: 'Fasāžu un koka konstrukciju atjaunošana Latvijā',
         items: [
             'Fasāžu krāsošana',
             'Koka fasāžu un žogu apstrāde',
@@ -160,6 +166,8 @@ const serviceCards = [
         title: 'Jumtu un augstuma darbi',
         description: 'Augstuma darbi un industriālais alpīnisms objektos, kur nepieciešama precizitāte un operativitāte.',
         icon: 'roof',
+        image: '/images/fasades-mazgasana-darba-process.png',
+        alt: 'Jumtu un augstuma darbi objektā Latvijā',
         items: [
             'Industriālais alpīnisms',
             'Jumtu mazgāšana',
@@ -172,6 +180,8 @@ const serviceCards = [
         title: 'Bruģēšana un labiekārtošana',
         description: 'Teritoriju izbūve un sakārtošana ar pārdomātiem risinājumiem privātiem un komerciāliem objektiem.',
         icon: 'paving',
+        image: '/images/teritorijas-labiekartosana-darbi.jpeg',
+        alt: 'Bruģēšanas un labiekārtošanas darbi Latvijā',
         items: [
             'Bruģa ieklāšana',
             'Apmaļu uzstādīšana',
@@ -185,6 +195,8 @@ const serviceCards = [
         title: 'Īpašumu uzturēšana',
         description: 'Ikdienas uzturēšanas, apsaimniekošanas un operatīvo izsaukumu darbi dažāda mēroga īpašumiem.',
         icon: 'property',
+        image: '/images/fasades-mazgasana-privatmaja-jurmala.jpeg',
+        alt: 'Īpašumu uzturēšanas darbi privātmājā',
         items: [
             'Sīkie remonta darbi',
             'Daudzdzīvokļu māju apsaimniekošanas darbi',
@@ -192,9 +204,24 @@ const serviceCards = [
             'Regulāra īpašumu uzturēšana',
         ],
     },
+    {
+        title: 'Mobilā malkas skaldīšana',
+        description: 'Piedāvājam mobilo malkas skaldīšanu klienta īpašumā, izmantojot profesionālu malkas skaldāmo iekārtu. Pakalpojums piemērots privātmājām, lauku īpašumiem un sezonālai malkas sagatavošanai.',
+        icon: 'property',
+        image: '/images/malkas-skaldisana-un-piegade.jpeg',
+        alt: 'Mobilā malkas skaldīšana ar profesionālu iekārtu',
+        homeHidden: true,
+        items: [
+            'Mobilā malkas skaldīšana klienta īpašumā',
+            'Darbs ar profesionālu skaldāmo iekārtu',
+            'Malkas sagatavošana sezonai',
+            'Sakraušana pēc vienošanās',
+            'Teritorijas sakopšana pēc darba',
+        ],
+    },
 ];
 
-const previewServices = computed(() => serviceCards);
+const previewServices = computed(() => serviceCards.filter((service) => !service.homeHidden));
 
 const reasons = [
     'Plašs pakalpojumu klāsts vienuviet',
@@ -284,21 +311,76 @@ const beforeAfterItems = [
     },
 ];
 
-const servicesShowcaseImages = [
+const galleryImages = [
+    {
+        src: '/images/profesionala-koka-logu-restauracija-jurmala.jpeg',
+        alt: 'Profesionāla koka logu restaurācija Jūrmalā',
+        title: 'Koka logu restaurācija',
+        category: 'Restaurācija',
+        size: 'project-tall',
+    },
+    {
+        src: '/images/privatmajas-renovacija-latvija.jpeg',
+        alt: 'Privātmājas renovācija Latvijā',
+        title: 'Renovācijas process objektā',
+        category: 'Renovācija',
+        size: 'project-medium',
+    },
     {
         src: '/images/koka-logu-restauracija-jurmala.jpeg',
         alt: 'Koka logu restaurācija Jūrmalā',
-        label: 'Logu restaurācija',
+        title: 'Detalizēti restaurācijas darbi',
+        category: 'Logi',
+        size: 'project-short',
     },
     {
         src: '/images/logu-restauracijas-darbi-latvija.jpeg',
         alt: 'Logu restaurācijas darbi Latvijā',
-        label: 'Koka elementu atjaunošana',
+        title: 'Darba process objektā',
+        category: 'Process',
+        size: 'project-medium',
     },
     {
         src: '/images/majas-eksterjera-atjaunosana.jpeg',
         alt: 'Mājas eksterjera atjaunošana',
-        label: 'Eksterjera darbi',
+        title: 'Eksterjera atjaunošana',
+        category: 'Eksterjers',
+        size: 'project-tall',
+    },
+    {
+        src: '/images/fasades-mazgasana-privatmaja-jurmala.jpeg',
+        alt: 'Privātmājas fasādes mazgāšana Jūrmalā',
+        title: 'Fasādes kopšana',
+        category: 'Fasāde',
+        size: 'project-medium',
+    },
+    {
+        src: '/images/fasades-mazgasana-darba-process.png',
+        alt: 'Fasādes mazgāšanas darba process',
+        title: 'Ikdienas darba process',
+        category: 'Ikdiena',
+        size: 'project-short',
+    },
+    {
+        src: '/images/teritorijas-labiekartosana-darbi.jpeg',
+        alt: 'Teritorijas labiekārtošanas darbi',
+        title: 'Teritorijas sakārtošana',
+        category: 'Labiekārtošana',
+        size: 'project-medium',
+    },
+    {
+        src: '/images/malkas-skaldisana-un-piegade.jpeg',
+        alt: 'Mobilā malkas skaldīšana ar profesionālu iekārtu',
+        title: 'Mobilā malkas skaldīšana',
+        category: 'Papildu pakalpojumi',
+        size: 'project-tall',
+    },
+    {
+        src: '/images/topcare-komanda.png',
+        alt: 'Top Care Group komanda darbā',
+        title: 'Komanda objektos',
+        category: 'Top Care Group',
+        size: 'project-short',
     },
 ];
 
@@ -343,6 +425,11 @@ const pageMeta = {
         description: 'Apskatiet Top Care Group pakalpojumus: renovācijas un iekšdarbus, fasāžu atjaunošanu, jumtu darbus, bruģēšanu un īpašumu uzturēšanu.',
         canonical: '/pakalpojumi',
     },
+    '/galerija': {
+        title: 'Top Care Group galerija | Darbi un ikdienas process',
+        description: 'Apskatiet Top Care Group paveiktos darbus, darba procesu un ikdienas objektos visā Latvijā.',
+        canonical: '/galerija',
+    },
     '/par-mums': {
         title: 'Par Top Care Group | Pieredzējusi komanda visā Latvijā',
         description: 'Top Care Group ir Latvijas uzņēmums ar pieredzējušu komandu, kas strādā pie būvniecības, renovācijas un īpašumu uzturēšanas projektiem visā Latvijā.',
@@ -371,11 +458,16 @@ const heroStyle = computed(() => ({
 
 const isHomePage = computed(() => currentPath === '/');
 const isServicesPage = computed(() => currentPath === '/pakalpojumi');
+const isGalleryPage = computed(() => currentPath === '/galerija');
 const isAboutPage = computed(() => currentPath === '/par-mums');
 const isBeforeAfterPage = computed(() => currentPath === '/pirms-pec');
 const isContactsPage = computed(() => currentPath === '/kontakti');
 const isPrivacyPage = computed(() => currentPath === privacyPolicyPath);
 const useLightHeader = computed(() => isHomePage.value && !isScrolled.value);
+
+const syncBodyScrollLock = () => {
+    document.body.style.overflow = showCookiePreferences.value || activeGalleryImage.value ? 'hidden' : '';
+};
 
 const readCookieConsent = () => {
     try {
@@ -405,10 +497,6 @@ const syncCookiePreferenceDraft = (consent = defaultCookieConsent) => {
     };
 };
 
-const lockScrollForCookieModal = (locked) => {
-    document.body.style.overflow = locked ? 'hidden' : '';
-};
-
 const persistCookieConsent = (consent) => {
     const normalizedConsent = {
         necessary: true,
@@ -422,7 +510,7 @@ const persistCookieConsent = (consent) => {
     syncCookiePreferenceDraft(normalizedConsent);
     showCookieBanner.value = false;
     showCookiePreferences.value = false;
-    lockScrollForCookieModal(false);
+    syncBodyScrollLock();
 };
 
 const hasAnalyticsConsent = () => Boolean(savedCookieConsent.value?.analytics);
@@ -431,7 +519,7 @@ const hasMarketingConsent = () => Boolean(savedCookieConsent.value?.marketing);
 const openCookiePreferences = () => {
     syncCookiePreferenceDraft(savedCookieConsent.value ?? defaultCookieConsent);
     showCookiePreferences.value = true;
-    lockScrollForCookieModal(true);
+    syncBodyScrollLock();
 };
 
 const acceptAllCookies = () => {
@@ -460,6 +548,29 @@ const saveCookiePreferences = () => {
 
 const closeMenu = () => {
     isMenuOpen.value = false;
+};
+
+const openGalleryImage = (image) => {
+    activeGalleryImage.value = image;
+    syncBodyScrollLock();
+};
+
+const closeGalleryImage = () => {
+    activeGalleryImage.value = null;
+    syncBodyScrollLock();
+};
+
+const handleGlobalKeydown = (event) => {
+    if (event.key === 'Escape') {
+        if (activeGalleryImage.value) {
+            closeGalleryImage();
+        }
+
+        if (showCookiePreferences.value) {
+            showCookiePreferences.value = false;
+            syncBodyScrollLock();
+        }
+    }
 };
 
 const updateViewport = () => {
@@ -513,6 +624,7 @@ const startStatsAnimation = () => {
 onMounted(() => {
     updateViewport();
     window.addEventListener('scroll', updateViewport, { passive: true });
+    window.addEventListener('keydown', handleGlobalKeydown);
     savedCookieConsent.value = readCookieConsent();
     syncCookiePreferenceDraft(savedCookieConsent.value ?? defaultCookieConsent);
     showCookieBanner.value = !savedCookieConsent.value;
@@ -573,9 +685,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
     window.removeEventListener('scroll', updateViewport);
+    window.removeEventListener('keydown', handleGlobalKeydown);
     revealObserver?.disconnect();
     statsObserver?.disconnect();
-    lockScrollForCookieModal(false);
+    document.body.style.overflow = '';
     delete window.TopCareCookieConsent;
     statsAnimationFrames.forEach((frameId) => {
         if (frameId) {
@@ -902,34 +1015,6 @@ onBeforeUnmount(() => {
                             </p>
                         </div>
 
-                        <div class="mt-12 grid gap-5 md:grid-cols-3">
-                            <article
-                                v-for="(image, index) in servicesShowcaseImages"
-                                :key="image.src"
-                                data-reveal
-                                class="reveal group overflow-hidden rounded-[24px] border border-[#06402B]/8 bg-white shadow-[0_18px_45px_rgba(6,64,43,0.08)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_55px_rgba(6,64,43,0.12)]"
-                                :style="{ transitionDelay: `${index * 80}ms` }"
-                            >
-                                <div class="overflow-hidden">
-                                    <img
-                                        :src="image.src"
-                                        :alt="image.alt"
-                                        class="h-[280px] w-full object-cover transition duration-500 group-hover:scale-[1.03] sm:h-[320px]"
-                                        width="1200"
-                                        height="900"
-                                        decoding="async"
-                                        loading="lazy"
-                                        sizes="(min-width: 768px) 33vw, 100vw"
-                                    />
-                                </div>
-                                <div class="px-5 py-4 sm:px-6 sm:py-5">
-                                    <p class="text-sm font-semibold tracking-[0.01em] text-[#163127]">
-                                        {{ image.label }}
-                                    </p>
-                                </div>
-                            </article>
-                        </div>
-
                         <div class="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                             <article
                                 v-for="service in serviceCards"
@@ -937,6 +1022,18 @@ onBeforeUnmount(() => {
                                 data-reveal
                                 class="reveal rounded-[1.9rem] border border-[#06402B]/8 bg-white p-7 shadow-[0_16px_45px_rgba(6,64,43,0.05)]"
                             >
+                                <div v-if="service.image" class="-mx-2 -mt-2 mb-6 overflow-hidden rounded-[20px] border border-[#06402B]/8 bg-[#edf3ef]">
+                                    <img
+                                        :src="service.image"
+                                        :alt="service.alt"
+                                        class="h-[220px] w-full object-cover transition duration-500 hover:scale-[1.03]"
+                                        width="1200"
+                                        height="900"
+                                        decoding="async"
+                                        loading="lazy"
+                                        sizes="(min-width: 1280px) 24vw, (min-width: 768px) 42vw, 100vw"
+                                    />
+                                </div>
                                 <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#06402B] text-white">
                                     <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" viewBox="0 0 24 24">
                                         <path :d="serviceIcons[service.icon]" />
@@ -950,6 +1047,61 @@ onBeforeUnmount(() => {
                                         <span>{{ item }}</span>
                                     </li>
                                 </ul>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+            </template>
+
+            <template v-else-if="isGalleryPage">
+                <section class="bg-[#f7faf7] pt-36 pb-16 sm:pt-40 sm:pb-20">
+                    <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
+                        <div data-reveal class="reveal max-w-[860px]">
+                            <p class="section-kicker">GALERIJA</p>
+                            <h1 class="section-title mt-4">Darbi un ikdienas process</h1>
+                            <p class="mt-6 max-w-[760px] text-base leading-8 text-[#56665f] sm:text-lg">
+                                Apskatiet Top Care Group paveiktos darbus, darba procesu un ikdienas objektos visā Latvijā.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-[#f7faf7] pb-24 sm:pb-28">
+                    <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
+                        <div class="masonry-grid">
+                            <article
+                                v-for="(image, index) in galleryImages"
+                                :key="image.src"
+                                data-reveal
+                                class="masonry-item reveal"
+                                :style="{ transitionDelay: `${index * 55}ms` }"
+                            >
+                                <button
+                                    class="group block w-full overflow-hidden rounded-[20px] border border-[#06402B]/8 bg-white text-left shadow-[0_16px_42px_rgba(6,64,43,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_58px_rgba(6,64,43,0.12)]"
+                                    type="button"
+                                    @click="openGalleryImage(image)"
+                                >
+                                    <div class="overflow-hidden">
+                                        <img
+                                            :src="image.src"
+                                            :alt="image.alt"
+                                            :class="['w-full object-cover transition duration-500 group-hover:scale-[1.04]', image.size]"
+                                            width="1400"
+                                            height="1100"
+                                            decoding="async"
+                                            loading="lazy"
+                                            sizes="(min-width: 1200px) 30vw, (min-width: 768px) 46vw, 100vw"
+                                        />
+                                    </div>
+                                    <div class="px-5 py-4">
+                                        <p class="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[#06402B]/58">
+                                            {{ image.category }}
+                                        </p>
+                                        <p class="mt-2 text-lg font-semibold text-[#12261f]">
+                                            {{ image.title }}
+                                        </p>
+                                    </div>
+                                </button>
                             </article>
                         </div>
                     </div>
@@ -1599,6 +1751,53 @@ onBeforeUnmount(() => {
                         >
                             Pieņemt visas
                         </button>
+                    </div>
+                </div>
+            </div>
+        </transition>
+
+        <transition
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+        >
+            <div
+                v-if="activeGalleryImage"
+                class="fixed inset-0 z-[85] flex items-center justify-center bg-[rgba(5,22,17,0.78)] px-4 py-6 backdrop-blur-sm sm:px-6"
+                @click.self="closeGalleryImage"
+            >
+                <div class="relative w-full max-w-[1180px]">
+                    <button
+                        class="absolute right-4 top-4 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/92 text-[#12261f] shadow-[0_12px_30px_rgba(6,64,43,0.18)] transition hover:scale-105"
+                        type="button"
+                        @click="closeGalleryImage"
+                    >
+                        <span class="sr-only">Aizvērt attēlu</span>
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M6 6l12 12M18 6 6 18" />
+                        </svg>
+                    </button>
+
+                    <div class="overflow-hidden rounded-[24px] border border-white/14 bg-white shadow-[0_32px_90px_rgba(0,0,0,0.28)]">
+                        <img
+                            :src="activeGalleryImage.src"
+                            :alt="activeGalleryImage.alt"
+                            class="max-h-[76vh] w-full object-contain bg-[#edf3ef]"
+                            width="1600"
+                            height="1200"
+                            decoding="async"
+                        />
+                        <div class="border-t border-[#06402B]/8 bg-white px-5 py-4 sm:px-6">
+                            <p class="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[#06402B]/58">
+                                {{ activeGalleryImage.category }}
+                            </p>
+                            <p class="mt-2 text-lg font-semibold text-[#12261f]">
+                                {{ activeGalleryImage.title }}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
