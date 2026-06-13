@@ -10,6 +10,10 @@
             return asset(ltrim($value, '/'));
         }
 
+        if (str_starts_with($value, 'images/')) {
+            return asset($value);
+        }
+
         return route('media.public', ['path' => $value]);
     };
 @endphp

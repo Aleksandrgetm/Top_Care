@@ -51,6 +51,10 @@ const getPageImage = (slug, key, fallback) => {
         return value;
     }
 
+    if (value.startsWith('images/')) {
+        return `/${value}`;
+    }
+
     return `/media/${value}`;
 };
 
