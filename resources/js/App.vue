@@ -14,11 +14,9 @@ const cookiePreferences = ref({
 const savedCookieConsent = ref(null);
 
 const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
+const serverPageSlug = window.TopCarePageSlug ?? null;
+const serverPageContent = window.TopCarePageContent ?? {};
 const brandLogo = '/images/logo.png';
-const teamPhoto = '/images/topcare-komanda.png';
-const heroImage = '/images/profesionala-koka-logu-restauracija-jurmala.jpeg';
-const featurePhoto = '/images/privatmajas-renovacija-latvija.jpeg';
-const beforeAfterHeroPhoto = '/images/fasades-mazgasana-privatmaja-jurmala.jpeg';
 const privacyPolicyPath = '/privatuma-politika';
 const cookieConsentStorageKey = 'topcare_cookie_consent';
 const defaultCookieConsent = {
@@ -27,6 +25,56 @@ const defaultCookieConsent = {
     marketing: false,
     acceptedAt: null,
 };
+
+const hasPageValue = (value) => value !== null && value !== undefined && value !== '';
+
+const getPageValue = (slug, key, fallback) => {
+    if (serverPageSlug !== slug) {
+        return fallback;
+    }
+
+    const value = serverPageContent?.[key];
+
+    return hasPageValue(value) ? value : fallback;
+};
+
+const getPageImage = (slug, key, fallback) => {
+    const value = getPageValue(slug, key, fallback);
+
+    if (! hasPageValue(value) || typeof value !== 'string') {
+        return fallback;
+    }
+
+    if (value.startsWith('http://') || value.startsWith('https://') || value.startsWith('/')) {
+        return value;
+    }
+
+    return `/media/${value}`;
+};
+
+const splitContentParagraphs = (value) => String(value)
+    .split(/\n\s*\n/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+const formatDisplayDate = (value) => {
+    if (! hasPageValue(value) || typeof value !== 'string') {
+        return '';
+    }
+
+    const isoMatch = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+    if (isoMatch) {
+        return `${isoMatch[3]}.${isoMatch[2]}.${isoMatch[1]}.`;
+    }
+
+    return value;
+};
+
+const teamPhoto = getPageImage('par-mums', 'main_image', '/images/topcare-komanda.png');
+const heroImage = getPageImage('sakums', 'hero_image', '/images/profesionala-koka-logu-restauracija-jurmala.jpeg');
+const featurePhoto = getPageImage('sakums', 'about_image', '/images/privatmajas-renovacija-latvija.jpeg');
+const beforeAfterHeroPhoto = getPageImage('pirms-pec', 'hero_image', '/images/fasades-mazgasana-privatmaja-jurmala.jpeg');
 
 const privacySections = [
     {
@@ -256,38 +304,38 @@ const aboutStats = [
 
 const companyValues = [
     {
-        title: 'Kvalitāte',
-        description: 'Strādājam rūpīgi un koncentrējamies uz ilgtermiņa rezultātu.',
+        title: getPageValue('par-mums', 'value_1_title', 'Kvalitāte'),
+        description: getPageValue('par-mums', 'value_1_text', 'Strādājam rūpīgi un koncentrējamies uz ilgtermiņa rezultātu.'),
     },
     {
-        title: 'Atbildība',
-        description: 'Ievērojam termiņus un uzņemamies atbildību par paveikto darbu.',
+        title: getPageValue('par-mums', 'value_2_title', 'Atbildība'),
+        description: getPageValue('par-mums', 'value_2_text', 'Ievērojam termiņus un uzņemamies atbildību par paveikto darbu.'),
     },
     {
-        title: 'Uzticēšanās',
-        description: 'Veidojam ilgtermiņa sadarbību ar klientiem visā Latvijā.',
+        title: getPageValue('par-mums', 'value_3_title', 'Uzticēšanās'),
+        description: getPageValue('par-mums', 'value_3_text', 'Veidojam ilgtermiņa sadarbību ar klientiem visā Latvijā.'),
     },
 ];
 
 const workApproachSteps = [
     {
         number: '01',
-        title: 'Objekta novērtēšana',
+        title: getPageValue('par-mums', 'process_1_title', 'Objekta novērtēšana'),
         description: 'Bezmaksas konsultācija un apskate',
     },
     {
         number: '02',
-        title: 'Piedāvājuma sagatavošana',
+        title: getPageValue('par-mums', 'process_2_title', 'Piedāvājuma sagatavošana'),
         description: 'Precīzs darbu plāns un izmaksas',
     },
     {
         number: '03',
-        title: 'Darbu izpilde',
+        title: getPageValue('par-mums', 'process_3_title', 'Darbu izpilde'),
         description: 'Kvalitatīva un savlaicīga realizācija',
     },
     {
         number: '04',
-        title: 'Rezultāta nodošana klientam',
+        title: getPageValue('par-mums', 'process_4_title', 'Rezultāta nodošana klientam'),
         description: 'Objekta pārbaude un nodošana klientam',
     },
 ];
@@ -383,6 +431,52 @@ const galleryImages = [
         size: 'project-short',
     },
 ];
+
+const homePageContent = {
+    heroTitle: getPageValue('sakums', 'hero_title', 'Uzticams partneris būvniecībā, renovācijā un īpašumu uzturēšanā'),
+    heroText: getPageValue('sakums', 'hero_text', 'SIA Top Care Group ir Latvijas uzņēmums, kas nodrošina plašu būvniecības, renovācijas un apsaimniekošanas pakalpojumu klāstu privātpersonām, uzņēmumiem un namu apsaimniekotājiem.'),
+    primaryButtonText: getPageValue('sakums', 'primary_button_text', 'Saņemt cenu'),
+    secondaryButtonText: getPageValue('sakums', 'secondary_button_text', 'Sazināties WhatsApp'),
+    aboutTitle: getPageValue('sakums', 'about_title', 'Kvalitatīvs darbs, atbildība un godīga attieksme'),
+    aboutParagraphs: splitContentParagraphs(getPageValue('sakums', 'about_text', "Mūsu komandu veido pieredzējuši speciālisti, kuri ikdienā strādā pie dažāda mēroga projektiem visā Latvijā.\n\nMēs ticam, ka kvalitatīvs darbs, atbildība un godīga attieksme ir pamats ilgtermiņa sadarbībai ar klientiem.")),
+    servicesTitle: getPageValue('sakums', 'services_title', 'Būtiskākie Top Care Group virzieni'),
+    servicesText: getPageValue('sakums', 'services_text', ''),
+};
+
+const servicesPageContent = {
+    title: getPageValue('pakalpojumi', 'page_title', 'Pakalpojumi dažāda mēroga objektiem'),
+    text: getPageValue('pakalpojumi', 'page_text', 'No nelieliem remonta darbiem līdz pilna cikla būvniecības un renovācijas projektiem. Katra pakalpojumu grupa ir veidota kā atsevišķa karte ar konkrētu darbu piemēriem.'),
+};
+
+const galleryPageContent = {
+    title: getPageValue('galerija', 'page_title', 'Darbi un ikdienas process'),
+    text: getPageValue('galerija', 'page_text', 'Apskatiet Top Care Group paveiktos darbus, darba procesu un ikdienas objektos visā Latvijā.'),
+};
+
+const aboutPageContent = {
+    title: getPageValue('par-mums', 'page_title', 'Top Care Group'),
+    paragraphs: splitContentParagraphs(getPageValue('par-mums', 'page_text', "SIA Top Care Group nodrošina būvniecības, renovācijas un īpašumu uzturēšanas pakalpojumus privātpersonām, uzņēmumiem un namu apsaimniekotājiem visā Latvijā.\n\nMūsu komandu veido pieredzējuši speciālisti, kuri strādā ar precizitāti, atbildību un skaidru izpratni par kvalitāti katrā projekta posmā.\n\nMēs veidojam ilgtermiņā uzticamus risinājumus un pieeju, kas pielāgota klienta objektam, termiņiem un darba apjomam.")),
+    valuesTitle: getPageValue('par-mums', 'values_title', 'Principi, uz kuriem balstām katru projektu'),
+    processTitle: getPageValue('par-mums', 'process_title', 'Skaidrs process no pirmās sarunas līdz rezultāta nodošanai'),
+};
+
+const beforeAfterPageContent = {
+    title: getPageValue('pirms-pec', 'page_title', 'Redzami rezultāti\nreālos objektos'),
+    text: getPageValue('pirms-pec', 'page_text', 'Salīdziniet mūsu paveikto darbu rezultātus fasāžu, jumtu un teritoriju tīrīšanā visā Latvijā.'),
+};
+
+const contactsPageContent = {
+    title: getPageValue('kontakti', 'page_title', 'Top Care Group'),
+    text: getPageValue('kontakti', 'page_text', 'Ja jums nepieciešami renovācijas, apdares, fasāžu, jumtu, bruģēšanas vai īpašumu uzturēšanas darbi, sazinieties ar mums un mēs sagatavosim piemērotu risinājumu.'),
+    buttonText: getPageValue('kontakti', 'form_button_text', 'Nosūtīt pieteikumu'),
+};
+
+const privacyPageContent = {
+    title: getPageValue('privatuma-politika', 'page_title', 'Privātuma politika'),
+    text: getPageValue('privatuma-politika', 'page_text', 'Informācija par personas datu apstrādi un aizsardzību.'),
+    lastUpdated: formatDisplayDate(getPageValue('privatuma-politika', 'last_updated', '2026-06-12')),
+    paragraphs: splitContentParagraphs(getPageValue('privatuma-politika', 'policy_content', '')),
+};
 
 const companyStats = [
     {
@@ -824,10 +918,10 @@ onBeforeUnmount(() => {
                     <div class="relative z-10 mx-auto flex min-h-screen w-full max-w-[1320px] items-center px-5 py-28 sm:px-8 lg:px-10">
                         <div data-reveal class="reveal max-w-[820px]">
                             <h1 class="font-display text-4xl leading-[0.94] text-white sm:text-6xl lg:text-7xl">
-                                Uzticams partneris būvniecībā, renovācijā un īpašumu uzturēšanā
+                                {{ homePageContent.heroTitle }}
                             </h1>
                             <p class="mt-6 max-w-[700px] text-base leading-8 text-white/82 sm:text-xl">
-                                SIA Top Care Group ir Latvijas uzņēmums, kas nodrošina plašu būvniecības, renovācijas un apsaimniekošanas pakalpojumu klāstu privātpersonām, uzņēmumiem un namu apsaimniekotājiem.
+                                {{ homePageContent.heroText }}
                             </p>
 
                             <div class="mt-8 grid gap-3 text-sm font-medium text-white/88 sm:max-w-[520px]">
@@ -850,7 +944,7 @@ onBeforeUnmount(() => {
                                     class="inline-flex items-center justify-center rounded-full bg-[#BFD730] px-7 py-4 text-sm font-semibold text-[#0f241d] transition hover:-translate-y-0.5 hover:bg-[#d0ea3f]"
                                     href="/kontakti"
                                 >
-                                    Saņemt cenu
+                                    {{ homePageContent.primaryButtonText }}
                                 </a>
                                 <a
                                     class="inline-flex items-center justify-center rounded-full border border-white/18 bg-white/8 px-7 py-4 text-sm font-semibold text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/14"
@@ -858,7 +952,7 @@ onBeforeUnmount(() => {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    Sazināties WhatsApp
+                                    {{ homePageContent.secondaryButtonText }}
                                 </a>
                             </div>
                         </div>
@@ -871,11 +965,13 @@ onBeforeUnmount(() => {
                             <div class="relative order-2 lg:order-1">
                                 <span class="section-kicker">PAR TOP CARE GROUP</span>
                                 <h2 class="section-title mt-4 max-w-[560px]">
-                                    Kvalitatīvs darbs, atbildība un godīga attieksme
+                                    {{ homePageContent.aboutTitle }}
                                 </h2>
-                                <p class="mt-6 max-w-[560px] text-base leading-8 text-[#56665f]">
-                                    Mūsu komandu veido pieredzējuši speciālisti, kuri ikdienā strādā pie dažāda mēroga projektiem visā Latvijā. Mēs ticam, ka kvalitatīvs darbs, atbildība un godīga attieksme ir pamats ilgtermiņa sadarbībai ar klientiem.
-                                </p>
+                                <div class="mt-6 max-w-[560px] space-y-4 text-base leading-8 text-[#56665f]">
+                                    <p v-for="paragraph in homePageContent.aboutParagraphs" :key="paragraph">
+                                        {{ paragraph }}
+                                    </p>
+                                </div>
 
                                 <div class="mt-8 space-y-4">
                                     <div class="flex items-start gap-3 text-sm font-medium text-[#244338]">
@@ -970,11 +1066,14 @@ onBeforeUnmount(() => {
                 <section id="services" class="bg-[#f7faf7] py-24 sm:py-28">
                     <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                         <div data-reveal class="reveal flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                            <div>
+                            <div class="max-w-[720px]">
                                 <p class="section-kicker">MŪSU PAKALPOJUMI</p>
                                 <h2 class="section-title mt-4 max-w-[620px]">
-                                    Būtiskākie Top Care Group virzieni
+                                    {{ homePageContent.servicesTitle }}
                                 </h2>
+                                <p v-if="homePageContent.servicesText" class="mt-5 max-w-[620px] text-base leading-8 text-[#56665f]">
+                                    {{ homePageContent.servicesText }}
+                                </p>
                             </div>
                         </div>
 
@@ -1008,10 +1107,10 @@ onBeforeUnmount(() => {
                         <div data-reveal class="reveal max-w-[820px]">
                             <p class="section-kicker">MŪSU PAKALPOJUMI</p>
                             <h1 class="section-title mt-4">
-                                Pakalpojumi dažāda mēroga objektiem
+                                {{ servicesPageContent.title }}
                             </h1>
                             <p class="mt-6 text-base leading-8 text-[#56665f]">
-                                No nelieliem remonta darbiem līdz pilna cikla būvniecības un renovācijas projektiem. Katra pakalpojumu grupa ir veidota kā atsevišķa karte ar konkrētu darbu piemēriem.
+                                {{ servicesPageContent.text }}
                             </p>
                         </div>
 
@@ -1058,9 +1157,9 @@ onBeforeUnmount(() => {
                     <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                         <div data-reveal class="reveal max-w-[860px]">
                             <p class="section-kicker">GALERIJA</p>
-                            <h1 class="section-title mt-4">Darbi un ikdienas process</h1>
+                            <h1 class="section-title mt-4">{{ galleryPageContent.title }}</h1>
                             <p class="mt-6 max-w-[760px] text-base leading-8 text-[#56665f] sm:text-lg">
-                                Apskatiet Top Care Group paveiktos darbus, darba procesu un ikdienas objektos visā Latvijā.
+                                {{ galleryPageContent.text }}
                             </p>
                         </div>
                     </div>
@@ -1136,17 +1235,11 @@ onBeforeUnmount(() => {
                                     <div>
                                         <p class="section-kicker">PAR MUMS</p>
                                         <h1 class="mt-4 max-w-[560px] font-display text-5xl font-bold leading-[0.96] text-[#12261f] sm:text-[3.5rem] lg:text-[4rem]">
-                                            Top Care Group
+                                            {{ aboutPageContent.title }}
                                         </h1>
                                         <div class="mt-8 max-w-[560px] space-y-4 text-base leading-8 text-[#56665f]">
-                                            <p>
-                                                SIA Top Care Group nodrošina būvniecības, renovācijas un īpašumu uzturēšanas pakalpojumus privātpersonām, uzņēmumiem un namu apsaimniekotājiem visā Latvijā.
-                                            </p>
-                                            <p>
-                                                Mūsu komandu veido pieredzējuši speciālisti, kuri strādā ar precizitāti, atbildību un skaidru izpratni par kvalitāti katrā projekta posmā.
-                                            </p>
-                                            <p>
-                                                Mēs veidojam ilgtermiņā uzticamus risinājumus un pieeju, kas pielāgota klienta objektam, termiņiem un darba apjomam.
+                                            <p v-for="paragraph in aboutPageContent.paragraphs" :key="paragraph">
+                                                {{ paragraph }}
                                             </p>
                                         </div>
 
@@ -1182,7 +1275,7 @@ onBeforeUnmount(() => {
                     <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                         <div data-reveal class="reveal max-w-[620px]">
                             <p class="section-kicker">MŪSU VĒRTĪBAS</p>
-                            <h2 class="section-title mt-4">Principi, uz kuriem balstām katru projektu</h2>
+                            <h2 class="section-title mt-4">{{ aboutPageContent.valuesTitle }}</h2>
                         </div>
 
                         <div class="mt-12 grid gap-y-10 border-y border-[#06402B]/10 py-8 lg:grid-cols-3 lg:gap-x-10 lg:py-10">
@@ -1212,7 +1305,7 @@ onBeforeUnmount(() => {
                     <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
                         <div data-reveal class="reveal max-w-[620px]">
                             <p class="section-kicker">MŪSU PIEEJA DARBAM</p>
-                            <h2 class="section-title mt-4">Skaidrs process no pirmās sarunas līdz rezultāta nodošanai</h2>
+                            <h2 class="section-title mt-4">{{ aboutPageContent.processTitle }}</h2>
                         </div>
 
                         <div class="relative mt-14">
@@ -1257,13 +1350,11 @@ onBeforeUnmount(() => {
                         <div class="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-center lg:gap-12">
                             <div data-reveal class="reveal max-w-[640px]">
                                 <p class="section-kicker">PIRMS / PĒC</p>
-                                <h1 class="mt-4 font-display text-4xl font-bold leading-[0.96] text-[#12261f] sm:text-6xl lg:text-[4.2rem]">
-                                    Redzami rezultāti
-                                    <br />
-                                    reālos objektos
+                                <h1 class="mt-4 whitespace-pre-line font-display text-4xl font-bold leading-[0.96] text-[#12261f] sm:text-6xl lg:text-[4.2rem]">
+                                    {{ beforeAfterPageContent.title }}
                                 </h1>
                                 <p class="mt-6 max-w-[620px] text-base leading-8 text-[#5a6b64] sm:text-lg">
-                                    Salīdziniet mūsu paveikto darbu rezultātus fasāžu, jumtu un teritoriju tīrīšanā visā Latvijā.
+                                    {{ beforeAfterPageContent.text }}
                                 </p>
                             </div>
 
@@ -1349,9 +1440,9 @@ onBeforeUnmount(() => {
                         <div class="grid gap-8 xl:grid-cols-[0.8fr_1.2fr]">
                             <div data-reveal class="reveal">
                                 <p class="section-kicker">SAZINIETIES AR MUMS</p>
-                                <h1 class="section-title mt-4 max-w-[520px]">Top Care Group</h1>
+                                <h1 class="section-title mt-4 max-w-[520px]">{{ contactsPageContent.title }}</h1>
                                 <p class="mt-6 max-w-[520px] text-base leading-8 text-[#56665f]">
-                                    Ja jums nepieciešami renovācijas, apdares, fasāžu, jumtu, bruģēšanas vai īpašumu uzturēšanas darbi, sazinieties ar mums un mēs sagatavosim piemērotu risinājumu.
+                                    {{ contactsPageContent.text }}
                                 </p>
 
                                 <div class="mt-10 space-y-5">
@@ -1403,7 +1494,7 @@ onBeforeUnmount(() => {
                                             class="inline-flex rounded-full bg-[#06402B] px-7 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#0b5c3f]"
                                             type="button"
                                         >
-                                            Nosūtīt pieteikumu
+                                            {{ contactsPageContent.buttonText }}
                                         </button>
                                     </div>
                                 </form>
@@ -1418,13 +1509,13 @@ onBeforeUnmount(() => {
                     <div class="mx-auto max-w-[1200px] px-5 sm:px-8">
                         <div data-reveal class="reveal rounded-[2rem] border border-[#06402B]/8 bg-white px-6 py-9 shadow-[0_18px_50px_rgba(6,64,43,0.05)] sm:px-10 sm:py-10 lg:px-14 lg:py-11">
                             <p class="section-kicker">PRIVĀTUMA POLITIKA</p>
-                            <h1 class="section-title mt-4">Privātuma politika</h1>
+                            <h1 class="section-title mt-4">{{ privacyPageContent.title }}</h1>
                             <p class="mt-5 max-w-[760px] text-base leading-8 text-[#56665f] sm:text-lg">
-                                Informācija par personas datu apstrādi un aizsardzību.
+                                {{ privacyPageContent.text }}
                             </p>
                             <div class="mt-8 h-px w-full bg-[#06402B]/10" />
                             <p class="mt-5 text-xs font-medium uppercase tracking-[0.14em] text-[#06402B]/50 sm:text-[0.82rem]">
-                                Pēdējo reizi atjaunināta: 12.06.2026.
+                                Pēdējo reizi atjaunināta: {{ privacyPageContent.lastUpdated }}
                             </p>
                         </div>
                     </div>
@@ -1433,7 +1524,16 @@ onBeforeUnmount(() => {
                 <section class="bg-[#f7faf7] pb-24 pt-8 sm:pb-28 sm:pt-10">
                     <div class="mx-auto max-w-[1200px] px-5 sm:px-8">
                         <div class="rounded-[2rem] border border-[#06402B]/8 bg-white px-6 py-8 shadow-[0_18px_50px_rgba(6,64,43,0.05)] sm:px-10 sm:py-10 lg:px-14 lg:py-12">
-                            <div class="text-[#42534c]">
+                            <div v-if="privacyPageContent.paragraphs.length" class="space-y-5 text-[#42534c]">
+                                <p
+                                    v-for="paragraph in privacyPageContent.paragraphs"
+                                    :key="paragraph"
+                                    class="text-base leading-8 text-[#42534c] sm:text-[1.05rem]"
+                                >
+                                    {{ paragraph }}
+                                </p>
+                            </div>
+                            <div v-else class="text-[#42534c]">
                                 <section data-reveal class="reveal">
                                     <div class="space-y-0">
                                         <article

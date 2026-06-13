@@ -13,7 +13,7 @@ class AuthenticatedSessionController extends Controller
     public function create(Request $request): View|RedirectResponse
     {
         if ($request->user()?->is_admin) {
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.pages.index');
         }
 
         if ($request->user()) {
@@ -28,7 +28,7 @@ class AuthenticatedSessionController extends Controller
     public function store(Request $request): RedirectResponse
     {
         if ($request->user()?->is_admin) {
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.pages.index');
         }
 
         $credentials = $request->validate([
@@ -54,7 +54,7 @@ class AuthenticatedSessionController extends Controller
                 ->onlyInput('email');
         }
 
-        return redirect()->intended(route('admin.dashboard'));
+        return redirect()->intended(route('admin.pages.index'));
     }
 
     public function destroy(Request $request): RedirectResponse

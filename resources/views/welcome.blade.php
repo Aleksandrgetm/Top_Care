@@ -18,6 +18,11 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+        <script>
+            window.TopCarePageSlug = @json($pageSlug ?? null);
+            window.TopCarePageContent = @json($pageContent ?? []);
+        </script>
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
