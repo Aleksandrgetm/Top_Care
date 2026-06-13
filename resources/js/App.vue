@@ -1205,8 +1205,8 @@ onBeforeUnmount(() => {
                                 v-for="(image, index) in galleryImages"
                                 :key="image.src"
                                 data-reveal
-                                class="masonry-item reveal"
-                                :style="{ transitionDelay: `${index * 55}ms` }"
+                                class="masonry-item gallery-reveal"
+                                :style="{ transitionDelay: `${index * 40}ms` }"
                             >
                                 <button
                                     class="group block w-full overflow-hidden rounded-[20px] border border-[#06402B]/8 bg-white text-left shadow-[0_16px_42px_rgba(6,64,43,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_58px_rgba(6,64,43,0.12)]"

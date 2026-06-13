@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login | Top Care Group</title>
+    <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     @vite(['resources/css/app.css'])
 </head>
 <body class="min-h-screen bg-[#f4f7f4] text-[#12261f]">
@@ -43,7 +46,7 @@
                 <div class="mb-8">
                     <p class="text-xs font-semibold uppercase tracking-[0.3em] text-[#60716a]">Top Care Group</p>
                     <h2 class="mt-3 text-3xl font-semibold text-[#12261f]">Admin login</h2>
-                    <p class="mt-3 text-sm leading-7 text-[#5c6d66]">Enter your administrator credentials to continue to the dashboard.</p>
+                    <p class="mt-3 text-sm leading-7 text-[#5c6d66]">Enter your administrator credentials to continue to the pages module.</p>
                 </div>
 
                 <form method="POST" action="{{ route('admin.login.store') }}" class="space-y-5">
