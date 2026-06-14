@@ -46,7 +46,7 @@
                     <tr>
                         <td style="padding:22px 20px 0 20px;text-align:center;">
                             <p style="margin:0;font-size:13px;line-height:22px;color:#6d857a;">
-                                Tālrunis: +371 28 842 265 • E-pasts: info@topcare.lv
+                                Tālrunis: +371 28 842 265 • E-pasts: topcare.lv@gmail.com
                             </p>
                         </td>
                     </tr>

@@ -37,7 +37,7 @@ class ContactController extends Controller
         $errorMessage = 'Neizdevās nosūtīt pieteikumu. Lūdzu, mēģiniet vēlreiz vai sazinieties ar mums pa tālruni.';
 
         try {
-            Mail::to('info@topcare.lv')->send(new NewContactRequestMail($data));
+            Mail::to('topcare.lv@gmail.com')->send(new NewContactRequestMail($data));
         } catch (\Throwable $e) {
             Log::error('Admin contact email failed', [
                 'message' => $e->getMessage(),
@@ -92,7 +92,7 @@ class ContactController extends Controller
             'submitted_at' => now(),
         ];
 
-        Mail::to('info@topcare.lv')->send(new NewContactRequestMail($data));
+        Mail::to('topcare.lv@gmail.com')->send(new NewContactRequestMail($data));
         Mail::to($data['email'])->send(new ContactAutoReplyMail($data));
 
         return view('emails.contact.test-sent');
