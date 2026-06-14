@@ -57,6 +57,58 @@ $pages = [
     ],
 ];
 
+Route::get('/sitemap.xml', function () {
+    $today = now()->toDateString();
+    $urls = [
+        [
+            'loc' => 'https://topcare.lv/',
+            'lastmod' => $today,
+            'changefreq' => 'weekly',
+            'priority' => '1.0',
+        ],
+        [
+            'loc' => 'https://topcare.lv/pakalpojumi',
+            'lastmod' => $today,
+            'changefreq' => 'weekly',
+            'priority' => '0.9',
+        ],
+        [
+            'loc' => 'https://topcare.lv/galerija',
+            'lastmod' => $today,
+            'changefreq' => 'weekly',
+            'priority' => '0.8',
+        ],
+        [
+            'loc' => 'https://topcare.lv/par-mums',
+            'lastmod' => $today,
+            'changefreq' => 'weekly',
+            'priority' => '0.7',
+        ],
+        [
+            'loc' => 'https://topcare.lv/pirms-pec',
+            'lastmod' => $today,
+            'changefreq' => 'weekly',
+            'priority' => '0.8',
+        ],
+        [
+            'loc' => 'https://topcare.lv/kontakti',
+            'lastmod' => $today,
+            'changefreq' => 'weekly',
+            'priority' => '0.7',
+        ],
+        [
+            'loc' => 'https://topcare.lv/privatuma-politika',
+            'lastmod' => $today,
+            'changefreq' => 'weekly',
+            'priority' => '0.3',
+        ],
+    ];
+
+    return response()
+        ->view('sitemap', ['urls' => $urls])
+        ->header('Content-Type', 'application/xml');
+})->name('sitemap');
+
 foreach ($pages as $path => $meta) {
     Route::get($path, function () use ($meta) {
         $pageSlug = $meta['page_slug'] ?? null;
