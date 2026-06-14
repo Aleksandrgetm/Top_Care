@@ -37,12 +37,23 @@ class ContactController extends Controller
         $errorMessage = 'Neizdevās nosūtīt pieteikumu. Lūdzu, mēģiniet vēlreiz vai sazinieties ar mums pa tālruni.';
 
         try {
-            Mail::to('topcare.lv@gmail.com')->send(new NewContactRequestMail($data));
+            Mail::to('topcare.lv@gmail.com')
+                ->send(new NewContactRequestMail($data));
+
+            Log::info('Admin contact email sent', [
+                'to' => 'topcare.lv@gmail.com',
+                'client_email' => $data['email'] ?? null,
+                'service' => $data['service'],
+                'source_page' => $data['source_page'],
+                'submitted_at' => $data['submitted_at']->toDateTimeString(),
+            ]);
         } catch (\Throwable $e) {
             Log::error('Admin contact email failed', [
                 'message' => $e->getMessage(),
-                'email' => $data['email'],
+                'client_email' => $data['email'] ?? null,
+                'service' => $data['service'],
                 'source_page' => $data['source_page'],
+                'submitted_at' => $data['submitted_at']->toDateTimeString(),
             ]);
 
             if ($request->expectsJson()) {
@@ -57,13 +68,22 @@ class ContactController extends Controller
                 ->withErrors(['contact' => $errorMessage]);
         }
 
-        if ($data['email']) {
+        if (! empty($data['email'])) {
             try {
-                Mail::to($data['email'])->send(new ContactAutoReplyMail($data));
+                Mail::to($data['email'])
+                    ->send(new ContactAutoReplyMail($data));
+
+                Log::info('Client auto reply sent', [
+                    'to' => $data['email'],
+                    'source_page' => $data['source_page'],
+                    'submitted_at' => $data['submitted_at']->toDateTimeString(),
+                ]);
             } catch (\Throwable $e) {
-                Log::warning('Contact auto reply failed', [
+                Log::warning('Client auto reply failed', [
                     'message' => $e->getMessage(),
-                    'email' => $data['email'],
+                    'client_email' => $data['email'],
+                    'source_page' => $data['source_page'],
+                    'submitted_at' => $data['submitted_at']->toDateTimeString(),
                 ]);
             }
         }

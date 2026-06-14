@@ -20,6 +20,7 @@ class NewContactRequestMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
+            from: new Address('noreply@topcare.lv', 'Top Care Group'),
             subject: 'Jauns pieteikums no mājaslapas',
             replyTo: $this->data['email']
                 ? [new Address($this->data['email'], $this->data['name'] ?? null)]
