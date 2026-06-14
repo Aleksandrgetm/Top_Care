@@ -5,12 +5,18 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\GalleryImage;
 use App\Models\Page;
+use App\Support\GalleryImageSyncService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class GalleryImageController extends Controller
 {
+    public function __construct(
+        private readonly GalleryImageSyncService $galleryImageSyncService,
+    ) {
+    }
+
     public function index(): RedirectResponse
     {
         $page = Page::query()->where('slug', 'galerija')->first();
@@ -31,9 +37,12 @@ class GalleryImageController extends Controller
 
         foreach ($validated['images'] as $image) {
             $nextSortOrder++;
+            $originalName = $image->getClientOriginalName();
 
             GalleryImage::create([
                 'image' => $image->store('gallery', 'public'),
+                'title' => $this->galleryImageSyncService->makeTitle($originalName),
+                'category' => $this->galleryImageSyncService->detectCategory($originalName),
                 'sort_order' => $nextSortOrder,
                 'is_active' => true,
             ]);
@@ -65,11 +74,15 @@ class GalleryImageController extends Controller
         }
 
         if ($request->hasFile('image')) {
+            $uploadedImage = $request->file('image');
+
             if ($galleryImage->image && str_starts_with($galleryImage->image, 'gallery/')) {
                 Storage::disk('public')->delete($galleryImage->image);
             }
 
-            $payload['image'] = $request->file('image')->store('gallery', 'public');
+            $payload['image'] = $uploadedImage->store('gallery', 'public');
+            $payload['title'] ??= $this->galleryImageSyncService->makeTitle($uploadedImage->getClientOriginalName());
+            $payload['category'] ??= $this->galleryImageSyncService->detectCategory($uploadedImage->getClientOriginalName());
         }
 
         $galleryImage->update($payload);

@@ -19,6 +19,7 @@ Artisan::command('gallery:sync', function (GalleryImageSyncService $syncService)
 
     $this->info("Found files: {$result['found']}");
     $this->info("Added: {$result['added']}");
+    $this->info("Updated: {$result['updated']}");
     $this->info("Skipped duplicates: {$result['skipped']}");
 
     return 0;
