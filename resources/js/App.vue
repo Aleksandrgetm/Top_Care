@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
 const isMenuOpen = ref(false);
@@ -544,6 +544,17 @@ const companyStats = [
 const displayedStats = ref(
     companyStats.map((stat) => (stat.type === 'number' ? 0 : stat.value)),
 );
+const contactForm = ref({
+    name: '',
+    phone: '',
+    email: '',
+    service: '',
+    message: '',
+});
+const contactErrors = ref({});
+const contactSuccessMessage = ref('');
+const contactSubmitError = ref('');
+const isSubmittingContactForm = ref(false);
 
 const pageMeta = {
     '/': {
@@ -595,6 +606,59 @@ const isBeforeAfterPage = computed(() => currentPath === '/pirms-pec');
 const isContactsPage = computed(() => currentPath === '/kontakti');
 const isPrivacyPage = computed(() => currentPath === privacyPolicyPath);
 const useLightHeader = computed(() => isHomePage.value && !isScrolled.value);
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
+
+const resetContactForm = () => {
+    contactForm.value = {
+        name: '',
+        phone: '',
+        email: '',
+        service: '',
+        message: '',
+    };
+};
+
+const submitContactForm = async () => {
+    contactSuccessMessage.value = '';
+    contactSubmitError.value = '';
+    contactErrors.value = {};
+    isSubmittingContactForm.value = true;
+
+    try {
+        const response = await fetch('/contact', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify(contactForm.value),
+        });
+
+        const payload = await response.json().catch(() => ({}));
+
+        if (response.ok && payload.success === true) {
+            contactSuccessMessage.value = payload.message
+                ?? 'Paldies! Jūsu pieteikums ir nosūtīts. Mēs ar Jums sazināsimies tuvākajā laikā.';
+            resetContactForm();
+            return;
+        }
+
+        if (response.status === 422) {
+            contactErrors.value = payload.errors ?? {};
+            contactSubmitError.value = 'Neizdevās nosūtīt pieteikumu. Lūdzu, pārbaudiet ievadītos datus.';
+            return;
+        }
+
+        contactSubmitError.value = (response.ok ? null : payload.message)
+            ?? 'Neizdevās nosūtīt pieteikumu. Lūdzu, mēģiniet vēlreiz vai sazinieties ar mums pa tālruni.';
+    } catch {
+        contactSubmitError.value = 'Neizdevās nosūtīt pieteikumu. Lūdzu, mēģiniet vēlreiz vai sazinieties ar mums pa tālruni.';
+    } finally {
+        isSubmittingContactForm.value = false;
+    }
+};
 
 const syncBodyScrollLock = () => {
     document.body.style.overflow = showCookiePreferences.value || activeGalleryImage.value ? 'hidden' : '';
@@ -1502,36 +1566,67 @@ onBeforeUnmount(() => {
                             </div>
 
                             <div data-reveal class="reveal rounded-[2rem] border border-[#06402B]/8 bg-white p-6 shadow-[0_20px_65px_rgba(6,64,43,0.08)] sm:p-8">
-                                <form class="grid gap-4 sm:grid-cols-2">
+                                <form class="grid gap-4 sm:grid-cols-2" @submit.prevent="submitContactForm">
+                                    <div
+                                        v-if="contactSuccessMessage"
+                                        class="sm:col-span-2 rounded-[1.4rem] border border-[#bfd730]/60 bg-[#f7fbdf] px-5 py-4 text-sm leading-7 text-[#214437]"
+                                    >
+                                        {{ contactSuccessMessage }}
+                                    </div>
+                                    <div
+                                        v-if="contactSubmitError"
+                                        class="sm:col-span-2 rounded-[1.4rem] border border-[#d8b4b4] bg-[#fff6f6] px-5 py-4 text-sm leading-7 text-[#8a2f2f]"
+                                    >
+                                        {{ contactSubmitError }}
+                                    </div>
                                     <label class="form-field">
-                                        <span>Vārds</span>
-                                        <input placeholder="Ievadiet savu vārdu" type="text" />
+                                        <span>Vards</span>
+                                        <input v-model="contactForm.name" placeholder="Ievadiet savu vardu" type="text" />
+                                        <small v-if="contactErrors.name?.[0]" class="mt-2 block text-sm text-[#a12626]">
+                                            {{ contactErrors.name[0] }}
+                                        </small>
                                     </label>
                                     <label class="form-field">
                                         <span>Telefons</span>
-                                        <input placeholder="Ievadiet tālruņa numuru" type="tel" />
+                                        <input v-model="contactForm.phone" placeholder="Ievadiet talruna numuru" type="tel" />
+                                        <small v-if="contactErrors.phone?.[0]" class="mt-2 block text-sm text-[#a12626]">
+                                            {{ contactErrors.phone[0] }}
+                                        </small>
                                     </label>
                                     <label class="form-field">
                                         <span>E-pasts</span>
-                                        <input placeholder="Ievadiet e-pastu" type="email" />
+                                        <input v-model="contactForm.email" placeholder="Ievadiet e-pastu" type="email" />
+                                        <small v-if="contactErrors.email?.[0]" class="mt-2 block text-sm text-[#a12626]">
+                                            {{ contactErrors.email[0] }}
+                                        </small>
                                     </label>
                                     <label class="form-field">
                                         <span>Pakalpojums</span>
-                                        <select>
-                                            <option>Izvēlieties pakalpojumu</option>
+                                        <select v-model="contactForm.service">
+                                            <option value="">Izvelieties pakalpojumu</option>
                                             <option v-for="service in serviceCards" :key="service.title">{{ service.title }}</option>
                                         </select>
+                                        <small v-if="contactErrors.service?.[0]" class="mt-2 block text-sm text-[#a12626]">
+                                            {{ contactErrors.service[0] }}
+                                        </small>
                                     </label>
                                     <label class="form-field sm:col-span-2">
-                                        <span>Ziņojums</span>
-                                        <textarea placeholder="Aprakstiet objektu vai nepieciešamos darbus" rows="5" />
+                                        <span>Zinojums</span>
+                                        <textarea v-model="contactForm.message" placeholder="Aprakstiet objektu vai nepieciešamos darbus" rows="5"></textarea>
+                                        <small v-if="contactErrors.message?.[0]" class="mt-2 block text-sm text-[#a12626]">
+                                            {{ contactErrors.message[0] }}
+                                        </small>
                                     </label>
                                     <div class="sm:col-span-2">
                                         <button
-                                            class="inline-flex rounded-full bg-[#06402B] px-7 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#0b5c3f]"
-                                            type="button"
+                                            :class="[
+                                                'inline-flex rounded-full bg-[#06402B] px-7 py-4 text-sm font-semibold text-white transition',
+                                                isSubmittingContactForm ? 'cursor-not-allowed opacity-70' : 'hover:-translate-y-0.5 hover:bg-[#0b5c3f]',
+                                            ]"
+                                            :disabled="isSubmittingContactForm"
+                                            type="submit"
                                         >
-                                            {{ contactsPageContent.buttonText }}
+                                            {{ isSubmittingContactForm ? 'Nosutam...' : contactsPageContent.buttonText }}
                                         </button>
                                     </div>
                                 </form>

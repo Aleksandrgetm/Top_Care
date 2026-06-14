@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\BeforeAfterItemController;
 use App\Http\Controllers\Admin\GalleryImageController;
 use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\ContactController;
 use App\Models\BeforeAfterItem;
 use App\Models\GalleryImage;
 use App\Models\Page;
@@ -50,8 +51,8 @@ $pages = [
     ],
     '/privatuma-politika' => [
         'page_slug' => 'privatuma-politika',
-        'title' => 'Privātuma politika | Top Care Group',
-        'description' => 'Privātuma politika un informācija par personas datu apstrādi uzņēmumā Top Care Group.',
+        'title' => 'Privatuma politika | Top Care Group',
+        'description' => 'Privatuma politika un informacija par personas datu apstradi uznemuma Top Care Group.',
         'canonical' => '/privatuma-politika',
     ],
 ];
@@ -101,6 +102,13 @@ foreach ($pages as $path => $meta) {
         ]);
     });
 }
+
+Route::post('/contact', [ContactController::class, 'submit'])
+    ->middleware('throttle:5,1')
+    ->name('contact.submit');
+
+Route::get('/dev/test-mail', [ContactController::class, 'testMail'])
+    ->name('dev.test-mail');
 
 Route::get('/media/{path}', function (string $path) {
     abort_unless(
