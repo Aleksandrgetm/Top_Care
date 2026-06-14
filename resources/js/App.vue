@@ -176,6 +176,23 @@ const navigation = [
     { label: 'Kontakti', path: '/kontakti' },
 ];
 
+const socialLinks = [
+    {
+        label: 'Instagram',
+        href: 'https://www.instagram.com/topcare_sia/',
+        hoverClass: 'hover:text-[#E4405F] hover:border-[#E4405F]/45',
+        iconPath:
+            'M7.75 3h8.5A4.75 4.75 0 0 1 21 7.75v8.5A4.75 4.75 0 0 1 16.25 21h-8.5A4.75 4.75 0 0 1 3 16.25v-8.5A4.75 4.75 0 0 1 7.75 3Zm0 1.5A3.25 3.25 0 0 0 4.5 7.75v8.5a3.25 3.25 0 0 0 3.25 3.25h8.5a3.25 3.25 0 0 0 3.25-3.25v-8.5a3.25 3.25 0 0 0-3.25-3.25h-8.5ZM12 8.25A3.75 3.75 0 1 1 8.25 12 3.75 3.75 0 0 1 12 8.25Zm0 1.5A2.25 2.25 0 1 0 14.25 12 2.25 2.25 0 0 0 12 9.75Zm4.5-2.38a.88.88 0 1 1-.88.88.88.88 0 0 1 .88-.88Z',
+    },
+    {
+        label: 'Facebook',
+        href: 'https://www.facebook.com/share/18fJLEnPnF/?mibextid=wwXIfr',
+        hoverClass: 'hover:text-[#1877F2] hover:border-[#1877F2]/45',
+        iconPath:
+            'M13.29 21v-7.06h2.37l.36-2.75h-2.73V9.43c0-.8.22-1.35 1.37-1.35h1.47V5.62a19.6 19.6 0 0 0-2.14-.11c-2.12 0-3.58 1.29-3.58 3.66v2.02H8.04v2.75h2.37V21h2.88Z',
+    },
+];
+
 const serviceIcons = {
     renovation:
         'M4 20h16M6.5 20v-7.5L12 7l5.5 5.5V20M10 20v-4h4v4',
@@ -1793,6 +1810,24 @@ onBeforeUnmount(() => {
                         <p>Telefons: +371 28 842 265</p>
                         <p>E-pasts: topcare.lv@gmail.com</p>
                         <p>Darbi tiek veikti visā Latvijā</p>
+                    </div>
+                    <div class="mt-5 flex items-center gap-3">
+                        <a
+                            v-for="item in socialLinks"
+                            :key="item.label"
+                            :href="item.href"
+                            :aria-label="item.label"
+                            :class="[
+                                'inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/12 text-white/72 transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-white/5',
+                                item.hoverClass,
+                            ]"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <svg class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path :d="item.iconPath" />
+                            </svg>
+                        </a>
                     </div>
                 </div>
             </div>
