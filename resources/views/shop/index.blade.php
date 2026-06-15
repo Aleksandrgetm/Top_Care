@@ -21,8 +21,8 @@
 
 @section('content')
     <section class="bg-white py-10 sm:py-12 lg:py-14">
-        <div class="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
-            <div class="grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-10">
+        <div class="mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-10">
+            <div class="grid gap-8 lg:grid-cols-[296px_minmax(0,1fr)] lg:gap-10">
                 <aside data-reveal class="reveal lg:sticky lg:top-28 lg:self-start">
                     <div class="rounded-[2rem] border border-[#06402B]/8 bg-[#f7faf7] p-6 shadow-[0_18px_50px_rgba(6,64,43,0.05)] sm:p-7">
                         <div
@@ -136,7 +136,7 @@
                             </p>
                         </div>
                     @else
-                        <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                        <div class="grid grid-cols-1 gap-7 md:grid-cols-2 xl:grid-cols-3">
                             @foreach ($products as $product)
                                 @include('shop.partials.product-card', ['product' => $product])
                             @endforeach

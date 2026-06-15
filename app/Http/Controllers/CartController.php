@@ -52,7 +52,9 @@ class CartController extends Controller
 
         $this->putCart($cart);
 
-        return back()->with('status', 'Prece pievienota grozam.');
+        return redirect()
+            ->route('cart.index')
+            ->with('status', 'Prece pievienota grozam.');
     }
 
     public function update(Request $request, int $product): RedirectResponse
