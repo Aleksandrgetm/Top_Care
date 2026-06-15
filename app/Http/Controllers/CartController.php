@@ -23,7 +23,7 @@ class CartController extends Controller
         ]);
     }
 
-    public function store(Product $product): RedirectResponse
+    public function store(Request $request, Product $product): RedirectResponse
     {
         if (! $product->is_active) {
             return back()->with('error', 'Šo preci pašlaik nevar pievienot grozam.');
@@ -33,11 +33,17 @@ class CartController extends Controller
             return back()->with('error', 'Prece pašlaik nav noliktavā.');
         }
 
+        $validated = $request->validate([
+            'quantity' => ['required', 'integer', 'min:1', 'max:' . (int) $product->stock_quantity],
+        ]);
+
         $cart = $this->cart();
         $existingQuantity = (int) ($cart[$product->id]['quantity'] ?? 0);
+        $requestedQuantity = (int) $validated['quantity'];
+        $newQuantity = $existingQuantity + $requestedQuantity;
 
-        if ($existingQuantity >= $product->stock_quantity) {
-            return back()->with('error', 'Groza daudzums jau sasniedz pieejamo noliktavas atlikumu.');
+        if ($newQuantity > $product->stock_quantity) {
+            return back()->with('error', "Pieejamais daudzums šai precei ir {$product->stock_quantity} gab.");
         }
 
         $cart[$product->id] = [
@@ -45,7 +51,7 @@ class CartController extends Controller
             'name' => $product->name,
             'slug' => $product->slug,
             'price' => (float) $product->price,
-            'quantity' => $existingQuantity + 1,
+            'quantity' => $newQuantity,
             'image' => $product->productImages()->orderBy('sort_order')->orderBy('id')->value('image_path'),
             'stock_quantity' => (int) $product->stock_quantity,
         ];

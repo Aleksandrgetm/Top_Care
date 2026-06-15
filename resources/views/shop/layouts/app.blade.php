@@ -179,6 +179,7 @@
                 const revealElements = document.querySelectorAll('[data-reveal]');
                 const dropdowns = document.querySelectorAll('[data-filter-dropdown]');
                 const galleries = document.querySelectorAll('[data-product-gallery]');
+                const steppers = document.querySelectorAll('[data-quantity-stepper]');
 
                 if (revealElements.length) {
                     const observer = new IntersectionObserver(
@@ -231,7 +232,7 @@
                 galleries.forEach((gallery) => {
                     const images = JSON.parse(gallery.dataset.galleryImages ?? '[]');
                     const mainImage = gallery.querySelector('[data-gallery-main-image]');
-                    const mainTrigger = gallery.querySelector('[data-gallery-main-trigger]');
+                    const mainTriggers = gallery.querySelectorAll('[data-gallery-main-trigger]');
                     const thumbnails = gallery.querySelectorAll('[data-gallery-thumb]');
                     const lightbox = gallery.querySelector('[data-gallery-lightbox]');
                     const lightboxImage = gallery.querySelector('[data-gallery-lightbox-image]');
@@ -239,7 +240,7 @@
                     const prevButton = gallery.querySelector('[data-gallery-prev]');
                     const nextButton = gallery.querySelector('[data-gallery-next]');
 
-                    if (!images.length || !mainImage || !mainTrigger || !lightbox || !lightboxImage) {
+                    if (!images.length || !mainImage || !mainTriggers.length || !lightbox || !lightboxImage) {
                         return;
                     }
 
@@ -309,7 +310,9 @@
 
                     syncThumbnailState(primaryIndex);
 
-                    mainTrigger.addEventListener('click', () => openLightbox(primaryIndex));
+                    mainTriggers.forEach((trigger) => {
+                        trigger.addEventListener('click', () => openLightbox(primaryIndex));
+                    });
 
                     thumbnails.forEach((thumbnail) => {
                         thumbnail.addEventListener('click', () => {
@@ -341,6 +344,51 @@
                         if (event.key === 'ArrowRight') {
                             showRelativeImage(1);
                         }
+                    });
+                });
+
+                steppers.forEach((stepper) => {
+                    const input = stepper.querySelector('[data-stepper-input]');
+                    const decrement = stepper.querySelector('[data-stepper-decrement]');
+                    const increment = stepper.querySelector('[data-stepper-increment]');
+
+                    if (!input || !decrement || !increment) {
+                        return;
+                    }
+
+                    const min = Number(input.min || 1);
+                    const max = Number(input.max || Number.MAX_SAFE_INTEGER);
+
+                    const clampValue = (value) => {
+                        if (Number.isNaN(value)) {
+                            return min;
+                        }
+
+                        return Math.min(Math.max(value, min), max);
+                    };
+
+                    const syncValue = (value) => {
+                        input.value = String(clampValue(value));
+                    };
+
+                    decrement.addEventListener('click', () => {
+                        syncValue(Number(input.value || min) - 1);
+                    });
+
+                    increment.addEventListener('click', () => {
+                        syncValue(Number(input.value || min) + 1);
+                    });
+
+                    input.addEventListener('input', () => {
+                        if (input.value === '') {
+                            return;
+                        }
+
+                        syncValue(Number(input.value));
+                    });
+
+                    input.addEventListener('blur', () => {
+                        syncValue(Number(input.value || min));
                     });
                 });
             });
