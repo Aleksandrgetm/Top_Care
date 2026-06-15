@@ -2,10 +2,14 @@
 
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\BeforeAfterItemController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\GalleryImageController;
 use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\ContactController;
 use App\Models\BeforeAfterItem;
+use App\Models\Product;
 use App\Models\GalleryImage;
 use App\Models\Page;
 use Illuminate\Support\Facades\Route;
@@ -166,7 +170,8 @@ Route::get('/media/{path}', function (string $path) {
     abort_unless(
         str_starts_with($path, 'pages/')
         || str_starts_with($path, 'gallery/')
-        || str_starts_with($path, 'before-after/'),
+        || str_starts_with($path, 'before-after/')
+        || str_starts_with($path, 'products/'),
         404
     );
     abort_unless(Storage::disk('public')->exists($path), 404);
@@ -185,6 +190,11 @@ Route::prefix('admin')->group(function () {
         Route::get('/pages', [PageController::class, 'index'])->name('admin.pages.index');
         Route::get('/pages/{page}/edit', [PageController::class, 'edit'])->name('admin.pages.edit');
         Route::put('/pages/{page}', [PageController::class, 'update'])->name('admin.pages.update');
+        Route::resource('categories', CategoryController::class)->except('show')->names('admin.categories');
+        Route::resource('products', ProductController::class)->except('show')->names('admin.products');
+        Route::get('/products/{product}', fn (Product $product) => redirect()->route('admin.products.edit', $product))->name('admin.products.show');
+        Route::post('/products/{product}/images', [ProductImageController::class, 'store'])->name('admin.products.images.store');
+        Route::delete('/product-images/{productImage}', [ProductImageController::class, 'destroy'])->name('admin.product-images.destroy');
         Route::get('/gallery-images', [GalleryImageController::class, 'index'])->name('admin.gallery-images.index');
         Route::post('/gallery-images', [GalleryImageController::class, 'store'])->name('admin.gallery-images.store');
         Route::put('/gallery-images/{galleryImage}', [GalleryImageController::class, 'update'])->name('admin.gallery-images.update');

@@ -15,7 +15,7 @@
         <aside class="relative overflow-hidden bg-[#042c1f] px-6 py-8 text-white">
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(191,215,48,0.18),transparent_36%)]"></div>
             <div class="relative flex h-full flex-col">
-                <a href="{{ route('admin.pages.index') }}" class="flex items-center gap-3">
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
                     <img src="{{ asset('images/logo.png') }}" alt="Top Care Group" class="h-12 w-auto rounded-lg bg-white/95 p-1.5">
                     <div>
                         <div class="text-sm font-semibold tracking-[0.24em]">TOP CARE GROUP</div>
@@ -26,6 +26,12 @@
                 <nav class="mt-12 space-y-2">
                     <a href="{{ route('admin.pages.index') }}" class="{{ ($activeNav ?? '') === 'pages' ? 'bg-white/10 text-white' : 'border border-white/8 text-white/60 hover:bg-white/8 hover:text-white' }} flex items-center rounded-[1.25rem] px-4 py-3 text-sm font-medium transition">
                         Pages
+                    </a>
+                    <a href="{{ route('admin.products.index') }}" class="{{ ($activeNav ?? '') === 'products' ? 'bg-white/10 text-white' : 'border border-white/8 text-white/60 hover:bg-white/8 hover:text-white' }} flex items-center rounded-[1.25rem] px-4 py-3 text-sm font-medium transition">
+                        Preces
+                    </a>
+                    <a href="{{ route('admin.categories.index') }}" class="{{ ($activeNav ?? '') === 'categories' ? 'bg-white/10 text-white' : 'border border-white/8 text-white/60 hover:bg-white/8 hover:text-white' }} flex items-center rounded-[1.25rem] px-4 py-3 text-sm font-medium transition">
+                        Kategorijas
                     </a>
                 </nav>
 

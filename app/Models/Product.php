@@ -27,6 +27,13 @@ class Product extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Product $product): void {
+            $product->productImages()->get()->each->delete();
+        });
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class ProductImage extends Model
 {
@@ -18,6 +19,15 @@ class ProductImage extends Model
         return [
             'sort_order' => 'integer',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (ProductImage $productImage): void {
+            if ($productImage->image_path && str_starts_with($productImage->image_path, 'products/')) {
+                Storage::disk('public')->delete($productImage->image_path);
+            }
+        });
     }
 
     public function product(): BelongsTo
