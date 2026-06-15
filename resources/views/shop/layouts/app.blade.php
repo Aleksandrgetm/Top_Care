@@ -178,6 +178,7 @@
             document.addEventListener('DOMContentLoaded', () => {
                 const revealElements = document.querySelectorAll('[data-reveal]');
                 const dropdowns = document.querySelectorAll('[data-filter-dropdown]');
+                const galleries = document.querySelectorAll('[data-product-gallery]');
 
                 if (revealElements.length) {
                     const observer = new IntersectionObserver(
@@ -223,6 +224,130 @@
                     window.addEventListener('resize', () => {
                         if (dropdown.dataset.open === 'true') {
                             panel.style.maxHeight = `${panel.scrollHeight}px`;
+                        }
+                    });
+                });
+
+                galleries.forEach((gallery) => {
+                    const images = JSON.parse(gallery.dataset.galleryImages ?? '[]');
+                    const mainImage = gallery.querySelector('[data-gallery-main-image]');
+                    const mainTrigger = gallery.querySelector('[data-gallery-main-trigger]');
+                    const thumbnails = gallery.querySelectorAll('[data-gallery-thumb]');
+                    const lightbox = gallery.querySelector('[data-gallery-lightbox]');
+                    const lightboxImage = gallery.querySelector('[data-gallery-lightbox-image]');
+                    const closeButtons = gallery.querySelectorAll('[data-gallery-close]');
+                    const prevButton = gallery.querySelector('[data-gallery-prev]');
+                    const nextButton = gallery.querySelector('[data-gallery-next]');
+
+                    if (!images.length || !mainImage || !mainTrigger || !lightbox || !lightboxImage) {
+                        return;
+                    }
+
+                    let activeIndex = Number(mainImage.dataset.galleryIndex ?? 0);
+
+                    const syncMainImage = (index) => {
+                        const image = images[index];
+
+                        if (!image) {
+                            return;
+                        }
+
+                        activeIndex = index;
+                        mainImage.src = image.src;
+                        mainImage.alt = image.alt;
+                        mainImage.dataset.galleryIndex = String(index);
+
+                        thumbnails.forEach((thumbnail) => {
+                            const isActive = Number(thumbnail.dataset.galleryIndex) === index;
+                            thumbnail.classList.toggle('ring-2', isActive);
+                            thumbnail.classList.toggle('ring-[#BFD730]', isActive);
+                            thumbnail.classList.toggle('ring-offset-2', isActive);
+                            thumbnail.classList.toggle('ring-offset-white', isActive);
+                        });
+                    };
+
+                    const syncLightboxImage = (index) => {
+                        const image = images[index];
+
+                        if (!image) {
+                            return;
+                        }
+
+                        activeIndex = index;
+                        lightboxImage.classList.add('is-switching');
+
+                        window.setTimeout(() => {
+                            lightboxImage.src = image.src;
+                            lightboxImage.alt = image.alt;
+                            lightboxImage.classList.remove('is-switching');
+                        }, 120);
+
+                        syncMainImage(index);
+                    };
+
+                    const openLightbox = (index) => {
+                        syncLightboxImage(index);
+                        lightbox.hidden = false;
+                        requestAnimationFrame(() => {
+                            lightbox.classList.add('is-open');
+                            lightbox.setAttribute('aria-hidden', 'false');
+                        });
+                        document.body.classList.add('overflow-hidden');
+                    };
+
+                    const closeLightbox = () => {
+                        lightbox.classList.remove('is-open');
+                        lightbox.setAttribute('aria-hidden', 'true');
+                        document.body.classList.remove('overflow-hidden');
+                        window.setTimeout(() => {
+                            if (!lightbox.classList.contains('is-open')) {
+                                lightbox.hidden = true;
+                            }
+                        }, 280);
+                    };
+
+                    const showRelativeImage = (direction) => {
+                        if (images.length <= 1) {
+                            return;
+                        }
+
+                        const nextIndex = (activeIndex + direction + images.length) % images.length;
+                        syncLightboxImage(nextIndex);
+                    };
+
+                    syncMainImage(activeIndex);
+
+                    mainTrigger.addEventListener('click', () => openLightbox(activeIndex));
+
+                    thumbnails.forEach((thumbnail) => {
+                        thumbnail.addEventListener('click', () => {
+                            const index = Number(thumbnail.dataset.galleryIndex ?? 0);
+                            syncMainImage(index);
+                        });
+                    });
+
+                    closeButtons.forEach((button) => {
+                        button.addEventListener('click', closeLightbox);
+                    });
+
+                    prevButton?.addEventListener('click', () => showRelativeImage(-1));
+                    nextButton?.addEventListener('click', () => showRelativeImage(1));
+
+                    document.addEventListener('keydown', (event) => {
+                        if (lightbox.hidden) {
+                            return;
+                        }
+
+                        if (event.key === 'Escape') {
+                            closeLightbox();
+                        }
+
+                        if (event.key === 'ArrowLeft') {
+                            showRelativeImage(-1);
+                        }
+
+                        if (event.key === 'ArrowRight') {
+                            showRelativeImage(1);
                         }
                     });
                 });
