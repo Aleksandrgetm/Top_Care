@@ -4,39 +4,43 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ShopController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $filters = $this->filters($request);
+
         return view('shop.index', [
             'title' => 'Veikals | Top Care Group',
             'description' => 'Apskatiet Top Care Group veikala aktīvās preces pēc kategorijām.',
             'canonical' => '/veikals',
-            'heading' => 'Veikals',
-            'intro' => 'Apskatiet Top Care Group piedāvātās aktīvās preces un atlasiet tās pēc kategorijām.',
             'categories' => $this->shopCategories(),
-            'products' => $this->activeProducts()->get(),
+            'products' => $this->applyFilters($this->activeProducts(), $filters)->get(),
             'currentCategory' => null,
+            'filters' => $filters,
         ]);
     }
 
-    public function category(Category $category): View
+    public function category(Request $request, Category $category): View
     {
         abort_unless($category->is_active, 404);
+
+        $filters = $this->filters($request);
 
         return view('shop.index', [
             'title' => "{$category->name} | Veikals | Top Care Group",
             'description' => "Apskatiet kategorijas {$category->name} aktīvās preces Top Care Group veikalā.",
             'canonical' => route('shop.category', $category, false),
-            'heading' => $category->name,
-            'intro' => "Kategorijā {$category->name} pieejamās aktīvās preces.",
             'categories' => $this->shopCategories(),
-            'products' => $this->activeProducts()
-                ->whereBelongsTo($category)
-                ->get(),
+            'products' => $this->applyFilters(
+                $this->activeProducts()->whereBelongsTo($category),
+                $filters
+            )->get(),
             'currentCategory' => $category,
+            'filters' => $filters,
         ]);
     }
 
@@ -68,8 +72,36 @@ class ShopController extends Controller
                 'productImages' => fn ($query) => $query->orderBy('sort_order')->orderBy('id'),
             ])
             ->where('is_active', true)
-            ->whereHas('category', fn ($query) => $query->where('is_active', true))
-            ->orderBy('name');
+            ->whereHas('category', fn ($query) => $query->where('is_active', true));
+    }
+
+    private function applyFilters($query, array $filters)
+    {
+        if ($filters['availability'] === 'in_stock') {
+            $query->where('stock_quantity', '>', 0);
+        }
+
+        if ($filters['availability'] === 'out_of_stock') {
+            $query->where('stock_quantity', '<=', 0);
+        }
+
+        if ($filters['price_min'] !== null) {
+            $query->where('price', '>=', $filters['price_min']);
+        }
+
+        if ($filters['price_max'] !== null) {
+            $query->where('price', '<=', $filters['price_max']);
+        }
+
+        match ($filters['sort']) {
+            'newest' => $query->reorder()->latest(),
+            'price_asc' => $query->reorder()->orderBy('price')->orderBy('name'),
+            'price_desc' => $query->reorder()->orderByDesc('price')->orderBy('name'),
+            'name_asc' => $query->reorder()->orderBy('name'),
+            default => $query->reorder()->latest(),
+        };
+
+        return $query;
     }
 
     private function shopCategories()
@@ -81,5 +113,20 @@ class ShopController extends Controller
             ])
             ->orderBy('name')
             ->get();
+    }
+
+    private function filters(Request $request): array
+    {
+        $availability = $request->string('availability')->value();
+        $sort = $request->string('sort')->value();
+        $priceMin = $request->input('price_min');
+        $priceMax = $request->input('price_max');
+
+        return [
+            'availability' => in_array($availability, ['in_stock', 'out_of_stock'], true) ? $availability : null,
+            'price_min' => is_numeric($priceMin) ? max(0, (float) $priceMin) : null,
+            'price_max' => is_numeric($priceMax) ? max(0, (float) $priceMax) : null,
+            'sort' => in_array($sort, ['newest', 'price_asc', 'price_desc', 'name_asc'], true) ? $sort : 'newest',
+        ];
     }
 }

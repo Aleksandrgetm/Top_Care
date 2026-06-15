@@ -143,29 +143,55 @@
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const revealElements = document.querySelectorAll('[data-reveal]');
+                const dropdowns = document.querySelectorAll('[data-filter-dropdown]');
 
-                if (!revealElements.length) {
-                    return;
+                if (revealElements.length) {
+                    const observer = new IntersectionObserver(
+                        (entries) => {
+                            entries.forEach((entry) => {
+                                if (!entry.isIntersecting) {
+                                    return;
+                                }
+
+                                entry.target.classList.add('is-visible');
+                                observer.unobserve(entry.target);
+                            });
+                        },
+                        {
+                            threshold: 0.16,
+                            rootMargin: '0px 0px -8% 0px',
+                        }
+                    );
+
+                    revealElements.forEach((element) => observer.observe(element));
                 }
 
-                const observer = new IntersectionObserver(
-                    (entries) => {
-                        entries.forEach((entry) => {
-                            if (!entry.isIntersecting) {
-                                return;
-                            }
+                dropdowns.forEach((dropdown) => {
+                    const trigger = dropdown.querySelector('[data-filter-dropdown-trigger]');
+                    const panel = dropdown.querySelector('[data-filter-dropdown-panel]');
 
-                            entry.target.classList.add('is-visible');
-                            observer.unobserve(entry.target);
-                        });
-                    },
-                    {
-                        threshold: 0.16,
-                        rootMargin: '0px 0px -8% 0px',
+                    if (!trigger || !panel) {
+                        return;
                     }
-                );
 
-                revealElements.forEach((element) => observer.observe(element));
+                    const setOpen = (open) => {
+                        dropdown.dataset.open = open ? 'true' : 'false';
+                        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+                        panel.style.maxHeight = open ? `${panel.scrollHeight}px` : '0px';
+                    };
+
+                    setOpen(dropdown.dataset.open === 'true');
+
+                    trigger.addEventListener('click', () => {
+                        setOpen(dropdown.dataset.open !== 'true');
+                    });
+
+                    window.addEventListener('resize', () => {
+                        if (dropdown.dataset.open === 'true') {
+                            panel.style.maxHeight = `${panel.scrollHeight}px`;
+                        }
+                    });
+                });
             });
         </script>
     </body>
