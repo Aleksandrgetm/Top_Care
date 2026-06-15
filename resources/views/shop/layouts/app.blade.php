@@ -244,19 +244,9 @@
                     }
 
                     let activeIndex = Number(mainImage.dataset.galleryIndex ?? 0);
+                    const primaryIndex = Number(mainImage.dataset.galleryIndex ?? 0);
 
-                    const syncMainImage = (index) => {
-                        const image = images[index];
-
-                        if (!image) {
-                            return;
-                        }
-
-                        activeIndex = index;
-                        mainImage.src = image.src;
-                        mainImage.alt = image.alt;
-                        mainImage.dataset.galleryIndex = String(index);
-
+                    const syncThumbnailState = (index) => {
                         thumbnails.forEach((thumbnail) => {
                             const isActive = Number(thumbnail.dataset.galleryIndex) === index;
                             thumbnail.classList.toggle('ring-2', isActive);
@@ -282,7 +272,7 @@
                             lightboxImage.classList.remove('is-switching');
                         }, 120);
 
-                        syncMainImage(index);
+                        syncThumbnailState(index);
                     };
 
                     const openLightbox = (index) => {
@@ -299,6 +289,8 @@
                         lightbox.classList.remove('is-open');
                         lightbox.setAttribute('aria-hidden', 'true');
                         document.body.classList.remove('overflow-hidden');
+                        activeIndex = primaryIndex;
+                        syncThumbnailState(primaryIndex);
                         window.setTimeout(() => {
                             if (!lightbox.classList.contains('is-open')) {
                                 lightbox.hidden = true;
@@ -315,14 +307,14 @@
                         syncLightboxImage(nextIndex);
                     };
 
-                    syncMainImage(activeIndex);
+                    syncThumbnailState(primaryIndex);
 
-                    mainTrigger.addEventListener('click', () => openLightbox(activeIndex));
+                    mainTrigger.addEventListener('click', () => openLightbox(primaryIndex));
 
                     thumbnails.forEach((thumbnail) => {
                         thumbnail.addEventListener('click', () => {
                             const index = Number(thumbnail.dataset.galleryIndex ?? 0);
-                            syncMainImage(index);
+                            openLightbox(index);
                         });
                     });
 
