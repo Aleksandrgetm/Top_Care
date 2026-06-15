@@ -22,6 +22,7 @@
     <body class="bg-white text-[#1f2933]">
         @php
             $currentPath = request()->path();
+            $cartCount = (int) collect(session('cart', []))->sum('quantity');
             $navigation = [
                 ['label' => 'Sākums', 'path' => '/'],
                 ['label' => 'Pakalpojumi', 'path' => '/pakalpojumi'],
@@ -59,6 +60,20 @@
                         </a>
                     @endforeach
 
+                    <a href="{{ route('cart.index') }}" class="relative inline-flex h-12 w-12 items-center justify-center rounded-full border border-[#06402B]/12 bg-white text-[#06402B] transition hover:-translate-y-0.5 hover:bg-[#eef4ef]">
+                        <span class="sr-only">Grozs</span>
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                            <path d="M3 4h2.2c.5 0 .94.34 1.06.82L6.8 7H20a1 1 0 0 1 .97 1.24l-1.4 5.6a1 1 0 0 1-.97.76H9.2a1 1 0 0 1-.97-.76L5.1 3.64A1 1 0 0 0 4.14 3H3" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="10" cy="19" r="1.5"/>
+                            <circle cx="18" cy="19" r="1.5"/>
+                        </svg>
+                        @if ($cartCount > 0)
+                            <span class="absolute -right-1 -top-1 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#BFD730] px-1.5 text-[11px] font-bold leading-none text-[#0f241d]">
+                                {{ $cartCount }}
+                            </span>
+                        @endif
+                    </a>
+
                     <a class="rounded-full border border-[rgba(6,64,43,0.12)] bg-[#06402B] px-5 py-3 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(6,64,43,0.18)] transition-all duration-[250ms] ease-in-out hover:translate-y-[-2px] hover:bg-[#0b5c3f] hover:shadow-[0_12px_28px_rgba(6,64,43,0.25)]" href="/kontakti">
                         Saņemt piedāvājumu
                     </a>
@@ -78,6 +93,12 @@
                                     {{ $item['label'] }}
                                 </a>
                             @endforeach
+                            <a href="{{ route('cart.index') }}" class="mt-1 flex items-center justify-between rounded-2xl border border-[#06402B]/10 bg-white px-4 py-3 text-sm font-semibold text-[#06402B] transition hover:bg-[#f3f7f2]">
+                                <span>Grozs</span>
+                                <span class="inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#BFD730] px-1.5 text-[11px] font-bold leading-none text-[#0f241d]">
+                                    {{ $cartCount }}
+                                </span>
+                            </a>
                             <a href="/kontakti" class="mt-2 rounded-full border border-[rgba(6,64,43,0.12)] bg-[#06402B] px-5 py-3 text-center text-sm font-semibold text-white shadow-[0_8px_20px_rgba(6,64,43,0.18)] transition-all duration-[250ms] ease-in-out hover:translate-y-[-2px] hover:bg-[#0b5c3f] hover:shadow-[0_12px_28px_rgba(6,64,43,0.25)]">
                                 Saņemt piedāvājumu
                             </a>
@@ -88,6 +109,19 @@
         </header>
 
         <main>
+            <div class="mx-auto max-w-[1320px] px-5 pt-6 sm:px-8 lg:px-10">
+                @if (session('status'))
+                    <div class="mb-4 rounded-[1.4rem] border border-[#BFD730]/35 bg-[#edf7d3] px-5 py-4 text-sm font-medium text-[#244338]">
+                        {{ session('status') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="mb-4 rounded-[1.4rem] border border-[#a12626]/15 bg-[#fff6f6] px-5 py-4 text-sm font-medium text-[#8f2a2a]">
+                        {{ session('error') }}
+                    </div>
+                @endif
+            </div>
             @yield('content')
         </main>
 

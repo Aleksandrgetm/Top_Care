@@ -18,8 +18,10 @@ const serverPageSlug = window.TopCarePageSlug ?? null;
 const serverPageContent = window.TopCarePageContent ?? {};
 const serverGalleryImages = window.TopCareGalleryImages ?? [];
 const serverBeforeAfterItems = window.TopCareBeforeAfterItems ?? [];
+const serverCartCount = window.TopCareCartCount ?? 0;
 const brandLogo = '/images/logo.png';
 const privacyPolicyPath = '/privatuma-politika';
+const cartPath = '/grozs';
 const cookieConsentStorageKey = 'topcare_cookie_consent';
 const defaultCookieConsent = {
     necessary: true,
@@ -176,6 +178,7 @@ const navigation = [
     { label: 'Veikals', path: '/veikals' },
     { label: 'Kontakti', path: '/kontakti' },
 ];
+const cartCount = ref(serverCartCount);
 
 const isNavItemActive = (path) => {
     if (path === '/') {
@@ -971,6 +974,20 @@ onBeforeUnmount(() => {
                         {{ item.label }}
                     </a>
                     <a
+                        :href="cartPath"
+                        class="relative inline-flex h-12 w-12 items-center justify-center rounded-full border border-[#06402B]/12 bg-white/85 text-[#06402B] transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-[#f3f7f2]"
+                    >
+                        <span class="sr-only">Grozs</span>
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                            <path d="M3 4h2.2c.5 0 .94.34 1.06.82L6.8 7H20a1 1 0 0 1 .97 1.24l-1.4 5.6a1 1 0 0 1-.97.76H9.2a1 1 0 0 1-.97-.76L5.1 3.64A1 1 0 0 0 4.14 3H3" stroke-linecap="round" stroke-linejoin="round" />
+                            <circle cx="10" cy="19" r="1.5" />
+                            <circle cx="18" cy="19" r="1.5" />
+                        </svg>
+                        <span v-if="cartCount > 0" class="absolute -right-1 -top-1 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#BFD730] px-1.5 text-[11px] font-bold leading-none text-[#0f241d]">
+                            {{ cartCount }}
+                        </span>
+                    </a>
+                    <a
                         :class="[
                             'rounded-full border border-[rgba(6,64,43,0.12)] px-5 py-3 text-sm font-semibold text-white transition-all duration-[250ms] ease-in-out',
                             useLightHeader
@@ -999,8 +1016,8 @@ onBeforeUnmount(() => {
                 </button>
             </div>
 
-            <div
-                v-if="isMenuOpen"
+                <div
+                    v-if="isMenuOpen"
                 class="border-t border-[#06402B]/8 bg-white/96 px-5 py-4 shadow-[0_18px_60px_rgba(6,64,43,0.12)] backdrop-blur-xl transition-all duration-300 ease-in-out lg:hidden"
             >
                 <div class="mx-auto flex max-w-[1320px] flex-col gap-2">
@@ -1015,6 +1032,18 @@ onBeforeUnmount(() => {
                         @click="closeMenu"
                     >
                         {{ item.label }}
+                    </a>
+                    <a
+                        :href="cartPath"
+                        class="rounded-2xl border border-[#06402B]/10 bg-white px-4 py-3 text-left text-sm font-semibold text-[#06402B] transition-all duration-300 ease-in-out hover:bg-[#f3f7f2]"
+                        @click="closeMenu"
+                    >
+                        <span class="flex items-center justify-between">
+                            <span>Grozs</span>
+                            <span class="inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#BFD730] px-1.5 text-[11px] font-bold leading-none text-[#0f241d]">
+                                {{ cartCount }}
+                            </span>
+                        </span>
                     </a>
                     <a
                         class="mt-2 rounded-full border border-[rgba(6,64,43,0.12)] bg-[#06402B] px-5 py-3 text-center text-sm font-semibold text-white shadow-[0_8px_20px_rgba(6,64,43,0.18)] transition-all duration-[250ms] ease-in-out hover:translate-y-[-2px] hover:bg-[#0b5c3f] hover:shadow-[0_12px_28px_rgba(6,64,43,0.25)]"

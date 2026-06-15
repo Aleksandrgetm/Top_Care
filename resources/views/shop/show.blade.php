@@ -51,10 +51,23 @@
                     </div>
 
                     <div class="mt-8 flex flex-col gap-3">
-                        <a href="{{ route('shop.index') }}" class="inline-flex items-center justify-center rounded-full bg-[#06402B] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#0b5c3f]">
+                        @if ($product->stock_quantity > 0)
+                            <form method="POST" action="{{ route('cart.store', ['product' => $product->id]) }}">
+                                @csrf
+                                <button type="submit" class="inline-flex w-full items-center justify-center rounded-full bg-[#06402B] px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#0b5c3f]">
+                                    Pievienot grozam
+                                </button>
+                            </form>
+                        @else
+                            <span class="inline-flex w-full items-center justify-center rounded-full border border-[#06402B]/10 bg-[#eef2ef] px-6 py-3 text-sm font-semibold text-[#60716a]">
+                                Nav pieejams
+                            </span>
+                        @endif
+
+                        <a href="{{ route('shop.index') }}" class="inline-flex items-center justify-center rounded-full border border-[#06402B]/12 bg-[#f7faf7] px-6 py-3 text-sm font-semibold text-[#06402B] transition hover:-translate-y-0.5 hover:bg-[#eef4ef]">
                             Atpakaļ uz veikalu
                         </a>
-                        <a href="{{ route('shop.category', $product->category) }}" class="inline-flex items-center justify-center rounded-full border border-[#06402B]/12 bg-[#f7faf7] px-6 py-3 text-sm font-semibold text-[#06402B] transition hover:-translate-y-0.5 hover:bg-[#eef4ef]">
+                        <a href="{{ route('shop.category', $product->category) }}" class="inline-flex items-center justify-center rounded-full border border-[#06402B]/12 bg-white px-6 py-3 text-sm font-semibold text-[#06402B] transition hover:-translate-y-0.5 hover:bg-[#eef4ef]">
                             Skatīt kategoriju
                         </a>
                     </div>

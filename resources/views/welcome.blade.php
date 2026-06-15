@@ -26,6 +26,7 @@
             window.TopCarePageContent = @json($pageContent ?? []);
             window.TopCareGalleryImages = @json($galleryImages ?? []);
             window.TopCareBeforeAfterItems = @json($beforeAfterItems ?? []);
+            window.TopCareCartCount = @json((int) collect(session('cart', []))->sum('quantity'));
         </script>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
