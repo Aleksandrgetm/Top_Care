@@ -4,7 +4,6 @@
     @php
         $productImages = $product->productImages->values();
         $primaryImage = $productImages->first();
-        $galleryImages = $productImages->slice(1);
         $galleryPayload = $productImages
             ->map(function ($image) use ($product) {
                 return [
@@ -19,7 +18,7 @@
     <section class="bg-white py-12 sm:py-16 lg:py-18">
         <div class="mx-auto grid max-w-[1320px] gap-10 px-5 sm:px-8 lg:grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] lg:items-start lg:gap-14 lg:px-10">
             <div
-                class="space-y-4 lg:max-w-[560px]"
+                class="space-y-3 lg:max-w-[560px]"
                 data-product-gallery
                 @if ($productImages->isNotEmpty())
                     data-gallery-images='@json($galleryPayload)'
@@ -42,24 +41,25 @@
                         >
                     </button>
 
-                    @if ($galleryImages->isNotEmpty())
-                        <div data-reveal class="reveal grid grid-cols-3 gap-3 sm:grid-cols-4">
-                            @foreach ($galleryImages as $image)
-                                <button
-                                    type="button"
-                                    class="gallery-thumb group overflow-hidden rounded-[1.25rem] border border-[#06402B]/8 bg-[#edf3ef] shadow-[0_10px_26px_rgba(6,64,43,0.05)]"
-                                    data-gallery-thumb
-                                    data-gallery-index="{{ $loop->iteration }}"
-                                    data-gallery-src="{{ route('media.public', ['path' => $image->image_path]) }}"
-                                    aria-label="Parādīt attēlu {{ $loop->iteration + 1 }}"
-                                >
-                                    <img
-                                        src="{{ route('media.public', ['path' => $image->image_path]) }}"
-                                        alt="{{ $product->name }} galerija {{ $loop->iteration + 1 }}"
-                                        class="aspect-square w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                    @if ($productImages->count() > 1)
+                        <div data-reveal class="reveal rounded-[1.6rem] border border-[#06402B]/8 bg-[#f7faf7] p-3 shadow-[0_12px_32px_rgba(6,64,43,0.05)]">
+                            <div class="gallery-thumb-strip" aria-label="Produkta attēlu sīktēli">
+                                @foreach ($productImages as $image)
+                                    <button
+                                        type="button"
+                                        class="gallery-thumb group {{ $loop->first ? 'ring-2 ring-[#06402B] ring-offset-2 ring-offset-[#f7faf7]' : '' }}"
+                                        data-gallery-thumb
+                                        data-gallery-index="{{ $loop->index }}"
+                                        aria-label="Atvērt attēlu {{ $loop->iteration }}"
                                     >
-                                </button>
-                            @endforeach
+                                        <img
+                                            src="{{ route('media.public', ['path' => $image->image_path]) }}"
+                                            alt="{{ $product->name }} galerija {{ $loop->iteration }}"
+                                            class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                                        >
+                                    </button>
+                                @endforeach
+                            </div>
                         </div>
                     @endif
 
