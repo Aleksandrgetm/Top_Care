@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ShopController;
 use App\Models\BeforeAfterItem;
 use App\Models\Product;
 use App\Models\GalleryImage;
@@ -158,6 +159,10 @@ foreach ($pages as $path => $meta) {
         ]);
     });
 }
+
+Route::get('/veikals', [ShopController::class, 'index'])->name('shop.index');
+Route::get('/veikals/kategorija/{category:slug}', [ShopController::class, 'category'])->name('shop.category');
+Route::get('/veikals/produkts/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
 
 Route::post('/contact', [ContactController::class, 'submit'])
     ->middleware('throttle:5,1')

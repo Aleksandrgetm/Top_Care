@@ -173,8 +173,17 @@ const navigation = [
     { label: 'Galerija', path: '/galerija' },
     { label: 'Par mums', path: '/par-mums' },
     { label: 'Pirms / Pēc', path: '/pirms-pec' },
+    { label: 'Veikals', path: '/veikals' },
     { label: 'Kontakti', path: '/kontakti' },
 ];
+
+const isNavItemActive = (path) => {
+    if (path === '/') {
+        return currentPath === '/';
+    }
+
+    return currentPath === path || currentPath.startsWith(`${path}/`);
+};
 
 const socialLinks = [
     {
@@ -950,7 +959,7 @@ onBeforeUnmount(() => {
                         :href="item.path"
                         :class="[
                             'nav-link text-sm font-medium transition-all duration-300 ease-in-out',
-                            currentPath === item.path
+                            isNavItemActive(item.path)
                                 ? useLightHeader
                                     ? 'nav-link--active text-[#BFD730]'
                                     : 'nav-link--active text-[#06402B]'
@@ -1001,7 +1010,7 @@ onBeforeUnmount(() => {
                         :href="item.path"
                         :class="[
                             'rounded-2xl px-4 py-3 text-left text-sm font-medium transition-all duration-300 ease-in-out hover:bg-[#f3f7f2] hover:text-[#06402B]',
-                            currentPath === item.path ? 'bg-[#f3f7f2] text-[#06402B]' : 'text-[#244338]',
+                            isNavItemActive(item.path) ? 'bg-[#f3f7f2] text-[#06402B]' : 'text-[#244338]',
                         ]"
                         @click="closeMenu"
                     >
