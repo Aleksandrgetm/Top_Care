@@ -7,15 +7,23 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProductImageController extends Controller
 {
     public function store(Request $request, Product $product): RedirectResponse
     {
-        $validated = $request->validate([
+        $validated = Validator::make($request->all(), [
             'images' => ['required', 'array', 'min:1'],
-            'images.*' => ['required', 'image', 'max:5120'],
-        ]);
+            'images.*' => ['required', 'image', 'max:4096'],
+        ], [
+            'images.required' => 'Please choose at least one photo before uploading.',
+            'images.array' => 'Photos must be uploaded as a file list.',
+            'images.min' => 'Please choose at least one photo before uploading.',
+            'images.*.required' => 'One of the selected files is missing.',
+            'images.*.image' => 'Each uploaded file must be an image.',
+            'images.*.max' => 'Each photo must be 4 MB or smaller.',
+        ])->validate();
 
         $nextSortOrder = (int) $product->productImages()->max('sort_order');
 
@@ -30,7 +38,7 @@ class ProductImageController extends Controller
 
         return redirect()
             ->route('admin.products.edit', $product)
-            ->with('status', 'Product images uploaded successfully.');
+            ->with('status', 'Photos uploaded successfully.');
     }
 
     public function destroy(ProductImage $productImage): RedirectResponse

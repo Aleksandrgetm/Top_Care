@@ -114,7 +114,7 @@ class ProductController extends Controller
             'price' => ['required', 'numeric', 'min:0'],
             'stock_quantity' => ['required', 'integer', 'min:0'],
             'images' => ['nullable', 'array'],
-            'images.*' => ['image', 'max:5120'],
+            'images.*' => ['image', 'max:4096'],
         ]);
     }
 

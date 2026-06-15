@@ -84,7 +84,7 @@
                 Product photos
             </label>
             <input id="images" name="images[]" type="file" accept="image/*" multiple class="mt-4 block w-full rounded-[1.2rem] border border-[#06402B]/12 bg-white px-4 py-3 text-sm text-[#244338] file:mr-4 file:rounded-full file:border-0 file:bg-[#06402B] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white">
-            <p class="mt-3 text-sm text-[#5c6d66]">You can upload multiple product images at once.</p>
+            <p class="mt-3 text-sm text-[#5c6d66]">You can upload multiple product images at once. Maximum file size: 4 MB per image.</p>
             @error('images')
                 <p class="mt-3 text-sm font-medium text-[#a12626]">{{ $message }}</p>
             @enderror

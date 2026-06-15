@@ -48,6 +48,9 @@
             <label for="extra-images" class="block text-sm font-semibold uppercase tracking-[0.14em] text-[#60716a]">
                 Add new photos
             </label>
+            <p class="mt-3 text-sm leading-7 text-[#5c6d66]">
+                Choose one or more images to upload them all at once. Maximum file size: 4 MB per image.
+            </p>
             <input id="extra-images" name="images[]" type="file" accept="image/*" multiple class="mt-4 block w-full rounded-[1.2rem] border border-[#06402B]/12 bg-white px-4 py-3 text-sm text-[#244338] file:mr-4 file:rounded-full file:border-0 file:bg-[#06402B] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white">
             @error('images')
                 <p class="mt-3 text-sm font-medium text-[#a12626]">{{ $message }}</p>
