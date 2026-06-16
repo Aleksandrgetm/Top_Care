@@ -399,33 +399,45 @@
                 deliverySelectors.forEach((root) => {
                     const input = root.querySelector('[data-delivery-method-input]');
                     const options = root.querySelectorAll('[data-delivery-option]');
-                    const sections = root.querySelectorAll('[data-delivery-section]');
+                    const sections = root.querySelectorAll('[data-delivery-section], [data-delivery-section-values]');
 
                     if (!input || !options.length || !sections.length) {
                         return;
                     }
+
+                    const sectionMatchesValue = (section, value) => {
+                        const sectionValues = (section.dataset.deliverySectionValues || section.dataset.deliverySection || '')
+                            .split(/\s+/)
+                            .filter(Boolean);
+
+                        return sectionValues.includes(value);
+                    };
 
                     const syncSectionFields = (section, active) => {
                         section.querySelectorAll('input, textarea, select').forEach((field) => {
                             field.disabled = !active;
 
                             if (field.dataset.deliveryRequired) {
-                                field.required = active && field.dataset.deliveryRequired === input.value;
+                                field.required = active && field.dataset.deliveryRequired === 'address';
                             }
                         });
                     };
 
                     const setValue = (value) => {
-                        input.value = value;
+                        const fallbackValue = options[0]?.dataset.deliveryOption ?? '';
+                        const hasMatchingOption = Array.from(options).some((option) => option.dataset.deliveryOption === value);
+                        const activeValue = hasMatchingOption ? value : fallbackValue;
+
+                        input.value = activeValue;
 
                         options.forEach((option) => {
-                            const selected = option.dataset.deliveryOption === value;
+                            const selected = option.dataset.deliveryOption === activeValue;
                             option.classList.toggle('is-selected', selected);
                             option.setAttribute('aria-checked', selected ? 'true' : 'false');
                         });
 
                         sections.forEach((section) => {
-                            const active = section.dataset.deliverySection === value;
+                            const active = sectionMatchesValue(section, activeValue);
                             section.classList.toggle('is-active', active);
                             syncSectionFields(section, active);
                         });

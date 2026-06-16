@@ -17,6 +17,9 @@ class Product extends Model
         'price',
         'stock_quantity',
         'is_active',
+        'supports_courier',
+        'supports_dpd',
+        'supports_omniva',
     ];
 
     protected function casts(): array
@@ -25,6 +28,9 @@ class Product extends Model
             'price' => 'decimal:2',
             'stock_quantity' => 'integer',
             'is_active' => 'boolean',
+            'supports_courier' => 'boolean',
+            'supports_dpd' => 'boolean',
+            'supports_omniva' => 'boolean',
         ];
     }
 

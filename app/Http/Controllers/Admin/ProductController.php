@@ -42,7 +42,13 @@ class ProductController extends Controller
     public function create(): View
     {
         return view('admin.products.create', [
-            'product' => new Product(['is_active' => true, 'stock_quantity' => 0]),
+            'product' => new Product([
+                'is_active' => true,
+                'stock_quantity' => 0,
+                'supports_courier' => true,
+                'supports_dpd' => false,
+                'supports_omniva' => false,
+            ]),
             'categories' => $this->categories(),
         ]);
     }
@@ -60,6 +66,9 @@ class ProductController extends Controller
                 'price' => $validated['price'],
                 'stock_quantity' => $validated['stock_quantity'],
                 'is_active' => $request->boolean('is_active', true),
+                'supports_courier' => $request->boolean('supports_courier', true),
+                'supports_dpd' => $request->boolean('supports_dpd'),
+                'supports_omniva' => $request->boolean('supports_omniva'),
             ]);
 
             $this->storeImages($product, $request->file('images', []));
@@ -98,6 +107,9 @@ class ProductController extends Controller
                 'price' => $validated['price'],
                 'stock_quantity' => $validated['stock_quantity'],
                 'is_active' => $request->boolean('is_active'),
+                'supports_courier' => $request->boolean('supports_courier', true),
+                'supports_dpd' => $request->boolean('supports_dpd'),
+                'supports_omniva' => $request->boolean('supports_omniva'),
             ]);
 
             $this->storeImages($product, $request->file('images', []));
@@ -125,6 +137,9 @@ class ProductController extends Controller
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
             'stock_quantity' => ['required', 'integer', 'min:0'],
+            'supports_courier' => ['nullable', 'boolean'],
+            'supports_dpd' => ['nullable', 'boolean'],
+            'supports_omniva' => ['nullable', 'boolean'],
             'images' => ['nullable', 'array'],
             'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ]);

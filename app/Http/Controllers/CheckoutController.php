@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Support\CheckoutDeliveryMethodService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
@@ -14,6 +16,11 @@ use Illuminate\View\View;
 
 class CheckoutController extends Controller
 {
+    public function __construct(
+        private readonly CheckoutDeliveryMethodService $checkoutDeliveryMethodService,
+    ) {
+    }
+
     public function create(): View|RedirectResponse
     {
         $cart = $this->cart();
@@ -22,6 +29,9 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')->with('error', 'Grozs ir tukšs. Pirms noformēšanas pievienojiet preces.');
         }
 
+        $products = $this->loadCartProducts($cart);
+        $deliveryMethods = $this->checkoutDeliveryMethodService->availableForProducts($products);
+
         return view('shop.checkout', [
             'title' => 'Checkout | Top Care Group',
             'description' => 'Noformējiet Top Care Group pasūtījumu bez reģistrācijas.',
@@ -29,7 +39,12 @@ class CheckoutController extends Controller
             'items' => array_values($cart),
             'cartTotal' => $this->cartTotal($cart),
             'cartCount' => $this->cartCount($cart),
-            'deliveryMethods' => $this->deliveryMethods(),
+            'deliveryMethods' => $deliveryMethods,
+            'defaultDeliveryMethod' => $this->checkoutDeliveryMethodService->defaultKeyForProducts($products),
+            'addressMethodKeys' => collect($deliveryMethods)
+                ->filter(fn (array $method) => (bool) ($method['requires_address'] ?? false))
+                ->keys()
+                ->implode(' '),
         ]);
     }
 
@@ -41,26 +56,25 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')->with('error', 'Grozs ir tukšs. Pirms noformēšanas pievienojiet preces.');
         }
 
+        $products = $this->loadCartProducts($cart);
+        $deliveryMethods = $this->checkoutDeliveryMethodService->availableForProducts($products);
+        $allowedDeliveryMethods = array_keys($deliveryMethods);
+        $selectedMethod = (string) $request->input('delivery_method', '');
+        $requiresAddress = $this->checkoutDeliveryMethodService->requiresAddress($selectedMethod);
+
         $validated = $request->validate([
             'customer_name' => ['required', 'string', 'max:255'],
             'customer_phone' => ['required', 'string', 'max:255'],
             'customer_email' => ['required', 'email:rfc', 'max:255'],
-            'delivery_method' => ['required', Rule::in(array_keys($this->deliveryMethods()))],
-            'city' => [Rule::requiredIf(fn () => $request->string('delivery_method')->toString() === 'delivery'), 'nullable', 'string', 'max:255'],
-            'street' => [Rule::requiredIf(fn () => $request->string('delivery_method')->toString() === 'delivery'), 'nullable', 'string', 'max:255'],
-            'house' => [Rule::requiredIf(fn () => $request->string('delivery_method')->toString() === 'delivery'), 'nullable', 'string', 'max:50'],
+            'delivery_method' => ['required', Rule::in($allowedDeliveryMethods)],
+            'city' => [Rule::requiredIf($requiresAddress), 'nullable', 'string', 'max:255'],
+            'street' => [Rule::requiredIf($requiresAddress), 'nullable', 'string', 'max:255'],
+            'house' => [Rule::requiredIf($requiresAddress), 'nullable', 'string', 'max:50'],
             'apartment' => ['nullable', 'string', 'max:50'],
-            'postal_code' => [Rule::requiredIf(fn () => $request->string('delivery_method')->toString() === 'delivery'), 'nullable', 'string', 'max:50'],
+            'postal_code' => [Rule::requiredIf($requiresAddress), 'nullable', 'string', 'max:50'],
             'delivery_comment' => ['nullable', 'string', 'max:1000'],
             'comment' => ['nullable', 'string', 'max:2000'],
         ]);
-
-        $productIds = array_map(static fn (array $item) => (int) $item['product_id'], $cart);
-        $products = Product::query()
-            ->whereIn('id', $productIds)
-            ->where('is_active', true)
-            ->get()
-            ->keyBy('id');
 
         $normalizedItems = [];
         $totalPrice = 0.0;
@@ -97,7 +111,7 @@ class CheckoutController extends Controller
             ];
         }
 
-        $deliveryAddress = $this->composeDeliveryAddress($validated);
+        $deliveryAddress = $this->composeDeliveryAddress($validated, $requiresAddress);
         $orderComment = $this->composeOrderComment(
             $validated['comment'] ?? null,
             $validated['delivery_comment'] ?? null
@@ -240,17 +254,20 @@ class CheckoutController extends Controller
         return (float) collect($cart)->sum(fn (array $item) => ((float) $item['price']) * ((int) $item['quantity']));
     }
 
-    private function deliveryMethods(): array
+    private function loadCartProducts(array $cart): Collection
     {
-        return [
-            'delivery' => 'Piegāde Latvijā',
-            'pickup' => 'Saņemšana uz vietas',
-        ];
+        $productIds = array_map(static fn (array $item) => (int) $item['product_id'], $cart);
+
+        return Product::query()
+            ->whereIn('id', $productIds)
+            ->where('is_active', true)
+            ->get()
+            ->keyBy('id');
     }
 
-    private function composeDeliveryAddress(array $validated): string
+    private function composeDeliveryAddress(array $validated, bool $requiresAddress): string
     {
-        if (($validated['delivery_method'] ?? null) !== 'delivery') {
+        if (! $requiresAddress) {
             return 'Saņemšana uz vietas';
         }
 

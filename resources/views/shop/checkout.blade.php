@@ -77,53 +77,58 @@
                                     <input
                                         type="hidden"
                                         name="delivery_method"
-                                        value="{{ old('delivery_method', 'delivery') }}"
+                                        value="{{ old('delivery_method', $defaultDeliveryMethod) }}"
                                         data-delivery-method-input
                                     >
 
                                     <div class="checkout-delivery-options" role="radiogroup" aria-label="Piegādes veids">
-                                        <button
-                                            type="button"
-                                            class="checkout-delivery-option"
-                                            data-delivery-option="delivery"
-                                            role="radio"
-                                            aria-checked="false"
-                                        >
-                                            <span class="checkout-delivery-option__icon" aria-hidden="true">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M3 7.5h10.5v7.5H3z" />
-                                                    <path d="M13.5 10.5H17l3 3v1.5h-6.5z" />
-                                                    <circle cx="7" cy="17.5" r="1.5" />
-                                                    <circle cx="18" cy="17.5" r="1.5" />
-                                                </svg>
-                                            </span>
-                                            <span class="checkout-delivery-option__content">
-                                                <span class="checkout-delivery-option__title">Piegāde Latvijā</span>
-                                                <span class="checkout-delivery-option__text">Piegāde uz norādīto adresi</span>
-                                            </span>
-                                            <span class="checkout-delivery-option__meta">Tiks precizēta</span>
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            class="checkout-delivery-option"
-                                            data-delivery-option="pickup"
-                                            role="radio"
-                                            aria-checked="false"
-                                        >
-                                            <span class="checkout-delivery-option__icon" aria-hidden="true">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M4.5 9.5 12 4l7.5 5.5" />
-                                                    <path d="M6.5 8.5V20h11V8.5" />
-                                                    <path d="M9.5 20v-5h5v5" />
-                                                </svg>
-                                            </span>
-                                            <span class="checkout-delivery-option__content">
-                                                <span class="checkout-delivery-option__title">Saņemšana uz vietas</span>
-                                                <span class="checkout-delivery-option__text">Saņemšana pēc vienošanās</span>
-                                            </span>
-                                            <span class="checkout-delivery-option__meta">Bezmaksas</span>
-                                        </button>
+                                        @foreach ($deliveryMethods as $methodKey => $method)
+                                            <button
+                                                type="button"
+                                                class="checkout-delivery-option"
+                                                data-delivery-option="{{ $methodKey }}"
+                                                role="radio"
+                                                aria-checked="false"
+                                            >
+                                                <span class="checkout-delivery-option__icon" aria-hidden="true">
+                                                    @if ($method['icon'] === 'courier')
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M3 7.5h10.5v7.5H3z" />
+                                                            <path d="M13.5 10.5H17l3 3v1.5h-6.5z" />
+                                                            <circle cx="7" cy="17.5" r="1.5" />
+                                                            <circle cx="18" cy="17.5" r="1.5" />
+                                                        </svg>
+                                                    @elseif ($method['icon'] === 'dpd')
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M4 7.5h9v9H4z" />
+                                                            <path d="M13 10h3.5l2 2.5V16H13z" />
+                                                            <path d="M7 10.5h3" />
+                                                            <path d="M7 13h2" />
+                                                            <circle cx="8" cy="18" r="1.5" />
+                                                            <circle cx="17" cy="18" r="1.5" />
+                                                        </svg>
+                                                    @elseif ($method['icon'] === 'omniva')
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                            <rect x="5" y="4.5" width="14" height="15" rx="2" />
+                                                            <path d="M9 8.5h6" />
+                                                            <path d="M9 12h6" />
+                                                            <path d="M9 15.5h3" />
+                                                        </svg>
+                                                    @else
+                                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M4.5 9.5 12 4l7.5 5.5" />
+                                                            <path d="M6.5 8.5V20h11V8.5" />
+                                                            <path d="M9.5 20v-5h5v5" />
+                                                        </svg>
+                                                    @endif
+                                                </span>
+                                                <span class="checkout-delivery-option__content">
+                                                    <span class="checkout-delivery-option__title">{{ $method['label'] }}</span>
+                                                    <span class="checkout-delivery-option__text">{{ $method['description'] }}</span>
+                                                </span>
+                                                <span class="checkout-delivery-option__meta">{{ $method['price_label'] }}</span>
+                                            </button>
+                                        @endforeach
                                     </div>
 
                                     @error('delivery_method')
@@ -132,144 +137,148 @@
                                 </div>
 
                                 <div class="checkout-delivery-panels">
-                                    <div class="checkout-delivery-panel" data-delivery-section="delivery">
-                                        <div class="checkout-delivery-panel__inner">
-                                            <div class="checkout-grid checkout-grid--double">
-                                                <div class="checkout-field">
-                                                    <label for="city" class="checkout-field__label">Pilsēta</label>
-                                                    <input
-                                                        id="city"
-                                                        name="city"
-                                                        type="text"
-                                                        value="{{ old('city') }}"
-                                                        class="checkout-field__input"
-                                                        data-delivery-required="delivery"
-                                                    >
-                                                    @error('city')
-                                                        <p class="checkout-field__error">{{ $message }}</p>
-                                                    @enderror
-                                                </div>
-
-                                                <div class="checkout-field">
-                                                    <label for="postal_code" class="checkout-field__label">Pasta indekss</label>
-                                                    <input
-                                                        id="postal_code"
-                                                        name="postal_code"
-                                                        type="text"
-                                                        value="{{ old('postal_code') }}"
-                                                        class="checkout-field__input"
-                                                        data-delivery-required="delivery"
-                                                    >
-                                                    @error('postal_code')
-                                                        <p class="checkout-field__error">{{ $message }}</p>
-                                                    @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="checkout-grid checkout-grid--triple">
-                                                <div
-                                                    class="checkout-field checkout-field--autocomplete checkout-grid__span-2"
-                                                    data-address-autocomplete
-                                                    data-suggest-url="{{ route('checkout.address-suggestions') }}"
-                                                    data-address-fill-street="#street"
-                                                    data-address-fill-house="#house"
-                                                    data-address-fill-city="#city"
-                                                    data-address-fill-postal="#postal_code"
-                                                >
-                                                    <label for="street" class="checkout-field__label">Iela</label>
-                                                    <div class="checkout-autocomplete">
+                                    @if ($addressMethodKeys !== '')
+                                        <div class="checkout-delivery-panel" data-delivery-section-values="{{ $addressMethodKeys }}">
+                                            <div class="checkout-delivery-panel__inner">
+                                                <div class="checkout-grid checkout-grid--double">
+                                                    <div class="checkout-field">
+                                                        <label for="city" class="checkout-field__label">Pilsēta</label>
                                                         <input
-                                                            id="street"
-                                                            name="street"
+                                                            id="city"
+                                                            name="city"
                                                             type="text"
-                                                            value="{{ old('street') }}"
-                                                            autocomplete="address-line1"
-                                                            placeholder="Sāciet rakstīt ielu vai pilnu adresi Latvijā"
+                                                            value="{{ old('city') }}"
                                                             class="checkout-field__input"
-                                                            data-address-input
-                                                            data-delivery-required="delivery"
-                                                            aria-autocomplete="list"
-                                                            aria-expanded="false"
-                                                            aria-controls="street-address-suggestions"
+                                                            data-delivery-required="address"
                                                         >
-                                                        <div
-                                                            id="street-address-suggestions"
-                                                            class="checkout-autocomplete__panel"
-                                                            data-address-suggestions
-                                                            hidden
-                                                        ></div>
+                                                        @error('city')
+                                                            <p class="checkout-field__error">{{ $message }}</p>
+                                                        @enderror
                                                     </div>
-                                                    <p class="checkout-autocomplete__hint">
-                                                        Autocomplete palīdz aizpildīt adresi, bet varat visu ievadīt arī manuāli.
-                                                    </p>
-                                                    @error('street')
+
+                                                    <div class="checkout-field">
+                                                        <label for="postal_code" class="checkout-field__label">Pasta indekss</label>
+                                                        <input
+                                                            id="postal_code"
+                                                            name="postal_code"
+                                                            type="text"
+                                                            value="{{ old('postal_code') }}"
+                                                            class="checkout-field__input"
+                                                            data-delivery-required="address"
+                                                        >
+                                                        @error('postal_code')
+                                                            <p class="checkout-field__error">{{ $message }}</p>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+
+                                                <div class="checkout-grid checkout-grid--triple">
+                                                    <div
+                                                        class="checkout-field checkout-field--autocomplete checkout-grid__span-2"
+                                                        data-address-autocomplete
+                                                        data-suggest-url="{{ route('checkout.address-suggestions') }}"
+                                                        data-address-fill-street="#street"
+                                                        data-address-fill-house="#house"
+                                                        data-address-fill-city="#city"
+                                                        data-address-fill-postal="#postal_code"
+                                                    >
+                                                        <label for="street" class="checkout-field__label">Iela</label>
+                                                        <div class="checkout-autocomplete">
+                                                            <input
+                                                                id="street"
+                                                                name="street"
+                                                                type="text"
+                                                                value="{{ old('street') }}"
+                                                                autocomplete="address-line1"
+                                                                placeholder="Sāciet rakstīt ielu vai pilnu adresi Latvijā"
+                                                                class="checkout-field__input"
+                                                                data-address-input
+                                                                data-delivery-required="address"
+                                                                aria-autocomplete="list"
+                                                                aria-expanded="false"
+                                                                aria-controls="street-address-suggestions"
+                                                            >
+                                                            <div
+                                                                id="street-address-suggestions"
+                                                                class="checkout-autocomplete__panel"
+                                                                data-address-suggestions
+                                                                hidden
+                                                            ></div>
+                                                        </div>
+                                                        <p class="checkout-autocomplete__hint">
+                                                            Autocomplete palīdz aizpildīt adresi, bet varat visu ievadīt arī manuāli.
+                                                        </p>
+                                                        @error('street')
+                                                            <p class="checkout-field__error">{{ $message }}</p>
+                                                        @enderror
+                                                    </div>
+
+                                                    <div class="checkout-field">
+                                                        <label for="house" class="checkout-field__label">Mājas nr.</label>
+                                                        <input
+                                                            id="house"
+                                                            name="house"
+                                                            type="text"
+                                                            value="{{ old('house') }}"
+                                                            class="checkout-field__input"
+                                                            data-delivery-required="address"
+                                                        >
+                                                        @error('house')
+                                                            <p class="checkout-field__error">{{ $message }}</p>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+
+                                                <div class="checkout-field">
+                                                    <label for="apartment" class="checkout-field__label">Dzīvoklis / birojs</label>
+                                                    <input
+                                                        id="apartment"
+                                                        name="apartment"
+                                                        type="text"
+                                                        value="{{ old('apartment') }}"
+                                                        class="checkout-field__input"
+                                                    >
+                                                    @error('apartment')
                                                         <p class="checkout-field__error">{{ $message }}</p>
                                                     @enderror
                                                 </div>
 
                                                 <div class="checkout-field">
-                                                    <label for="house" class="checkout-field__label">Mājas nr.</label>
-                                                    <input
-                                                        id="house"
-                                                        name="house"
-                                                        type="text"
-                                                        value="{{ old('house') }}"
-                                                        class="checkout-field__input"
-                                                        data-delivery-required="delivery"
-                                                    >
-                                                    @error('house')
+                                                    <label for="delivery_comment" class="checkout-field__label">Komentārs piegādei</label>
+                                                    <textarea
+                                                        id="delivery_comment"
+                                                        name="delivery_comment"
+                                                        rows="3"
+                                                        class="checkout-field__input checkout-field__textarea checkout-field__textarea--compact"
+                                                        placeholder="Piemēram, durvju kods, stāvs vai piekļuves informācija."
+                                                    >{{ old('delivery_comment') }}</textarea>
+                                                    @error('delivery_comment')
                                                         <p class="checkout-field__error">{{ $message }}</p>
                                                     @enderror
                                                 </div>
                                             </div>
+                                        </div>
+                                    @endif
 
-                                            <div class="checkout-field">
-                                                <label for="apartment" class="checkout-field__label">Dzīvoklis / birojs</label>
-                                                <input
-                                                    id="apartment"
-                                                    name="apartment"
-                                                    type="text"
-                                                    value="{{ old('apartment') }}"
-                                                    class="checkout-field__input"
-                                                >
-                                                @error('apartment')
-                                                    <p class="checkout-field__error">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-
-                                            <div class="checkout-field">
-                                                <label for="delivery_comment" class="checkout-field__label">Komentārs piegādei</label>
-                                                <textarea
-                                                    id="delivery_comment"
-                                                    name="delivery_comment"
-                                                    rows="3"
-                                                    class="checkout-field__input checkout-field__textarea checkout-field__textarea--compact"
-                                                    placeholder="Piemēram, durvju kods, stāvs vai piekļuves informācija."
-                                                >{{ old('delivery_comment') }}</textarea>
-                                                @error('delivery_comment')
-                                                    <p class="checkout-field__error">{{ $message }}</p>
-                                                @enderror
+                                    @if (isset($deliveryMethods['pickup']))
+                                        <div class="checkout-delivery-panel" data-delivery-section-values="pickup">
+                                            <div class="checkout-delivery-info">
+                                                <span class="checkout-delivery-info__icon" aria-hidden="true">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M12 8.5v4" />
+                                                        <path d="M12 16h.01" />
+                                                        <path d="M12 3.5a8.5 8.5 0 1 1 0 17 8.5 8.5 0 0 1 0-17Z" />
+                                                    </svg>
+                                                </span>
+                                                <div>
+                                                    <p class="checkout-delivery-info__title">Saņemšana pēc apstiprināšanas</p>
+                                                    <p class="checkout-delivery-info__text">
+                                                        Par saņemšanas laiku un vietu vienosimies pēc pasūtījuma apstiprināšanas.
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="checkout-delivery-panel" data-delivery-section="pickup">
-                                        <div class="checkout-delivery-info">
-                                            <span class="checkout-delivery-info__icon" aria-hidden="true">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M12 8.5v4" />
-                                                    <path d="M12 16h.01" />
-                                                    <path d="M12 3.5a8.5 8.5 0 1 1 0 17 8.5 8.5 0 0 1 0-17Z" />
-                                                </svg>
-                                            </span>
-                                            <div>
-                                                <p class="checkout-delivery-info__title">Saņemšana pēc apstiprināšanas</p>
-                                                <p class="checkout-delivery-info__text">
-                                                    Par saņemšanas laiku un vietu vienosimies pēc pasūtījuma apstiprināšanas.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @endif
                                 </div>
                             </div>
 

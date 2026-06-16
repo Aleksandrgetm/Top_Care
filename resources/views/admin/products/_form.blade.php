@@ -68,6 +68,55 @@
     </div>
 
     <div class="rounded-[1.5rem] border border-[#06402B]/8 bg-[#f8fbf8] p-5 sm:p-6">
+        <p class="block text-sm font-semibold uppercase tracking-[0.14em] text-[#60716a]">
+            Delivery methods
+        </p>
+        <div class="mt-4 grid gap-4 lg:grid-cols-3">
+            <label class="flex items-center justify-between gap-4 rounded-[1.2rem] border border-[#06402B]/8 bg-white px-4 py-4">
+                <div>
+                    <span class="block text-sm font-semibold text-[#12261f]">Kurjers</span>
+                    <span class="mt-1 block text-sm text-[#5c6d66]">Piegāde uz klienta norādīto adresi.</span>
+                </div>
+                <div class="shrink-0">
+                    <input type="hidden" name="supports_courier" value="0">
+                    <input type="checkbox" name="supports_courier" value="1" @checked(old('supports_courier', $product->exists ? $product->supports_courier : true)) class="h-5 w-5 rounded border-[#06402B]/20 text-[#06402B] focus:ring-[#BFD730]">
+                </div>
+            </label>
+
+            <label class="flex items-center justify-between gap-4 rounded-[1.2rem] border border-[#06402B]/8 bg-white px-4 py-4">
+                <div>
+                    <span class="block text-sm font-semibold text-[#12261f]">DPD</span>
+                    <span class="mt-1 block text-sm text-[#5c6d66]">Sagatavots turpmākai DPD integrācijai.</span>
+                </div>
+                <div class="shrink-0">
+                    <input type="hidden" name="supports_dpd" value="0">
+                    <input type="checkbox" name="supports_dpd" value="1" @checked(old('supports_dpd', $product->supports_dpd ?? false)) class="h-5 w-5 rounded border-[#06402B]/20 text-[#06402B] focus:ring-[#BFD730]">
+                </div>
+            </label>
+
+            <label class="flex items-center justify-between gap-4 rounded-[1.2rem] border border-[#06402B]/8 bg-white px-4 py-4">
+                <div>
+                    <span class="block text-sm font-semibold text-[#12261f]">Omniva</span>
+                    <span class="mt-1 block text-sm text-[#5c6d66]">Sagatavots turpmākai Omniva integrācijai.</span>
+                </div>
+                <div class="shrink-0">
+                    <input type="hidden" name="supports_omniva" value="0">
+                    <input type="checkbox" name="supports_omniva" value="1" @checked(old('supports_omniva', $product->supports_omniva ?? false)) class="h-5 w-5 rounded border-[#06402B]/20 text-[#06402B] focus:ring-[#BFD730]">
+                </div>
+            </label>
+        </div>
+        @error('supports_courier')
+            <p class="mt-3 text-sm font-medium text-[#a12626]">{{ $message }}</p>
+        @enderror
+        @error('supports_dpd')
+            <p class="mt-3 text-sm font-medium text-[#a12626]">{{ $message }}</p>
+        @enderror
+        @error('supports_omniva')
+            <p class="mt-3 text-sm font-medium text-[#a12626]">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <div class="rounded-[1.5rem] border border-[#06402B]/8 bg-[#f8fbf8] p-5 sm:p-6">
         <label class="flex items-center justify-between gap-4 rounded-[1.2rem] border border-[#06402B]/8 bg-white px-4 py-4">
             <div>
                 <span class="block text-sm font-semibold text-[#12261f]">Status</span>
