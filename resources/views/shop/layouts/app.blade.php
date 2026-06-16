@@ -182,6 +182,7 @@
                 const dropdowns = document.querySelectorAll('[data-filter-dropdown]');
                 const galleries = document.querySelectorAll('[data-product-gallery]');
                 const steppers = document.querySelectorAll('[data-quantity-stepper]');
+                const addressAutocompleteRoots = document.querySelectorAll('[data-address-autocomplete]');
 
                 if (revealElements.length) {
                     const observer = new IntersectionObserver(
@@ -391,6 +392,151 @@
 
                     input.addEventListener('blur', () => {
                         syncValue(Number(input.value || min));
+                    });
+                });
+
+                addressAutocompleteRoots.forEach((root) => {
+                    const input = root.querySelector('[data-address-input]');
+                    const panel = root.querySelector('[data-address-suggestions]');
+                    const endpoint = root.dataset.suggestUrl;
+
+                    if (!input || !panel || !endpoint) {
+                        return;
+                    }
+
+                    let debounceTimer = null;
+                    let abortController = null;
+                    let activeRequest = 0;
+
+                    const closePanel = () => {
+                        panel.hidden = true;
+                        panel.innerHTML = '';
+                        input.setAttribute('aria-expanded', 'false');
+                    };
+
+                    const openPanel = () => {
+                        panel.hidden = false;
+                        input.setAttribute('aria-expanded', 'true');
+                    };
+
+                    const escapeHtml = (value) =>
+                        String(value)
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/'/g, '&#39;');
+
+                    const renderSuggestions = (suggestions) => {
+                        if (!suggestions.length) {
+                            closePanel();
+                            return;
+                        }
+
+                        panel.innerHTML = suggestions
+                            .map(
+                                (suggestion) => `
+                                    <button
+                                        type="button"
+                                        class="checkout-autocomplete__item"
+                                        data-address-option
+                                        data-address-value="${escapeHtml(suggestion.value ?? '')}"
+                                    >
+                                        ${escapeHtml(suggestion.label ?? '')}
+                                    </button>
+                                `
+                            )
+                            .join('');
+
+                        openPanel();
+
+                        panel.querySelectorAll('[data-address-option]').forEach((option) => {
+                            option.addEventListener('click', () => {
+                                input.value = option.dataset.addressValue ?? '';
+                                closePanel();
+                            });
+                        });
+                    };
+
+                    const renderMessage = (message) => {
+                        panel.innerHTML = `<div class="checkout-autocomplete__status">${escapeHtml(message)}</div>`;
+                        openPanel();
+                    };
+
+                    const fetchSuggestions = async (query) => {
+                        activeRequest += 1;
+                        const requestId = activeRequest;
+
+                        if (abortController) {
+                            abortController.abort();
+                        }
+
+                        abortController = new AbortController();
+
+                        try {
+                            const response = await fetch(`${endpoint}?q=${encodeURIComponent(query)}`, {
+                                headers: {
+                                    Accept: 'application/json',
+                                },
+                                signal: abortController.signal,
+                            });
+
+                            if (!response.ok) {
+                                throw new Error('Request failed');
+                            }
+
+                            const data = await response.json();
+
+                            if (requestId !== activeRequest) {
+                                return;
+                            }
+
+                            renderSuggestions(Array.isArray(data.suggestions) ? data.suggestions : []);
+                        } catch (error) {
+                            if (error.name === 'AbortError') {
+                                return;
+                            }
+
+                            closePanel();
+                        }
+                    };
+
+                    input.addEventListener('input', () => {
+                        const query = input.value.trim();
+
+                        window.clearTimeout(debounceTimer);
+
+                        if (query.length < 3) {
+                            if (abortController) {
+                                abortController.abort();
+                            }
+
+                            closePanel();
+                            return;
+                        }
+
+                        debounceTimer = window.setTimeout(() => {
+                            renderMessage('Meklējam adreses...');
+                            fetchSuggestions(query);
+                        }, 400);
+                    });
+
+                    input.addEventListener('focus', () => {
+                        if (panel.innerHTML.trim() !== '') {
+                            openPanel();
+                        }
+                    });
+
+                    input.addEventListener('keydown', (event) => {
+                        if (event.key === 'Escape') {
+                            closePanel();
+                        }
+                    });
+
+                    document.addEventListener('click', (event) => {
+                        if (!root.contains(event.target)) {
+                            closePanel();
+                        }
                     });
                 });
             });

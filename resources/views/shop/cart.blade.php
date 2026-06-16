@@ -203,12 +203,12 @@
                                 </div>
                             </div>
 
-                            <button type="button" class="shop-button shop-button--primary w-full opacity-70" disabled aria-disabled="true">
+                            <a href="{{ route('checkout.create') }}" class="shop-button shop-button--primary w-full">
                                 Turpināt noformēšanu
-                            </button>
+                            </a>
 
                             <p class="mt-4 text-sm leading-7 text-[#60716a]">
-                                Checkout vēl tiek izstrādāts. Šobrīd varat pārskatīt preces un koriģēt daudzumus.
+                                Piegādes un maksājuma detaļas varēsiet aizpildīt nākamajā solī bez reģistrācijas.
                             </p>
                         </div>
                     </aside>

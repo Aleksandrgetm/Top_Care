@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'address_autocomplete' => [
+        'provider' => env('ADDRESS_AUTOCOMPLETE_PROVIDER', 'photon'),
+        'endpoint' => env('ADDRESS_AUTOCOMPLETE_ENDPOINT', 'https://photon.komoot.io/api/'),
+        'timeout' => (float) env('ADDRESS_AUTOCOMPLETE_TIMEOUT', 4),
+    ],
+
 ];

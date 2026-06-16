@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ShopController;
 use App\Models\BeforeAfterItem;
@@ -169,6 +170,10 @@ Route::post('/grozs/add/{product}', [CartController::class, 'store'])->name('car
 Route::delete('/grozs', [CartController::class, 'clear'])->name('cart.clear');
 Route::patch('/grozs/{product}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/grozs/{product}', [CartController::class, 'destroy'])->name('cart.destroy');
+Route::get('/checkout', [CheckoutController::class, 'create'])->name('checkout.create');
+Route::get('/checkout/address-suggestions', [CheckoutController::class, 'addressSuggestions'])->name('checkout.address-suggestions');
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+Route::get('/checkout/paldies/{order}', [CheckoutController::class, 'thankYou'])->name('checkout.thank-you');
 
 Route::post('/contact', [ContactController::class, 'submit'])
     ->middleware('throttle:5,1')
