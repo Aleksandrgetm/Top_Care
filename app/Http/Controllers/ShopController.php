@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -18,7 +19,7 @@ class ShopController extends Controller
             'description' => 'Apskatiet Top Care Group veikala aktīvās preces pēc kategorijām.',
             'canonical' => '/veikals',
             'categories' => $this->shopCategories(),
-            'products' => $this->applyFilters($this->activeProducts(), $filters)->get(),
+            'products' => $this->paginatedProducts($this->applyFilters($this->activeProducts(), $filters)),
             'currentCategory' => null,
             'filters' => $filters,
         ]);
@@ -35,10 +36,12 @@ class ShopController extends Controller
             'description' => "Apskatiet kategorijas {$category->name} aktīvās preces Top Care Group veikalā.",
             'canonical' => route('shop.category', $category, false),
             'categories' => $this->shopCategories(),
-            'products' => $this->applyFilters(
-                $this->activeProducts()->whereBelongsTo($category),
-                $filters
-            )->get(),
+            'products' => $this->paginatedProducts(
+                $this->applyFilters(
+                    $this->activeProducts()->whereBelongsTo($category),
+                    $filters
+                )
+            ),
             'currentCategory' => $category,
             'filters' => $filters,
         ]);
@@ -73,6 +76,25 @@ class ShopController extends Controller
             ])
             ->where('is_active', true)
             ->whereHas('category', fn ($query) => $query->where('is_active', true));
+    }
+
+    private function paginatedProducts($query): LengthAwarePaginator
+    {
+        return $query
+            ->paginate(12)
+            ->onEachSide(1)
+            ->withQueryString()
+            ->through(function (Product $product) {
+                $product->setRelation(
+                    'productImages',
+                    $product->productImages->sortBy([
+                        ['sort_order', 'asc'],
+                        ['id', 'asc'],
+                    ])->values()
+                );
+
+                return $product;
+            });
     }
 
     private function applyFilters($query, array $filters)

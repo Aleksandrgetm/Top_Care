@@ -16,23 +16,25 @@
             'sort' => $filters['sort'] !== 'newest' ? $filters['sort'] : null,
         ], static fn ($value) => $value !== null && $value !== ''));
     };
+    $sortLabels = [
+        'newest' => 'Jaunākās',
+        'price_asc' => 'Cena: zemākā',
+        'price_desc' => 'Cena: augstākā',
+        'name_asc' => 'Nosaukums A-Z',
+    ];
     $categoryMenuOpen = $currentCategory !== null;
 @endphp
 
 @section('content')
-    <section class="bg-white py-10 sm:py-12 lg:py-14">
-        <div class="mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-10">
-            <div class="grid gap-8 lg:grid-cols-[296px_minmax(0,1fr)] lg:gap-10">
-                <aside data-reveal class="reveal lg:sticky lg:top-28 lg:self-start">
-                    <div class="rounded-[2rem] border border-[#06402B]/8 bg-[#f7faf7] p-6 shadow-[0_18px_50px_rgba(6,64,43,0.05)] sm:p-7">
-                        <div
-                            class="filter-dropdown"
-                            data-filter-dropdown
-                            data-open="{{ $categoryMenuOpen ? 'true' : 'false' }}"
-                        >
+    <section class="shop-catalogue bg-[#f8fbf8] py-8 sm:py-10 lg:py-14">
+        <div class="mx-auto max-w-[1520px] px-5 sm:px-8 lg:px-10">
+            <div class="shop-catalogue__shell">
+                <aside data-reveal class="reveal shop-filters lg:sticky lg:top-28 lg:self-start">
+                    <div class="shop-filters__card">
+                        <div class="filter-dropdown" data-filter-dropdown data-open="{{ $categoryMenuOpen ? 'true' : 'false' }}">
                             <button
                                 type="button"
-                                class="filter-dropdown__trigger flex w-full items-center justify-between rounded-[1.4rem] border border-[#06402B]/10 bg-white px-4 py-3 text-sm font-semibold text-[#06402B] transition hover:bg-[#eef4ef]"
+                                class="filter-dropdown__trigger shop-field shop-field--button"
                                 data-filter-dropdown-trigger
                                 aria-expanded="{{ $categoryMenuOpen ? 'true' : 'false' }}"
                             >
@@ -44,61 +46,73 @@
 
                             <div class="filter-dropdown__panel mt-3" data-filter-dropdown-panel>
                                 <nav class="space-y-2">
-                                <a href="{{ $buildFilterUrl('shop.index') }}" class="flex items-center justify-between rounded-[1.2rem] px-4 py-3 text-sm font-semibold transition {{ $currentCategory ? 'border border-[#06402B]/10 bg-white text-[#06402B] hover:bg-[#eef4ef]' : 'bg-[#06402B] text-white shadow-[0_12px_28px_rgba(6,64,43,0.14)]' }}">
-                                    <span>Visas preces</span>
-                                    <span class="text-xs {{ $currentCategory ? 'text-[#60716a]' : 'text-white/72' }}">
-                                        {{ $categories->sum('active_products_count') }}
-                                    </span>
-                                </a>
-
-                                @foreach ($categories as $category)
-                                    <a href="{{ $buildFilterUrl('shop.category', ['category' => $category]) }}" class="flex items-center justify-between rounded-[1.2rem] border px-4 py-3 text-sm font-semibold transition {{ optional($currentCategory)->is($category) ? 'border-[#06402B] bg-[#06402B] text-white shadow-[0_12px_28px_rgba(6,64,43,0.14)]' : 'border-[#06402B]/10 bg-white text-[#06402B] hover:bg-[#eef4ef]' }}">
-                                        <span class="pr-3">{{ $category->name }}</span>
-                                        <span class="text-xs {{ optional($currentCategory)->is($category) ? 'text-white/72' : 'text-[#60716a]' }}">
-                                            {{ $category->active_products_count }}
+                                    <a
+                                        href="{{ $buildFilterUrl('shop.index') }}"
+                                        class="shop-category-link {{ $currentCategory ? '' : 'shop-category-link--active' }}"
+                                    >
+                                        <span>Visas preces</span>
+                                        <span class="shop-category-link__count">
+                                            {{ $categories->sum('active_products_count') }}
                                         </span>
                                     </a>
-                                @endforeach
+
+                                    @foreach ($categories as $category)
+                                        <a
+                                            href="{{ $buildFilterUrl('shop.category', ['category' => $category]) }}"
+                                            class="shop-category-link {{ optional($currentCategory)->is($category) ? 'shop-category-link--active' : '' }}"
+                                        >
+                                            <span class="pr-3">{{ $category->name }}</span>
+                                            <span class="shop-category-link__count">
+                                                {{ $category->active_products_count }}
+                                            </span>
+                                        </a>
+                                    @endforeach
                                 </nav>
                             </div>
                         </div>
 
-                        <form method="GET" action="{{ $sidebarAction }}" class="mt-6 space-y-6">
-                            <section>
-                                <h2 class="text-xs font-semibold uppercase tracking-[0.22em] text-[#60716a]">Pieejamība</h2>
-                                <div class="mt-3 space-y-2">
-                                    <label class="flex items-center gap-3 rounded-[1.2rem] border border-[#06402B]/10 bg-white px-4 py-3 text-sm font-medium text-[#244338]">
+                        <form method="GET" action="{{ $sidebarAction }}" class="mt-5 space-y-5">
+                            <section class="shop-filter-section">
+                                <h2 class="shop-filter-section__title">Pieejamība</h2>
+                                <div class="mt-3 space-y-2.5">
+                                    <label class="shop-radio-option">
                                         <input type="radio" name="availability" value="in_stock" @checked($filters['availability'] === 'in_stock') class="h-4 w-4 border-[#06402B]/20 text-[#06402B] focus:ring-[#BFD730]">
                                         <span>Ir noliktavā</span>
                                     </label>
-                                    <label class="flex items-center gap-3 rounded-[1.2rem] border border-[#06402B]/10 bg-white px-4 py-3 text-sm font-medium text-[#244338]">
+                                    <label class="shop-radio-option">
                                         <input type="radio" name="availability" value="out_of_stock" @checked($filters['availability'] === 'out_of_stock') class="h-4 w-4 border-[#06402B]/20 text-[#06402B] focus:ring-[#BFD730]">
                                         <span>Nav noliktavā</span>
                                     </label>
-                                    <label class="flex items-center gap-3 rounded-[1.2rem] border border-[#06402B]/10 bg-white px-4 py-3 text-sm font-medium text-[#244338]">
+                                    <label class="shop-radio-option">
                                         <input type="radio" name="availability" value="" @checked($filters['availability'] === null) class="h-4 w-4 border-[#06402B]/20 text-[#06402B] focus:ring-[#BFD730]">
                                         <span>Visi produkti</span>
                                     </label>
                                 </div>
                             </section>
 
-                            <section>
-                                <h2 class="text-xs font-semibold uppercase tracking-[0.22em] text-[#60716a]">Cena</h2>
+                            <section class="shop-filter-section">
+                                <h2 class="shop-filter-section__title">Cena</h2>
                                 <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
                                     <label class="block">
-                                        <span class="mb-2 block text-xs font-medium uppercase tracking-[0.16em] text-[#60716a]">No</span>
-                                        <input type="number" min="0" step="0.01" name="price_min" value="{{ $filters['price_min'] }}" class="w-full rounded-[1.2rem] border border-[#06402B]/10 bg-white px-4 py-3 text-sm text-[#12261f] outline-none transition focus:border-[#06402B] focus:ring-4 focus:ring-[#BFD730]/20">
+                                        <span class="shop-field-label">No</span>
+                                        <div class="shop-field shop-field--input-wrap">
+                                            <input type="number" min="0" step="0.01" name="price_min" value="{{ $filters['price_min'] }}" class="shop-field__input" placeholder="0.00">
+                                            <span class="shop-field__suffix">€</span>
+                                        </div>
                                     </label>
                                     <label class="block">
-                                        <span class="mb-2 block text-xs font-medium uppercase tracking-[0.16em] text-[#60716a]">Līdz</span>
-                                        <input type="number" min="0" step="0.01" name="price_max" value="{{ $filters['price_max'] }}" class="w-full rounded-[1.2rem] border border-[#06402B]/10 bg-white px-4 py-3 text-sm text-[#12261f] outline-none transition focus:border-[#06402B] focus:ring-4 focus:ring-[#BFD730]/20">
+                                        <span class="shop-field-label">Līdz</span>
+                                        <div class="shop-field shop-field--input-wrap">
+                                            <input type="number" min="0" step="0.01" name="price_max" value="{{ $filters['price_max'] }}" class="shop-field__input" placeholder="0.00">
+                                            <span class="shop-field__suffix">€</span>
+                                        </div>
                                     </label>
                                 </div>
                             </section>
 
-                            <section>
-                                <h2 class="text-xs font-semibold uppercase tracking-[0.22em] text-[#60716a]">Kārtot pēc</h2>
-                                <select name="sort" class="mt-3 w-full rounded-[1.2rem] border border-[#06402B]/10 bg-white px-4 py-3 text-sm font-medium text-[#12261f] outline-none transition focus:border-[#06402B] focus:ring-4 focus:ring-[#BFD730]/20">
+                            <section class="shop-filter-section">
+                                <h2 class="shop-filter-section__title">Kārtot pēc</h2>
+                                <select name="sort" class="mt-3 shop-field shop-field--input">
                                     <option value="newest" @selected($filters['sort'] === 'newest')>Jaunākās</option>
                                     <option value="price_asc" @selected($filters['sort'] === 'price_asc')>Cena: zemākā</option>
                                     <option value="price_desc" @selected($filters['sort'] === 'price_desc')>Cena: augstākā</option>
@@ -107,10 +121,10 @@
                             </section>
 
                             <div class="flex flex-col gap-3 pt-1">
-                                <button type="submit" class="inline-flex items-center justify-center rounded-full bg-[#06402B] px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#0b5c3f]">
-                                    Piemērot filtrus
+                                <button type="submit" class="shop-button shop-button--primary">
+                                    Piemērot filtru
                                 </button>
-                                <a href="{{ $clearUrl }}" class="inline-flex items-center justify-center rounded-full border border-[#06402B]/12 bg-white px-5 py-3 text-sm font-semibold text-[#06402B] transition hover:-translate-y-0.5 hover:bg-[#eef4ef]">
+                                <a href="{{ $clearUrl }}" class="shop-button shop-button--secondary">
                                     Notīrīt
                                 </a>
                             </div>
@@ -119,28 +133,58 @@
                 </aside>
 
                 <div class="min-w-0">
+                    <div data-reveal class="reveal shop-catalogue__header">
+                        <div>
+                            <p class="section-kicker text-[#60716a]">Veikals</p>
+                            <h1 class="mt-3 text-[2.8rem] sm:text-[3.4rem] lg:text-[4.25rem]">Mūsu produkti</h1>
+                        </div>
+
+                        <div class="shop-toolbar">
+                            <span class="shop-pill">Atrasti: {{ $products->total() }} produkti</span>
+
+                            <form method="GET" action="{{ $sidebarAction }}" class="shop-toolbar__sort">
+                                <input type="hidden" name="availability" value="{{ $filters['availability'] }}">
+                                <input type="hidden" name="price_min" value="{{ $filters['price_min'] }}">
+                                <input type="hidden" name="price_max" value="{{ $filters['price_max'] }}">
+                                <label class="sr-only" for="shop-sort-top">Kārtot pēc</label>
+                                <select id="shop-sort-top" name="sort" class="shop-field shop-field--input" onchange="this.form.submit()">
+                                    @foreach ($sortLabels as $value => $label)
+                                        <option value="{{ $value }}" @selected($filters['sort'] === $value)>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                                <noscript>
+                                    <button type="submit" class="shop-button shop-button--secondary">Atjaunot</button>
+                                </noscript>
+                            </form>
+                        </div>
+                    </div>
+
                     @if ($currentCategory)
-                        <div data-reveal class="reveal mb-6 rounded-[1.6rem] border border-[#06402B]/8 bg-[#f7faf7] px-5 py-4 shadow-[0_12px_32px_rgba(6,64,43,0.04)]">
-                            <p class="text-sm leading-7 text-[#5c6d66]">
-                                Atlasītā kategorija:
-                                <span class="font-semibold text-[#12261f]">{{ $currentCategory->name }}</span>
-                            </p>
+                        <div data-reveal class="reveal mb-6 rounded-[1.5rem] border border-[#06402B]/8 bg-white px-5 py-4 text-sm text-[#51635b] shadow-[0_16px_40px_rgba(6,64,43,0.06)]">
+                            Atlasītā kategorija:
+                            <span class="font-semibold text-[#12261f]">{{ $currentCategory->name }}</span>
                         </div>
                     @endif
 
                     @if ($products->isEmpty())
-                        <div data-reveal class="reveal rounded-[2rem] border border-dashed border-[#06402B]/16 bg-[#f7faf7] px-8 py-16 text-center shadow-[0_18px_50px_rgba(6,64,43,0.05)]">
+                        <div data-reveal class="reveal rounded-[2rem] border border-dashed border-[#06402B]/14 bg-white px-8 py-16 text-center shadow-[0_20px_50px_rgba(6,64,43,0.05)]">
                             <h2 class="text-3xl text-[#12261f]">Preces nav atrastas.</h2>
-                            <p class="mt-4 text-base leading-8 text-[#5c6d66]">
+                            <p class="mx-auto mt-4 max-w-[520px] text-base leading-8 text-[#5c6d66]">
                                 Pamēģiniet mainīt filtrus vai atgriezieties pie visām precēm.
                             </p>
                         </div>
                     @else
-                        <div class="grid grid-cols-1 gap-7 md:grid-cols-2 xl:grid-cols-3">
+                        <div class="shop-product-grid">
                             @foreach ($products as $product)
                                 @include('shop.partials.product-card', ['product' => $product])
                             @endforeach
                         </div>
+
+                        @if ($products->hasPages())
+                            <div data-reveal class="reveal mt-10 flex justify-center">
+                                {{ $products->links() }}
+                            </div>
+                        @endif
                     @endif
                 </div>
             </div>
