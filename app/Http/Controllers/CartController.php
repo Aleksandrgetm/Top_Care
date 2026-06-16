@@ -50,6 +50,7 @@ class CartController extends Controller
             'product_id' => $product->id,
             'name' => $product->name,
             'slug' => $product->slug,
+            'description' => $product->description,
             'price' => (float) $product->price,
             'quantity' => $newQuantity,
             'image' => $product->productImages()->orderBy('sort_order')->orderBy('id')->value('image_path'),
@@ -99,6 +100,7 @@ class CartController extends Controller
         $cart[$product]['price'] = (float) $productModel->price;
         $cart[$product]['name'] = $productModel->name;
         $cart[$product]['slug'] = $productModel->slug;
+        $cart[$product]['description'] = $productModel->description;
         $cart[$product]['image'] = $productModel->productImages()->orderBy('sort_order')->orderBy('id')->value('image_path');
 
         $this->putCart($cart);
@@ -116,6 +118,13 @@ class CartController extends Controller
         }
 
         return redirect()->route('cart.index')->with('status', 'Prece izņemta no groza.');
+    }
+
+    public function clear(): RedirectResponse
+    {
+        session()->forget('cart');
+
+        return redirect()->route('cart.index')->with('status', 'Grozs ir iztīrīts.');
     }
 
     private function cart(): array

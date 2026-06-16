@@ -166,6 +166,7 @@ Route::get('/veikals/kategorija/{category:slug}', [ShopController::class, 'categ
 Route::get('/veikals/produkts/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
 Route::get('/grozs', [CartController::class, 'index'])->name('cart.index');
 Route::post('/grozs/add/{product}', [CartController::class, 'store'])->name('cart.store');
+Route::delete('/grozs', [CartController::class, 'clear'])->name('cart.clear');
 Route::patch('/grozs/{product}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/grozs/{product}', [CartController::class, 'destroy'])->name('cart.destroy');
 
