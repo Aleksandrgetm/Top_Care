@@ -109,19 +109,21 @@
         </header>
 
         <main>
-            <div class="mx-auto max-w-[1320px] px-5 pt-6 sm:px-8 lg:px-10">
-                @if (session('status'))
-                    <div class="mb-4 rounded-[1.4rem] border border-[#BFD730]/35 bg-[#edf7d3] px-5 py-4 text-sm font-medium text-[#244338]">
-                        {{ session('status') }}
-                    </div>
-                @endif
+            @if (session('status') || session('error'))
+                <div class="mx-auto max-w-[1320px] px-5 pt-6 sm:px-8 lg:px-10">
+                    @if (session('status'))
+                        <div class="mb-4 rounded-[1.4rem] border border-[#BFD730]/35 bg-[#edf7d3] px-5 py-4 text-sm font-medium text-[#244338]">
+                            {{ session('status') }}
+                        </div>
+                    @endif
 
-                @if (session('error'))
-                    <div class="mb-4 rounded-[1.4rem] border border-[#a12626]/15 bg-[#fff6f6] px-5 py-4 text-sm font-medium text-[#8f2a2a]">
-                        {{ session('error') }}
-                    </div>
-                @endif
-            </div>
+                    @if (session('error'))
+                        <div class="mb-4 rounded-[1.4rem] border border-[#a12626]/15 bg-[#fff6f6] px-5 py-4 text-sm font-medium text-[#8f2a2a]">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+                </div>
+            @endif
             @yield('content')
         </main>
 
