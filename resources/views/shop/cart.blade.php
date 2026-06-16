@@ -73,7 +73,7 @@
                                     <div class="cart-item__product">
                                         <a href="{{ route('shop.show', ['product' => $item['slug']]) }}" class="cart-item__image-wrap">
                                             @if (! empty($item['image']))
-                                                <img src="{{ route('media.public', ['path' => $item['image']]) }}" alt="{{ $item['name'] }}" class="cart-item__image">
+                                                <img src="{{ '/storage/' . ltrim($item['image'], '/') }}" alt="{{ $item['name'] }}" class="cart-item__image">
                                             @else
                                                 <div class="cart-item__image cart-item__image--placeholder">
                                                     Attēls nav pieejams

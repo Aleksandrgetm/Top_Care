@@ -7,7 +7,7 @@
         $galleryPayload = $productImages
             ->map(function ($image) use ($product) {
                 return [
-                    'src' => route('media.public', ['path' => $image->image_path]),
+                    'src' => $image->imageUrl(),
                     'alt' => $product->name . ' attēls',
                 ];
             })
@@ -36,7 +36,7 @@
                                     aria-label="Atvērt attēlu pilnekrāna skatā"
                                 >
                                     <img
-                                        src="{{ route('media.public', ['path' => $primaryImage->image_path]) }}"
+                                        src="{{ $primaryImage->imageUrl() }}"
                                         alt="{{ $product->name }} attēls"
                                         data-gallery-main-image
                                         data-gallery-index="0"
@@ -69,9 +69,11 @@
                                                 aria-label="Atvērt attēlu {{ $loop->iteration }}"
                                             >
                                                 <img
-                                                    src="{{ route('media.public', ['path' => $image->image_path]) }}"
+                                                    src="{{ $image->thumbnailUrl() }}"
                                                     alt="{{ $product->name }} galerija {{ $loop->iteration }}"
                                                     class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                                                    loading="lazy"
+                                                    decoding="async"
                                                 >
                                             </button>
                                         @endforeach
@@ -98,7 +100,7 @@
 
                                     <div class="product-lightbox__frame">
                                         <img
-                                            src="{{ route('media.public', ['path' => $primaryImage->image_path]) }}"
+                                            src="{{ $primaryImage->imageUrl() }}"
                                             alt="{{ $product->name }} attēls"
                                             data-gallery-lightbox-image
                                             class="product-lightbox__image"

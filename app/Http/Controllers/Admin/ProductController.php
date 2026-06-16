@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Support\ProductImageThumbnailService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,13 +15,24 @@ use Illuminate\View\View;
 
 class ProductController extends Controller
 {
+    public function __construct(
+        private readonly ProductImageThumbnailService $productImageThumbnailService,
+    ) {
+    }
+
     public function index(): View
     {
         return view('admin.products.index', [
             'products' => Product::query()
                 ->with([
                     'category',
-                    'productImages' => fn ($query) => $query->orderBy('sort_order')->orderBy('id'),
+                    'primaryImage' => fn ($query) => $query->select([
+                        'product_images.id',
+                        'product_images.product_id',
+                        'product_images.image_path',
+                        'product_images.thumbnail_path',
+                        'product_images.sort_order',
+                    ]),
                 ])
                 ->orderByDesc('created_at')
                 ->get(),
@@ -114,7 +126,7 @@ class ProductController extends Controller
             'price' => ['required', 'numeric', 'min:0'],
             'stock_quantity' => ['required', 'integer', 'min:0'],
             'images' => ['nullable', 'array'],
-            'images.*' => ['image', 'max:4096'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ]);
     }
 
@@ -124,9 +136,11 @@ class ProductController extends Controller
 
         foreach ($images as $image) {
             $nextSortOrder++;
+            $paths = $this->productImageThumbnailService->storeUploadedImage($image);
 
             $product->productImages()->create([
-                'image_path' => $image->store('products', 'public'),
+                'image_path' => $paths['image_path'],
+                'thumbnail_path' => $paths['thumbnail_path'],
                 'sort_order' => $nextSortOrder,
             ]);
         }

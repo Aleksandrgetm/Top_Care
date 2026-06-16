@@ -11,6 +11,7 @@ class ProductImage extends Model
     protected $fillable = [
         'product_id',
         'image_path',
+        'thumbnail_path',
         'sort_order',
     ];
 
@@ -27,11 +28,29 @@ class ProductImage extends Model
             if ($productImage->image_path && str_starts_with($productImage->image_path, 'products/')) {
                 Storage::disk('public')->delete($productImage->image_path);
             }
+
+            if ($productImage->thumbnail_path && str_starts_with($productImage->thumbnail_path, 'products/')) {
+                Storage::disk('public')->delete($productImage->thumbnail_path);
+            }
         });
     }
 
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function imageUrl(): ?string
+    {
+        return $this->image_path ? '/storage/'.ltrim($this->image_path, '/') : null;
+    }
+
+    public function thumbnailUrl(): ?string
+    {
+        if ($this->thumbnail_path) {
+            return '/storage/'.ltrim($this->thumbnail_path, '/');
+        }
+
+        return $this->imageUrl();
     }
 }

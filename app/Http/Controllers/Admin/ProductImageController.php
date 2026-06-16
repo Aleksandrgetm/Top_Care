@@ -5,17 +5,23 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Support\ProductImageThumbnailService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ProductImageController extends Controller
 {
+    public function __construct(
+        private readonly ProductImageThumbnailService $productImageThumbnailService,
+    ) {
+    }
+
     public function store(Request $request, Product $product): RedirectResponse
     {
         $validated = Validator::make($request->all(), [
             'images' => ['required', 'array', 'min:1'],
-            'images.*' => ['required', 'image', 'max:4096'],
+            'images.*' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ], [
             'images.required' => 'Please choose at least one photo before uploading.',
             'images.array' => 'Photos must be uploaded as a file list.',
@@ -29,9 +35,11 @@ class ProductImageController extends Controller
 
         foreach ($validated['images'] as $image) {
             $nextSortOrder++;
+            $paths = $this->productImageThumbnailService->storeUploadedImage($image);
 
             $product->productImages()->create([
-                'image_path' => $image->store('products', 'public'),
+                'image_path' => $paths['image_path'],
+                'thumbnail_path' => $paths['thumbnail_path'],
                 'sort_order' => $nextSortOrder,
             ]);
         }

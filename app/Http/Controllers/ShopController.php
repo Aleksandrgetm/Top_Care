@@ -51,7 +51,16 @@ class ShopController extends Controller
     {
         $product->loadMissing([
             'category',
-            'productImages' => fn ($query) => $query->orderBy('sort_order')->orderBy('id'),
+            'productImages' => fn ($query) => $query
+                ->select([
+                    'product_images.id',
+                    'product_images.product_id',
+                    'product_images.image_path',
+                    'product_images.thumbnail_path',
+                    'product_images.sort_order',
+                ])
+                ->orderBy('sort_order')
+                ->orderBy('id'),
         ]);
 
         abort_unless($product->is_active && $product->category?->is_active, 404);
@@ -72,7 +81,13 @@ class ShopController extends Controller
         return Product::query()
             ->with([
                 'category',
-                'productImages' => fn ($query) => $query->orderBy('sort_order')->orderBy('id'),
+                'primaryImage' => fn ($query) => $query->select([
+                    'product_images.id',
+                    'product_images.product_id',
+                    'product_images.image_path',
+                    'product_images.thumbnail_path',
+                    'product_images.sort_order',
+                ]),
             ])
             ->where('is_active', true)
             ->whereHas('category', fn ($query) => $query->where('is_active', true));
@@ -83,18 +98,7 @@ class ShopController extends Controller
         return $query
             ->paginate(12)
             ->onEachSide(1)
-            ->withQueryString()
-            ->through(function (Product $product) {
-                $product->setRelation(
-                    'productImages',
-                    $product->productImages->sortBy([
-                        ['sort_order', 'asc'],
-                        ['id', 'asc'],
-                    ])->values()
-                );
-
-                return $product;
-            });
+            ->withQueryString();
     }
 
     private function applyFilters($query, array $filters)

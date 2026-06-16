@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 
@@ -42,5 +43,13 @@ class Product extends Model
     public function productImages(): HasMany
     {
         return $this->hasMany(ProductImage::class);
+    }
+
+    public function primaryImage(): HasOne
+    {
+        return $this->hasOne(ProductImage::class)->ofMany([
+            'sort_order' => 'min',
+            'id' => 'min',
+        ]);
     }
 }

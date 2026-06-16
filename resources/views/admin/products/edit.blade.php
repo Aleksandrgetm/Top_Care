@@ -1,15 +1,5 @@
 @extends('admin.layouts.app', ['title' => $product->name . ' | Top Care Group Admin', 'activeNav' => 'products'])
 
-@php
-    $imageUrl = static function (?string $value): ?string {
-        if (! $value) {
-            return null;
-        }
-
-        return route('media.public', ['path' => $value]);
-    };
-@endphp
-
 @section('content')
     <header class="rounded-[2rem] border border-white/70 bg-[linear-gradient(135deg,#ffffff_0%,#f7faf7_100%)] p-6 shadow-[0_24px_70px_rgba(6,64,43,0.06)] sm:p-8">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -70,7 +60,7 @@
             @forelse ($product->productImages as $image)
                 <article class="overflow-hidden rounded-[1.6rem] border border-[#06402B]/8 bg-[#f8fbf8]">
                     <div class="overflow-hidden border-b border-[#06402B]/8 bg-white">
-                        <img src="{{ $imageUrl($image->image_path) }}" alt="{{ $product->name }}" class="h-[240px] w-full object-cover">
+                        <img src="{{ $image->thumbnailUrl() }}" alt="{{ $product->name }}" class="h-[240px] w-full object-cover">
                     </div>
 
                     <div class="flex items-center justify-between gap-4 p-5">

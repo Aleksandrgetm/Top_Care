@@ -1,17 +1,19 @@
 @php
-    $primaryImage = $product->productImages->first();
-    $imagePath = $primaryImage?->image_path;
+    $primaryImage = $product->primaryImage;
+    $thumbnailUrl = $primaryImage?->thumbnailUrl();
     $isInStock = $product->stock_quantity > 0;
 @endphp
 
 <article data-reveal class="reveal shop-product-card group">
     <div class="relative">
         <a href="{{ route('shop.show', $product) }}" class="shop-product-card__media">
-            @if ($imagePath)
+            @if ($thumbnailUrl)
                 <img
-                    src="{{ route('media.public', ['path' => $imagePath]) }}"
+                    src="{{ $thumbnailUrl }}"
                     alt="{{ $product->name }}"
                     class="shop-product-card__image"
+                    loading="lazy"
+                    decoding="async"
                 >
             @else
                 <div class="shop-product-card__placeholder">

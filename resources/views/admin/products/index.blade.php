@@ -1,15 +1,5 @@
 @extends('admin.layouts.app', ['title' => 'Preces | Top Care Group Admin', 'activeNav' => 'products'])
 
-@php
-    $imageUrl = static function (?string $value): ?string {
-        if (! $value) {
-            return null;
-        }
-
-        return route('media.public', ['path' => $value]);
-    };
-@endphp
-
 @section('content')
     <header class="rounded-[2rem] border border-white/70 bg-[linear-gradient(135deg,#ffffff_0%,#f7faf7_100%)] p-6 shadow-[0_24px_70px_rgba(6,64,43,0.06)] sm:p-8">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -44,13 +34,13 @@
                 <tbody class="divide-y divide-[#06402B]/8 text-sm text-[#244338]">
                     @forelse ($products as $product)
                         @php
-                            $preview = $product->productImages->first();
+                            $preview = $product->primaryImage;
                         @endphp
                         <tr>
                             <td class="px-4 py-4">
                                 @if ($preview)
                                     <a href="{{ route('admin.products.show', $product) }}" class="inline-flex rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#BFD730]/20">
-                                        <img src="{{ $imageUrl($preview->image_path) }}" alt="{{ $product->name }}" class="h-14 w-14 rounded-2xl border border-[#06402B]/8 object-cover">
+                                        <img src="{{ $preview->thumbnailUrl() }}" alt="{{ $product->name }}" class="h-14 w-14 rounded-2xl border border-[#06402B]/8 object-cover">
                                     </a>
                                 @else
                                     <a href="{{ route('admin.products.show', $product) }}" class="flex h-14 w-14 items-center justify-center rounded-2xl border border-dashed border-[#06402B]/12 bg-[#f8fbf8] text-xs text-[#60716a] transition hover:border-[#06402B]/25 hover:bg-white focus:outline-none focus:ring-4 focus:ring-[#BFD730]/20">
