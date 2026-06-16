@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class CheckoutController extends Controller
@@ -44,8 +45,13 @@ class CheckoutController extends Controller
             'customer_name' => ['required', 'string', 'max:255'],
             'customer_phone' => ['required', 'string', 'max:255'],
             'customer_email' => ['required', 'email:rfc', 'max:255'],
-            'delivery_address' => ['required', 'string', 'max:1000'],
-            'delivery_method' => ['required', 'in:' . implode(',', array_keys($this->deliveryMethods()))],
+            'delivery_method' => ['required', Rule::in(array_keys($this->deliveryMethods()))],
+            'city' => [Rule::requiredIf(fn () => $request->string('delivery_method')->toString() === 'delivery'), 'nullable', 'string', 'max:255'],
+            'street' => [Rule::requiredIf(fn () => $request->string('delivery_method')->toString() === 'delivery'), 'nullable', 'string', 'max:255'],
+            'house' => [Rule::requiredIf(fn () => $request->string('delivery_method')->toString() === 'delivery'), 'nullable', 'string', 'max:50'],
+            'apartment' => ['nullable', 'string', 'max:50'],
+            'postal_code' => [Rule::requiredIf(fn () => $request->string('delivery_method')->toString() === 'delivery'), 'nullable', 'string', 'max:50'],
+            'delivery_comment' => ['nullable', 'string', 'max:1000'],
             'comment' => ['nullable', 'string', 'max:2000'],
         ]);
 
@@ -91,14 +97,20 @@ class CheckoutController extends Controller
             ];
         }
 
-        $order = DB::transaction(function () use ($validated, $normalizedItems, $totalPrice): Order {
+        $deliveryAddress = $this->composeDeliveryAddress($validated);
+        $orderComment = $this->composeOrderComment(
+            $validated['comment'] ?? null,
+            $validated['delivery_comment'] ?? null
+        );
+
+        $order = DB::transaction(function () use ($validated, $normalizedItems, $totalPrice, $deliveryAddress, $orderComment): Order {
             $order = Order::query()->create([
                 'customer_name' => $validated['customer_name'],
                 'customer_phone' => $validated['customer_phone'],
                 'customer_email' => $validated['customer_email'],
-                'delivery_address' => $validated['delivery_address'],
+                'delivery_address' => $deliveryAddress,
                 'delivery_method' => $validated['delivery_method'],
-                'comment' => $validated['comment'] ?? null,
+                'comment' => $orderComment,
                 'total_price' => $totalPrice,
                 'payment_method' => 'manual',
                 'payment_status' => 'pending',
@@ -170,10 +182,15 @@ class CheckoutController extends Controller
                 })
                 ->map(function (array $feature): ?array {
                     $properties = (array) data_get($feature, 'properties', []);
+                    $street = $this->extractStreet($properties);
+                    $house = $this->extractHouse($properties);
+                    $city = $this->extractCity($properties);
+                    $postalCode = $this->extractPostalCode($properties);
+
                     $parts = [
-                        $this->formatStreetAddress($properties),
-                        $properties['postcode'] ?? null,
-                        $properties['city'] ?? $properties['district'] ?? $properties['county'] ?? null,
+                        filled($street) ? trim(collect([$street, $house])->filter()->implode(' ')) : null,
+                        $postalCode,
+                        $city,
                     ];
 
                     $label = collect($parts)
@@ -191,6 +208,10 @@ class CheckoutController extends Controller
                     return [
                         'label' => $label,
                         'value' => $label,
+                        'street' => $street ?: $label,
+                        'house' => $house,
+                        'city' => $city,
+                        'postal_code' => $postalCode,
                     ];
                 })
                 ->filter()
@@ -222,20 +243,65 @@ class CheckoutController extends Controller
     private function deliveryMethods(): array
     {
         return [
-            'delivery_latvia' => 'Piegāde Latvijā',
+            'delivery' => 'Piegāde Latvijā',
             'pickup' => 'Saņemšana uz vietas',
         ];
     }
 
-    private function formatStreetAddress(array $properties): ?string
+    private function composeDeliveryAddress(array $validated): string
     {
-        $street = $properties['street'] ?? $properties['name'] ?? null;
-        $houseNumber = $properties['housenumber'] ?? null;
-
-        if (! filled($street) && ! filled($houseNumber)) {
-            return null;
+        if (($validated['delivery_method'] ?? null) !== 'delivery') {
+            return 'Saņemšana uz vietas';
         }
 
-        return trim(collect([$street, $houseNumber])->filter()->implode(' '));
+        $streetLine = trim(collect([
+            $validated['street'] ?? null,
+            $validated['house'] ?? null,
+        ])->filter(fn ($part) => filled($part))->implode(' '));
+
+        $parts = [
+            $streetLine,
+            filled($validated['apartment'] ?? null) ? 'Dz. ' . trim((string) $validated['apartment']) : null,
+            $validated['city'] ?? null,
+            $validated['postal_code'] ?? null,
+        ];
+
+        return (string) collect($parts)
+            ->filter(fn ($part) => filled($part))
+            ->implode(', ');
+    }
+
+    private function composeOrderComment(?string $comment, ?string $deliveryComment): ?string
+    {
+        $parts = collect([
+            filled($comment) ? 'Komentārs: ' . trim($comment) : null,
+            filled($deliveryComment) ? 'Piegādes komentārs: ' . trim($deliveryComment) : null,
+        ])->filter();
+
+        return $parts->isNotEmpty() ? $parts->implode(PHP_EOL) : null;
+    }
+
+    private function extractStreet(array $properties): ?string
+    {
+        return filled($properties['street'] ?? null)
+            ? trim((string) $properties['street'])
+            : (filled($properties['name'] ?? null) ? trim((string) $properties['name']) : null);
+    }
+
+    private function extractHouse(array $properties): ?string
+    {
+        return filled($properties['housenumber'] ?? null) ? trim((string) $properties['housenumber']) : null;
+    }
+
+    private function extractCity(array $properties): ?string
+    {
+        $city = $properties['city'] ?? $properties['district'] ?? $properties['county'] ?? null;
+
+        return filled($city) ? trim((string) $city) : null;
+    }
+
+    private function extractPostalCode(array $properties): ?string
+    {
+        return filled($properties['postcode'] ?? null) ? trim((string) $properties['postcode']) : null;
     }
 }

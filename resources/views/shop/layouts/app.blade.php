@@ -182,6 +182,7 @@
                 const dropdowns = document.querySelectorAll('[data-filter-dropdown]');
                 const galleries = document.querySelectorAll('[data-product-gallery]');
                 const steppers = document.querySelectorAll('[data-quantity-stepper]');
+                const deliverySelectors = document.querySelectorAll('[data-delivery-selector]');
                 const addressAutocompleteRoots = document.querySelectorAll('[data-address-autocomplete]');
 
                 if (revealElements.length) {
@@ -395,10 +396,59 @@
                     });
                 });
 
+                deliverySelectors.forEach((root) => {
+                    const input = root.querySelector('[data-delivery-method-input]');
+                    const options = root.querySelectorAll('[data-delivery-option]');
+                    const sections = root.querySelectorAll('[data-delivery-section]');
+
+                    if (!input || !options.length || !sections.length) {
+                        return;
+                    }
+
+                    const syncSectionFields = (section, active) => {
+                        section.querySelectorAll('input, textarea, select').forEach((field) => {
+                            field.disabled = !active;
+
+                            if (field.dataset.deliveryRequired) {
+                                field.required = active && field.dataset.deliveryRequired === input.value;
+                            }
+                        });
+                    };
+
+                    const setValue = (value) => {
+                        input.value = value;
+
+                        options.forEach((option) => {
+                            const selected = option.dataset.deliveryOption === value;
+                            option.classList.toggle('is-selected', selected);
+                            option.setAttribute('aria-checked', selected ? 'true' : 'false');
+                        });
+
+                        sections.forEach((section) => {
+                            const active = section.dataset.deliverySection === value;
+                            section.classList.toggle('is-active', active);
+                            syncSectionFields(section, active);
+                        });
+                    };
+
+                    const initialValue = input.value || options[0].dataset.deliveryOption;
+                    setValue(initialValue);
+
+                    options.forEach((option) => {
+                        option.addEventListener('click', () => {
+                            setValue(option.dataset.deliveryOption ?? initialValue);
+                        });
+                    });
+                });
+
                 addressAutocompleteRoots.forEach((root) => {
                     const input = root.querySelector('[data-address-input]');
                     const panel = root.querySelector('[data-address-suggestions]');
                     const endpoint = root.dataset.suggestUrl;
+                    const streetField = root.dataset.addressFillStreet ? document.querySelector(root.dataset.addressFillStreet) : null;
+                    const houseField = root.dataset.addressFillHouse ? document.querySelector(root.dataset.addressFillHouse) : null;
+                    const cityField = root.dataset.addressFillCity ? document.querySelector(root.dataset.addressFillCity) : null;
+                    const postalField = root.dataset.addressFillPostal ? document.querySelector(root.dataset.addressFillPostal) : null;
 
                     if (!input || !panel || !endpoint) {
                         return;
@@ -441,6 +491,10 @@
                                         class="checkout-autocomplete__item"
                                         data-address-option
                                         data-address-value="${escapeHtml(suggestion.value ?? '')}"
+                                        data-address-street="${escapeHtml(suggestion.street ?? '')}"
+                                        data-address-house="${escapeHtml(suggestion.house ?? '')}"
+                                        data-address-city="${escapeHtml(suggestion.city ?? '')}"
+                                        data-address-postal="${escapeHtml(suggestion.postal_code ?? '')}"
                                     >
                                         ${escapeHtml(suggestion.label ?? '')}
                                     </button>
@@ -452,7 +506,24 @@
 
                         panel.querySelectorAll('[data-address-option]').forEach((option) => {
                             option.addEventListener('click', () => {
-                                input.value = option.dataset.addressValue ?? '';
+                                input.value = option.dataset.addressStreet || option.dataset.addressValue || '';
+
+                                if (streetField && option.dataset.addressStreet) {
+                                    streetField.value = option.dataset.addressStreet;
+                                }
+
+                                if (houseField && option.dataset.addressHouse) {
+                                    houseField.value = option.dataset.addressHouse;
+                                }
+
+                                if (cityField && option.dataset.addressCity) {
+                                    cityField.value = option.dataset.addressCity;
+                                }
+
+                                if (postalField && option.dataset.addressPostal) {
+                                    postalField.value = option.dataset.addressPostal;
+                                }
+
                                 closePanel();
                             });
                         });
