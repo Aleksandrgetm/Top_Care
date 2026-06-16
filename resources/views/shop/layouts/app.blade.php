@@ -184,6 +184,7 @@
                 const steppers = document.querySelectorAll('[data-quantity-stepper]');
                 const deliverySelectors = document.querySelectorAll('[data-delivery-selector]');
                 const addressAutocompleteRoots = document.querySelectorAll('[data-address-autocomplete]');
+                const deliveryPointSearchRoots = document.querySelectorAll('[data-delivery-point-search]');
 
                 if (revealElements.length) {
                     const observer = new IntersectionObserver(
@@ -398,8 +399,11 @@
 
                 deliverySelectors.forEach((root) => {
                     const input = root.querySelector('[data-delivery-method-input]');
+                    const pointInput = root.querySelector('[data-delivery-point-id-input]');
                     const options = root.querySelectorAll('[data-delivery-option]');
                     const sections = root.querySelectorAll('[data-delivery-section], [data-delivery-section-values]');
+                    const summary = document.querySelector('[data-checkout-summary]');
+                    const deliveryPrices = JSON.parse(root.dataset.deliveryPrices || '{}');
 
                     if (!input || !options.length || !sections.length) {
                         return;
@@ -423,10 +427,58 @@
                         });
                     };
 
+                    const updateSummary = (method) => {
+                        if (!summary) {
+                            return;
+                        }
+
+                        const subtotal = Number(summary.dataset.subtotal || 0);
+                        const deliveryPrice = Object.prototype.hasOwnProperty.call(deliveryPrices, method)
+                            ? deliveryPrices[method]
+                            : null;
+                        const deliveryTextNode = summary.querySelector('[data-summary-delivery]');
+                        const totalNode = summary.querySelector('[data-summary-total]');
+
+                        if (!deliveryTextNode || !totalNode) {
+                            return;
+                        }
+
+                        if (deliveryPrice === null) {
+                            deliveryTextNode.textContent = 'Tiks precizēta';
+                            totalNode.textContent = `€${subtotal.toFixed(2)}`;
+                            return;
+                        }
+
+                        const price = Number(deliveryPrice);
+                        const finalTotal = subtotal + price;
+
+                        deliveryTextNode.textContent = price === 0 ? 'Bezmaksas' : `€${price.toFixed(2)}`;
+                        totalNode.textContent = `€${finalTotal.toFixed(2)}`;
+                    };
+
                     const setValue = (value) => {
+                        const previousValue = input.value;
                         const fallbackValue = options[0]?.dataset.deliveryOption ?? '';
                         const hasMatchingOption = Array.from(options).some((option) => option.dataset.deliveryOption === value);
                         const activeValue = hasMatchingOption ? value : fallbackValue;
+
+                        if (pointInput && previousValue !== activeValue) {
+                            pointInput.value = '';
+
+                            root.querySelectorAll('[data-delivery-point-search]').forEach((searchRoot) => {
+                                const searchInput = searchRoot.querySelector('[data-delivery-point-input]');
+                                const selected = searchRoot.querySelector('[data-delivery-point-selected]');
+
+                                if (searchInput) {
+                                    searchInput.value = '';
+                                }
+
+                                if (selected) {
+                                    selected.hidden = true;
+                                    selected.innerHTML = '';
+                                }
+                            });
+                        }
 
                         input.value = activeValue;
 
@@ -441,6 +493,8 @@
                             section.classList.toggle('is-active', active);
                             syncSectionFields(section, active);
                         });
+
+                        updateSummary(activeValue);
                     };
 
                     const initialValue = input.value || options[0].dataset.deliveryOption;
@@ -613,6 +667,168 @@
                     input.addEventListener('keydown', (event) => {
                         if (event.key === 'Escape') {
                             closePanel();
+                        }
+                    });
+
+                    document.addEventListener('click', (event) => {
+                        if (!root.contains(event.target)) {
+                            closePanel();
+                        }
+                    });
+                });
+
+                deliveryPointSearchRoots.forEach((root) => {
+                    const input = root.querySelector('[data-delivery-point-input]');
+                    const panel = root.querySelector('[data-delivery-point-results]');
+                    const selected = root.querySelector('[data-delivery-point-selected]');
+                    const provider = root.dataset.provider;
+                    const endpoint = root.dataset.searchUrl;
+                    const deliveryRoot = root.closest('[data-delivery-selector]');
+                    const methodInput = deliveryRoot?.querySelector('[data-delivery-method-input]');
+                    const hiddenInput = deliveryRoot?.querySelector('[data-delivery-point-id-input]');
+
+                    if (!input || !panel || !selected || !provider || !endpoint || !methodInput || !hiddenInput) {
+                        return;
+                    }
+
+                    let debounceTimer = null;
+                    let abortController = null;
+
+                    const closePanel = () => {
+                        panel.hidden = true;
+                        panel.innerHTML = '';
+                        input.setAttribute('aria-expanded', 'false');
+                    };
+
+                    const openPanel = () => {
+                        panel.hidden = false;
+                        input.setAttribute('aria-expanded', 'true');
+                    };
+
+                    const escapeHtml = (value) =>
+                        String(value)
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/'/g, '&#39;');
+
+                    const renderSelected = (point) => {
+                        if (!point) {
+                            selected.hidden = true;
+                            selected.innerHTML = '';
+                            return;
+                        }
+
+                        selected.hidden = false;
+                        selected.innerHTML = `
+                            <div class="checkout-delivery-point__selected-title">${escapeHtml(point.name || '')}</div>
+                            <div class="checkout-delivery-point__selected-text">${escapeHtml([point.city, point.address].filter(Boolean).join(', '))}</div>
+                        `;
+                    };
+
+                    const renderResults = (points) => {
+                        if (!points.length) {
+                            panel.innerHTML = '<div class="checkout-autocomplete__status">Punkti nav atrasti</div>';
+                            openPanel();
+                            return;
+                        }
+
+                        panel.innerHTML = points
+                            .map((point) => `
+                                <button
+                                    type="button"
+                                    class="checkout-autocomplete__item"
+                                    data-delivery-point-option
+                                    data-point-id="${escapeHtml(point.id ?? '')}"
+                                    data-point-name="${escapeHtml(point.name ?? '')}"
+                                    data-point-city="${escapeHtml(point.city ?? '')}"
+                                    data-point-address="${escapeHtml(point.address ?? '')}"
+                                >
+                                    <span class="checkout-delivery-point__option-title">${escapeHtml(point.name ?? '')}</span>
+                                    <span class="checkout-delivery-point__option-text">${escapeHtml([point.city, point.address].filter(Boolean).join(', '))}</span>
+                                </button>
+                            `)
+                            .join('');
+
+                        openPanel();
+
+                        panel.querySelectorAll('[data-delivery-point-option]').forEach((option) => {
+                            option.addEventListener('click', () => {
+                                const point = {
+                                    id: option.dataset.pointId || '',
+                                    name: option.dataset.pointName || '',
+                                    city: option.dataset.pointCity || '',
+                                    address: option.dataset.pointAddress || '',
+                                };
+
+                                hiddenInput.value = point.id;
+                                input.value = point.name;
+                                renderSelected(point);
+                                closePanel();
+                            });
+                        });
+                    };
+
+                    const fetchPoints = async (query) => {
+                        if (abortController) {
+                            abortController.abort();
+                        }
+
+                        abortController = new AbortController();
+
+                        try {
+                            const response = await fetch(
+                                `${endpoint}?provider=${encodeURIComponent(provider)}&q=${encodeURIComponent(query)}`,
+                                {
+                                    headers: { Accept: 'application/json' },
+                                    signal: abortController.signal,
+                                }
+                            );
+
+                            if (!response.ok) {
+                                throw new Error('Request failed');
+                            }
+
+                            const data = await response.json();
+                            renderResults(Array.isArray(data.points) ? data.points : []);
+                        } catch (error) {
+                            if (error.name === 'AbortError') {
+                                return;
+                            }
+
+                            panel.innerHTML = '<div class="checkout-autocomplete__status">Punkti nav atrasti</div>';
+                            openPanel();
+                        }
+                    };
+
+                    input.addEventListener('input', () => {
+                        hiddenInput.value = '';
+                        renderSelected(null);
+
+                        if (methodInput.value !== provider) {
+                            closePanel();
+                            return;
+                        }
+
+                        const query = input.value.trim();
+                        window.clearTimeout(debounceTimer);
+
+                        if (query.length < 2) {
+                            closePanel();
+                            return;
+                        }
+
+                        debounceTimer = window.setTimeout(() => {
+                            panel.innerHTML = '<div class="checkout-autocomplete__status">Meklējam punktus...</div>';
+                            openPanel();
+                            fetchPoints(query);
+                        }, 300);
+                    });
+
+                    input.addEventListener('focus', () => {
+                        if (panel.innerHTML.trim() !== '' && input.value.trim().length >= 2) {
+                            openPanel();
                         }
                     });
 

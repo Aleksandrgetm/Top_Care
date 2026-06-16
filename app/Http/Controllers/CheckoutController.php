@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DeliveryPoint;
 use App\Models\Order;
 use App\Models\Product;
 use App\Support\CheckoutDeliveryMethodService;
@@ -45,6 +46,13 @@ class CheckoutController extends Controller
                 ->filter(fn (array $method) => (bool) ($method['requires_address'] ?? false))
                 ->keys()
                 ->implode(' '),
+            'deliveryPointMethodKeys' => collect($deliveryMethods)
+                ->filter(fn (array $method) => (bool) ($method['requires_delivery_point'] ?? false))
+                ->keys()
+                ->implode(' '),
+            'deliveryPrices' => collect($deliveryMethods)
+                ->mapWithKeys(fn (array $method, string $key) => [$key => $method['price']])
+                ->all(),
         ]);
     }
 
@@ -61,6 +69,8 @@ class CheckoutController extends Controller
         $allowedDeliveryMethods = array_keys($deliveryMethods);
         $selectedMethod = (string) $request->input('delivery_method', '');
         $requiresAddress = $this->checkoutDeliveryMethodService->requiresAddress($selectedMethod);
+        $requiresDeliveryPoint = $this->checkoutDeliveryMethodService->requiresDeliveryPoint($selectedMethod);
+        $deliveryPointProvider = $this->checkoutDeliveryMethodService->deliveryPointProvider($selectedMethod);
 
         $validated = $request->validate([
             'customer_name' => ['required', 'string', 'max:255'],
@@ -74,7 +84,26 @@ class CheckoutController extends Controller
             'postal_code' => [Rule::requiredIf($requiresAddress), 'nullable', 'string', 'max:50'],
             'delivery_comment' => ['nullable', 'string', 'max:1000'],
             'comment' => ['nullable', 'string', 'max:2000'],
+            'selected_delivery_point_id' => [Rule::requiredIf($requiresDeliveryPoint), 'nullable', 'integer'],
         ]);
+
+        $selectedDeliveryPoint = null;
+
+        if ($requiresDeliveryPoint) {
+            $selectedDeliveryPoint = DeliveryPoint::query()
+                ->whereKey($validated['selected_delivery_point_id'])
+                ->where('provider', $deliveryPointProvider)
+                ->where('is_active', true)
+                ->first();
+
+            if (! $selectedDeliveryPoint) {
+                return back()
+                    ->withInput()
+                    ->withErrors([
+                        'selected_delivery_point_id' => 'Izvēlētais piegādes punkts nav derīgs.',
+                    ]);
+            }
+        }
 
         $normalizedItems = [];
         $totalPrice = 0.0;
@@ -111,19 +140,37 @@ class CheckoutController extends Controller
             ];
         }
 
-        $deliveryAddress = $this->composeDeliveryAddress($validated, $requiresAddress);
+        $deliveryPrice = $this->checkoutDeliveryMethodService->priceForMethod($selectedMethod);
+        $deliveryAddress = $this->composeDeliveryAddress($validated, $requiresAddress, $selectedDeliveryPoint);
         $orderComment = $this->composeOrderComment(
             $validated['comment'] ?? null,
             $validated['delivery_comment'] ?? null
         );
 
-        $order = DB::transaction(function () use ($validated, $normalizedItems, $totalPrice, $deliveryAddress, $orderComment): Order {
+        $order = DB::transaction(function () use (
+            $validated,
+            $normalizedItems,
+            $totalPrice,
+            $deliveryAddress,
+            $orderComment,
+            $selectedMethod,
+            $deliveryPointProvider,
+            $selectedDeliveryPoint,
+            $deliveryPrice
+        ): Order {
             $order = Order::query()->create([
                 'customer_name' => $validated['customer_name'],
                 'customer_phone' => $validated['customer_phone'],
                 'customer_email' => $validated['customer_email'],
                 'delivery_address' => $deliveryAddress,
-                'delivery_method' => $validated['delivery_method'],
+                'delivery_method' => $selectedMethod,
+                'delivery_provider' => $deliveryPointProvider ?? ($selectedMethod === 'courier' ? 'courier' : ($selectedMethod === 'pickup' ? 'pickup' : null)),
+                'delivery_point_id' => $selectedDeliveryPoint?->id,
+                'delivery_point_name' => $selectedDeliveryPoint?->name,
+                'delivery_point_address' => $selectedDeliveryPoint?->address,
+                'delivery_city' => $selectedDeliveryPoint?->city,
+                'delivery_postal_code' => $selectedDeliveryPoint?->postal_code,
+                'delivery_price' => $deliveryPrice,
                 'comment' => $orderComment,
                 'total_price' => $totalPrice,
                 'payment_method' => 'manual',
@@ -239,6 +286,49 @@ class CheckoutController extends Controller
         }
     }
 
+    public function deliveryPoints(Request $request): JsonResponse
+    {
+        $provider = trim((string) $request->query('provider', ''));
+        $query = trim((string) $request->query('q', ''));
+
+        if (! in_array($provider, ['omniva', 'dpd'], true)) {
+            return response()->json(['points' => []]);
+        }
+
+        $points = DeliveryPoint::query()
+            ->where('provider', $provider)
+            ->where('is_active', true)
+            ->when($query !== '', function ($builder) use ($query) {
+                $builder->where(function ($inner) use ($query) {
+                    $inner->where('name', 'like', "%{$query}%")
+                        ->orWhere('city', 'like', "%{$query}%")
+                        ->orWhere('address', 'like', "%{$query}%");
+                });
+            })
+            ->orderBy('city')
+            ->orderBy('name')
+            ->limit(20)
+            ->get([
+                'id',
+                'provider',
+                'name',
+                'city',
+                'address',
+                'postal_code',
+            ]);
+
+        return response()->json([
+            'points' => $points->map(fn (DeliveryPoint $point) => [
+                'id' => $point->id,
+                'provider' => $point->provider,
+                'name' => $point->name,
+                'city' => $point->city,
+                'address' => $point->address,
+                'postal_code' => $point->postal_code,
+            ])->all(),
+        ]);
+    }
+
     private function cart(): array
     {
         return session('cart', []);
@@ -265,8 +355,17 @@ class CheckoutController extends Controller
             ->keyBy('id');
     }
 
-    private function composeDeliveryAddress(array $validated, bool $requiresAddress): string
+    private function composeDeliveryAddress(array $validated, bool $requiresAddress, ?DeliveryPoint $deliveryPoint): string
     {
+        if ($deliveryPoint) {
+            return collect([
+                $deliveryPoint->name,
+                $deliveryPoint->address,
+                $deliveryPoint->city,
+                $deliveryPoint->postal_code,
+            ])->filter(fn ($part) => filled($part))->implode(', ');
+        }
+
         if (! $requiresAddress) {
             return 'Saņemšana uz vietas';
         }

@@ -172,6 +172,7 @@ Route::patch('/grozs/{product}', [CartController::class, 'update'])->name('cart.
 Route::delete('/grozs/{product}', [CartController::class, 'destroy'])->name('cart.destroy');
 Route::get('/checkout', [CheckoutController::class, 'create'])->name('checkout.create');
 Route::get('/checkout/address-suggestions', [CheckoutController::class, 'addressSuggestions'])->name('checkout.address-suggestions');
+Route::get('/checkout/delivery-points', [CheckoutController::class, 'deliveryPoints'])->name('checkout.delivery-points');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 Route::get('/checkout/paldies/{order}', [CheckoutController::class, 'thankYou'])->name('checkout.thank-you');
 

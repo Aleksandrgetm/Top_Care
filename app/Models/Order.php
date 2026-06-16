@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -13,6 +14,13 @@ class Order extends Model
         'customer_email',
         'delivery_address',
         'delivery_method',
+        'delivery_provider',
+        'delivery_point_id',
+        'delivery_point_name',
+        'delivery_point_address',
+        'delivery_city',
+        'delivery_postal_code',
+        'delivery_price',
         'comment',
         'total_price',
         'payment_method',
@@ -24,7 +32,13 @@ class Order extends Model
     {
         return [
             'total_price' => 'decimal:2',
+            'delivery_price' => 'decimal:2',
         ];
+    }
+
+    public function deliveryPoint(): BelongsTo
+    {
+        return $this->belongsTo(DeliveryPoint::class);
     }
 
     public function orderItems(): HasMany

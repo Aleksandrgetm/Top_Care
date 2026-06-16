@@ -1455,6 +1455,30 @@
         padding: 0.75rem 0.9rem;
     }
 
+    .checkout-delivery-point__selected {
+        border: 1px solid rgba(6, 64, 43, 0.08);
+        border-radius: 1.2rem;
+        background: #f8fbf8;
+        padding: 0.9rem 1rem;
+    }
+
+    .checkout-delivery-point__selected-title,
+    .checkout-delivery-point__option-title {
+        display: block;
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: #12261f;
+    }
+
+    .checkout-delivery-point__selected-text,
+    .checkout-delivery-point__option-text {
+        display: block;
+        margin-top: 0.18rem;
+        font-size: 0.84rem;
+        line-height: 1.5;
+        color: #60716a;
+    }
+
     .checkout-field__select {
         appearance: none;
         background-image:

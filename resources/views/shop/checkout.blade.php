@@ -71,7 +71,11 @@
                                 </div>
                             </div>
 
-                            <div class="checkout-delivery-selector" data-delivery-selector>
+                            <div
+                                class="checkout-delivery-selector"
+                                data-delivery-selector
+                                data-delivery-prices='@json($deliveryPrices)'
+                            >
                                 <div class="checkout-field">
                                     <label class="checkout-field__label">Piegādes veids</label>
                                     <input
@@ -79,6 +83,12 @@
                                         name="delivery_method"
                                         value="{{ old('delivery_method', $defaultDeliveryMethod) }}"
                                         data-delivery-method-input
+                                    >
+                                    <input
+                                        type="hidden"
+                                        name="selected_delivery_point_id"
+                                        value="{{ old('selected_delivery_point_id') }}"
+                                        data-delivery-point-id-input
                                     >
 
                                     <div class="checkout-delivery-options" role="radiogroup" aria-label="Piegādes veids">
@@ -231,13 +241,7 @@
 
                                                 <div class="checkout-field">
                                                     <label for="apartment" class="checkout-field__label">Dzīvoklis / birojs</label>
-                                                    <input
-                                                        id="apartment"
-                                                        name="apartment"
-                                                        type="text"
-                                                        value="{{ old('apartment') }}"
-                                                        class="checkout-field__input"
-                                                    >
+                                                    <input id="apartment" name="apartment" type="text" value="{{ old('apartment') }}" class="checkout-field__input">
                                                     @error('apartment')
                                                         <p class="checkout-field__error">{{ $message }}</p>
                                                     @enderror
@@ -245,13 +249,7 @@
 
                                                 <div class="checkout-field">
                                                     <label for="delivery_comment" class="checkout-field__label">Komentārs piegādei</label>
-                                                    <textarea
-                                                        id="delivery_comment"
-                                                        name="delivery_comment"
-                                                        rows="3"
-                                                        class="checkout-field__input checkout-field__textarea checkout-field__textarea--compact"
-                                                        placeholder="Piemēram, durvju kods, stāvs vai piekļuves informācija."
-                                                    >{{ old('delivery_comment') }}</textarea>
+                                                    <textarea id="delivery_comment" name="delivery_comment" rows="3" class="checkout-field__input checkout-field__textarea checkout-field__textarea--compact" placeholder="Piemēram, durvju kods, stāvs vai piekļuves informācija.">{{ old('delivery_comment') }}</textarea>
                                                     @error('delivery_comment')
                                                         <p class="checkout-field__error">{{ $message }}</p>
                                                     @enderror
@@ -259,6 +257,50 @@
                                             </div>
                                         </div>
                                     @endif
+
+                                    @foreach (['omniva', 'dpd'] as $pointMethod)
+                                        @if (isset($deliveryMethods[$pointMethod]))
+                                            <div class="checkout-delivery-panel" data-delivery-section-values="{{ $pointMethod }}">
+                                                <div class="checkout-delivery-panel__inner">
+                                                    <div
+                                                        class="checkout-field checkout-field--delivery-point"
+                                                        data-delivery-point-search
+                                                        data-provider="{{ $pointMethod }}"
+                                                        data-search-url="{{ route('checkout.delivery-points') }}"
+                                                    >
+                                                        <label class="checkout-field__label">
+                                                            {{ $pointMethod === 'omniva' ? 'Izvēlieties Omniva pakomātu' : 'Izvēlieties DPD Pickup punktu' }}
+                                                        </label>
+                                                        <div class="checkout-autocomplete">
+                                                            <input
+                                                                type="text"
+                                                                value=""
+                                                                class="checkout-field__input"
+                                                                data-delivery-point-input
+                                                                placeholder="{{ $pointMethod === 'omniva' ? 'Meklēt Omniva pakomātu' : 'Meklēt DPD Pickup punktu' }}"
+                                                                aria-autocomplete="list"
+                                                                aria-expanded="false"
+                                                                aria-controls="delivery-points-{{ $pointMethod }}"
+                                                            >
+                                                            <div
+                                                                id="delivery-points-{{ $pointMethod }}"
+                                                                class="checkout-autocomplete__panel"
+                                                                data-delivery-point-results
+                                                                hidden
+                                                            ></div>
+                                                        </div>
+                                                        <p class="checkout-autocomplete__hint">
+                                                            Meklējiet pēc pilsētas, punkta nosaukuma vai adreses.
+                                                        </p>
+                                                        <div class="checkout-delivery-point__selected" data-delivery-point-selected hidden></div>
+                                                        @error('selected_delivery_point_id')
+                                                            <p class="checkout-field__error">{{ $message }}</p>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endforeach
 
                                     @if (isset($deliveryMethods['pickup']))
                                         <div class="checkout-delivery-panel" data-delivery-section-values="pickup">
@@ -304,7 +346,7 @@
                 </section>
 
                 <aside data-reveal class="reveal checkout-summary xl:sticky xl:top-28">
-                    <div class="cart-summary__card">
+                    <div class="cart-summary__card" data-checkout-summary data-subtotal="{{ $cartTotal }}">
                         <p class="section-kicker text-[#60716a]">Kopsavilkums</p>
 
                         <div class="mt-6 space-y-4">
@@ -328,15 +370,15 @@
                             </div>
                             <div class="cart-summary__row">
                                 <span>Starp summa</span>
-                                <span>€{{ number_format($cartTotal, 2, '.', ' ') }}</span>
+                                <span data-summary-subtotal>€{{ number_format($cartTotal, 2, '.', ' ') }}</span>
                             </div>
                             <div class="cart-summary__row">
                                 <span>Piegāde</span>
-                                <span>Tiks precizēta</span>
+                                <span data-summary-delivery>Tiks precizēta</span>
                             </div>
                             <div class="cart-summary__row cart-summary__row--total">
                                 <span>Kopā</span>
-                                <span>€{{ number_format($cartTotal, 2, '.', ' ') }}</span>
+                                <span data-summary-total>€{{ number_format($cartTotal, 2, '.', ' ') }}</span>
                             </div>
                         </div>
                     </div>
