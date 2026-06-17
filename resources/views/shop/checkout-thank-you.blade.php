@@ -47,7 +47,7 @@
                     <div class="mt-8 grid gap-4 text-left sm:grid-cols-3">
                         <div class="checkout-stat">
                             <span class="checkout-stat__label">Pasūtījuma numurs</span>
-                            <span class="checkout-stat__value">#{{ $order->id }}</span>
+                            <span class="checkout-stat__value">{{ $order->display_order_number }}</span>
                         </div>
                         <div class="checkout-stat">
                             <span class="checkout-stat__label">Klients</span>

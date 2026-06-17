@@ -22,7 +22,7 @@ class NewOrderAdminMail extends Mailable
     {
         return new Envelope(
             from: new Address('noreply@topcare.lv', 'Top Care Group'),
-            subject: 'Jauns pasūtījums #' . $this->order->id,
+            subject: 'Jauns pasūtījums ' . $this->order->display_order_number,
             replyTo: $this->order->customer_email
                 ? [new Address($this->order->customer_email, $this->order->customer_name)]
                 : [],

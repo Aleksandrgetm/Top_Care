@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\FormatsOrderNumber;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    use FormatsOrderNumber;
+
     protected $fillable = [
+        'order_number',
         'customer_name',
         'customer_phone',
         'customer_email',
@@ -27,6 +31,23 @@ class Order extends Model
         'payment_status',
         'status',
     ];
+
+    protected $appends = [
+        'display_order_number',
+    ];
+
+    protected static function booted(): void
+    {
+        static::created(function (Order $order): void {
+            if ($order->order_number) {
+                return;
+            }
+
+            $order->forceFill([
+                'order_number' => $order->formatOrderNumber(),
+            ])->saveQuietly();
+        });
+    }
 
     protected function casts(): array
     {

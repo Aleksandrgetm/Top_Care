@@ -20,7 +20,7 @@ class OrderCustomerConfirmationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Pasūtījums #' . $this->order->id . ' ir saņemts',
+            subject: 'Pasūtījums ' . $this->order->display_order_number . ' ir saņemts',
         );
     }
 

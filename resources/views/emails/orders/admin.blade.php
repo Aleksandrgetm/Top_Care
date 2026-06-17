@@ -22,7 +22,7 @@
 @endphp
 
 @section('email_title', 'Jauns pasūtījums')
-@section('email_heading', 'Jauns pasūtījums #' . $order->id)
+@section('email_heading', 'Jauns pasūtījums ' . $order->display_order_number)
 
 @section('email_intro')
     <p style="margin:0;">
@@ -35,7 +35,7 @@
         <tr>
             <td style="background-color:#f7faf7;border:1px solid #e2ece5;border-radius:18px;padding:18px 20px;">
                 <p style="margin:0 0 6px 0;font-size:12px;line-height:18px;letter-spacing:1.4px;text-transform:uppercase;color:#6d857a;">Pasūtījuma numurs</p>
-                <p style="margin:0;font-size:17px;line-height:26px;font-weight:700;color:#163329;">#{{ $order->id }}</p>
+                <p style="margin:0;font-size:17px;line-height:26px;font-weight:700;color:#163329;">{{ $order->display_order_number }}</p>
             </td>
         </tr>
         <tr>
