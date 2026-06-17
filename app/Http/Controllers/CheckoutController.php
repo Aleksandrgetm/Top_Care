@@ -36,6 +36,20 @@ class CheckoutController extends Controller
 
         $products = $this->loadCartProducts($cart);
         $deliveryMethods = $this->checkoutDeliveryMethodService->availableForProducts($products);
+        $defaultDeliveryMethod = $this->checkoutDeliveryMethodService->defaultKeyForProducts($products);
+        $oldDeliveryMethod = old('delivery_method', $defaultDeliveryMethod);
+        $oldSelectedDeliveryPointId = old('selected_delivery_point_id');
+        $selectedDeliveryPoint = null;
+
+        if (
+            filled($oldSelectedDeliveryPointId)
+            && in_array($oldDeliveryMethod, ['omniva', 'dpd'], true)
+        ) {
+            $selectedDeliveryPoint = DeliveryPoint::query()
+                ->whereKey($oldSelectedDeliveryPointId)
+                ->where('provider', $oldDeliveryMethod)
+                ->first();
+        }
 
         return view('shop.checkout', [
             'title' => 'Checkout | Top Care Group',
@@ -45,7 +59,7 @@ class CheckoutController extends Controller
             'cartTotal' => $this->cartTotal($cart),
             'cartCount' => $this->cartCount($cart),
             'deliveryMethods' => $deliveryMethods,
-            'defaultDeliveryMethod' => $this->checkoutDeliveryMethodService->defaultKeyForProducts($products),
+            'defaultDeliveryMethod' => $defaultDeliveryMethod,
             'addressMethodKeys' => collect($deliveryMethods)
                 ->filter(fn (array $method) => (bool) ($method['requires_address'] ?? false))
                 ->keys()
@@ -57,6 +71,7 @@ class CheckoutController extends Controller
             'deliveryPrices' => collect($deliveryMethods)
                 ->mapWithKeys(fn (array $method, string $key) => [$key => $method['price']])
                 ->all(),
+            'selectedDeliveryPoint' => $selectedDeliveryPoint,
         ]);
     }
 
@@ -89,6 +104,19 @@ class CheckoutController extends Controller
             'delivery_comment' => ['nullable', 'string', 'max:1000'],
             'comment' => ['nullable', 'string', 'max:2000'],
             'selected_delivery_point_id' => [Rule::requiredIf($requiresDeliveryPoint), 'nullable', 'integer'],
+        ], [
+            'customer_name.required' => 'Vārds un uzvārds ir obligāts.',
+            'customer_phone.required' => 'Tālrunis ir obligāts.',
+            'customer_email.required' => 'E-pasts ir obligāts.',
+            'customer_email.email' => 'Lūdzu ievadiet derīgu e-pasta adresi.',
+            'delivery_method.required' => 'Lūdzu izvēlieties piegādes veidu.',
+            'delivery_method.in' => 'Lūdzu izvēlieties piegādes veidu.',
+            'selected_delivery_point_id.required' => 'Lūdzu izvēlieties pakomātu.',
+            'selected_delivery_point_id.integer' => 'Lūdzu izvēlieties pakomātu.',
+            'city.required' => 'Pilsēta ir obligāta.',
+            'street.required' => 'Iela ir obligāta.',
+            'house.required' => 'Mājas numurs ir obligāts.',
+            'postal_code.required' => 'Pasta indekss ir obligāts.',
         ]);
 
         $selectedDeliveryPoint = null;
@@ -104,7 +132,7 @@ class CheckoutController extends Controller
                 return back()
                     ->withInput()
                     ->withErrors([
-                        'selected_delivery_point_id' => 'Izvēlētais piegādes punkts nav derīgs.',
+                        'selected_delivery_point_id' => 'Lūdzu izvēlieties pakomātu.',
                     ]);
             }
         }

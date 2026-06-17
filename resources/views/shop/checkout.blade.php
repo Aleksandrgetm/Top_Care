@@ -1,5 +1,19 @@
 @extends('shop.layouts.app')
 
+@php
+    $selectedDeliveryPointPayload = $selectedDeliveryPoint
+        ? [
+            'id' => $selectedDeliveryPoint->id,
+            'provider' => $selectedDeliveryPoint->provider,
+            'name' => $selectedDeliveryPoint->name,
+            'city' => $selectedDeliveryPoint->city,
+            'address' => $selectedDeliveryPoint->address,
+        ]
+        : null;
+
+    $inputErrorClasses = 'border-[#b45454] bg-[#fff7f7] focus:border-[#9f3636] focus:ring-[#9f3636]/20';
+@endphp
+
 @section('content')
     <section class="checkout-page bg-[#f8fbf8] py-8 sm:py-10 lg:py-14">
         <div class="mx-auto max-w-[1520px] px-5 sm:px-8 lg:px-10">
@@ -42,12 +56,37 @@
                             </p>
                         </div>
 
-                        <form method="POST" action="{{ route('checkout.store') }}" class="mt-8 grid gap-5">
+                        <form method="POST" action="{{ route('checkout.store') }}" class="mt-8 grid gap-5" data-checkout-form novalidate>
                             @csrf
+
+                            @if ($errors->any())
+                                <div
+                                    class="rounded-[1.75rem] border border-[#b45454]/30 bg-[#fff7f7] px-5 py-5 text-[#7b2f2f] shadow-[0_18px_45px_rgba(123,47,47,0.08)] sm:px-6"
+                                    data-checkout-error-summary
+                                    tabindex="-1"
+                                >
+                                    <p class="text-sm font-semibold uppercase tracking-[0.18em] text-[#9f3636]">Lūdzu pārbaudiet ievadīto informāciju.</p>
+                                    <ul class="mt-3 space-y-2 text-sm leading-7 sm:text-[0.98rem]">
+                                        @foreach ($errors->all() as $error)
+                                            <li class="flex gap-3">
+                                                <span class="mt-[0.45rem] h-2 w-2 shrink-0 rounded-full bg-[#b45454]"></span>
+                                                <span>{{ $error }}</span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
 
                             <div class="checkout-field">
                                 <label for="customer_name" class="checkout-field__label">Vārds un uzvārds</label>
-                                <input id="customer_name" name="customer_name" type="text" value="{{ old('customer_name') }}" required class="checkout-field__input">
+                                <input
+                                    id="customer_name"
+                                    name="customer_name"
+                                    type="text"
+                                    value="{{ old('customer_name') }}"
+                                    @class(['checkout-field__input', $inputErrorClasses => $errors->has('customer_name')])
+                                    aria-invalid="{{ $errors->has('customer_name') ? 'true' : 'false' }}"
+                                >
                                 @error('customer_name')
                                     <p class="checkout-field__error">{{ $message }}</p>
                                 @enderror
@@ -56,7 +95,14 @@
                             <div class="checkout-grid checkout-grid--double">
                                 <div class="checkout-field">
                                     <label for="customer_phone" class="checkout-field__label">Tālrunis</label>
-                                    <input id="customer_phone" name="customer_phone" type="text" value="{{ old('customer_phone') }}" required class="checkout-field__input">
+                                    <input
+                                        id="customer_phone"
+                                        name="customer_phone"
+                                        type="text"
+                                        value="{{ old('customer_phone') }}"
+                                        @class(['checkout-field__input', $inputErrorClasses => $errors->has('customer_phone')])
+                                        aria-invalid="{{ $errors->has('customer_phone') ? 'true' : 'false' }}"
+                                    >
                                     @error('customer_phone')
                                         <p class="checkout-field__error">{{ $message }}</p>
                                     @enderror
@@ -64,7 +110,14 @@
 
                                 <div class="checkout-field">
                                     <label for="customer_email" class="checkout-field__label">E-pasts</label>
-                                    <input id="customer_email" name="customer_email" type="email" value="{{ old('customer_email') }}" required class="checkout-field__input">
+                                    <input
+                                        id="customer_email"
+                                        name="customer_email"
+                                        type="email"
+                                        value="{{ old('customer_email') }}"
+                                        @class(['checkout-field__input', $inputErrorClasses => $errors->has('customer_email')])
+                                        aria-invalid="{{ $errors->has('customer_email') ? 'true' : 'false' }}"
+                                    >
                                     @error('customer_email')
                                         <p class="checkout-field__error">{{ $message }}</p>
                                     @enderror
@@ -91,7 +144,14 @@
                                         data-delivery-point-id-input
                                     >
 
-                                    <div class="checkout-delivery-options" role="radiogroup" aria-label="Piegādes veids">
+                                    <div
+                                        @class([
+                                            'checkout-delivery-options',
+                                            'rounded-[1.75rem] bg-[#fff7f7]/70 p-2 ring-1 ring-[#b45454]/30' => $errors->has('delivery_method'),
+                                        ])
+                                        role="radiogroup"
+                                        aria-label="Piegādes veids"
+                                    >
                                         @foreach ($deliveryMethods as $methodKey => $method)
                                             <button
                                                 type="button"
@@ -158,8 +218,9 @@
                                                             name="city"
                                                             type="text"
                                                             value="{{ old('city') }}"
-                                                            class="checkout-field__input"
+                                                            @class(['checkout-field__input', $inputErrorClasses => $errors->has('city')])
                                                             data-delivery-required="address"
+                                                            aria-invalid="{{ $errors->has('city') ? 'true' : 'false' }}"
                                                         >
                                                         @error('city')
                                                             <p class="checkout-field__error">{{ $message }}</p>
@@ -173,8 +234,9 @@
                                                             name="postal_code"
                                                             type="text"
                                                             value="{{ old('postal_code') }}"
-                                                            class="checkout-field__input"
+                                                            @class(['checkout-field__input', $inputErrorClasses => $errors->has('postal_code')])
                                                             data-delivery-required="address"
+                                                            aria-invalid="{{ $errors->has('postal_code') ? 'true' : 'false' }}"
                                                         >
                                                         @error('postal_code')
                                                             <p class="checkout-field__error">{{ $message }}</p>
@@ -201,12 +263,13 @@
                                                                 value="{{ old('street') }}"
                                                                 autocomplete="address-line1"
                                                                 placeholder="Sāciet rakstīt ielu vai pilnu adresi Latvijā"
-                                                                class="checkout-field__input"
+                                                                @class(['checkout-field__input', $inputErrorClasses => $errors->has('street')])
                                                                 data-address-input
                                                                 data-delivery-required="address"
                                                                 aria-autocomplete="list"
                                                                 aria-expanded="false"
                                                                 aria-controls="street-address-suggestions"
+                                                                aria-invalid="{{ $errors->has('street') ? 'true' : 'false' }}"
                                                             >
                                                             <div
                                                                 id="street-address-suggestions"
@@ -230,8 +293,9 @@
                                                             name="house"
                                                             type="text"
                                                             value="{{ old('house') }}"
-                                                            class="checkout-field__input"
+                                                            @class(['checkout-field__input', $inputErrorClasses => $errors->has('house')])
                                                             data-delivery-required="address"
+                                                            aria-invalid="{{ $errors->has('house') ? 'true' : 'false' }}"
                                                         >
                                                         @error('house')
                                                             <p class="checkout-field__error">{{ $message }}</p>
@@ -241,7 +305,14 @@
 
                                                 <div class="checkout-field">
                                                     <label for="apartment" class="checkout-field__label">Dzīvoklis / birojs</label>
-                                                    <input id="apartment" name="apartment" type="text" value="{{ old('apartment') }}" class="checkout-field__input">
+                                                    <input
+                                                        id="apartment"
+                                                        name="apartment"
+                                                        type="text"
+                                                        value="{{ old('apartment') }}"
+                                                        @class(['checkout-field__input', $inputErrorClasses => $errors->has('apartment')])
+                                                        aria-invalid="{{ $errors->has('apartment') ? 'true' : 'false' }}"
+                                                    >
                                                     @error('apartment')
                                                         <p class="checkout-field__error">{{ $message }}</p>
                                                     @enderror
@@ -249,7 +320,14 @@
 
                                                 <div class="checkout-field">
                                                     <label for="delivery_comment" class="checkout-field__label">Komentārs piegādei</label>
-                                                    <textarea id="delivery_comment" name="delivery_comment" rows="3" class="checkout-field__input checkout-field__textarea checkout-field__textarea--compact" placeholder="Piemēram, durvju kods, stāvs vai piekļuves informācija.">{{ old('delivery_comment') }}</textarea>
+                                                    <textarea
+                                                        id="delivery_comment"
+                                                        name="delivery_comment"
+                                                        rows="3"
+                                                        @class(['checkout-field__input', 'checkout-field__textarea', 'checkout-field__textarea--compact', $inputErrorClasses => $errors->has('delivery_comment')])
+                                                        placeholder="Piemēram, durvju kods, stāvs vai piekļuves informācija."
+                                                        aria-invalid="{{ $errors->has('delivery_comment') ? 'true' : 'false' }}"
+                                                    >{{ old('delivery_comment') }}</textarea>
                                                     @error('delivery_comment')
                                                         <p class="checkout-field__error">{{ $message }}</p>
                                                     @enderror
@@ -260,13 +338,22 @@
 
                                     @foreach (['omniva', 'dpd'] as $pointMethod)
                                         @if (isset($deliveryMethods[$pointMethod]))
+                                            @php
+                                                $pointPayload = $selectedDeliveryPointPayload && $selectedDeliveryPointPayload['provider'] === $pointMethod
+                                                    ? $selectedDeliveryPointPayload
+                                                    : null;
+                                            @endphp
                                             <div class="checkout-delivery-panel" data-delivery-section-values="{{ $pointMethod }}">
                                                 <div class="checkout-delivery-panel__inner">
                                                     <div
-                                                        class="checkout-field checkout-field--delivery-point"
+                                                        @class([
+                                                            'checkout-field checkout-field--delivery-point',
+                                                            'rounded-[1.4rem] border border-[#b45454]/30 bg-[#fff7f7] px-4 py-4 sm:px-5' => $errors->has('selected_delivery_point_id'),
+                                                        ])
                                                         data-delivery-point-search
                                                         data-provider="{{ $pointMethod }}"
                                                         data-search-url="{{ route('checkout.delivery-points') }}"
+                                                        data-selected-point='@json($pointPayload)'
                                                     >
                                                         <label class="checkout-field__label">
                                                             {{ $pointMethod === 'omniva' ? 'Izvēlieties Omniva pakomātu' : 'Izvēlieties DPD Pickup punktu' }}
@@ -274,13 +361,14 @@
                                                         <div class="checkout-autocomplete">
                                                             <input
                                                                 type="text"
-                                                                value=""
-                                                                class="checkout-field__input"
+                                                                value="{{ $pointPayload['name'] ?? '' }}"
+                                                                @class(['checkout-field__input', $inputErrorClasses => $errors->has('selected_delivery_point_id')])
                                                                 data-delivery-point-input
                                                                 placeholder="{{ $pointMethod === 'omniva' ? 'Meklēt Omniva pakomātu' : 'Meklēt DPD Pickup punktu' }}"
                                                                 aria-autocomplete="list"
                                                                 aria-expanded="false"
                                                                 aria-controls="delivery-points-{{ $pointMethod }}"
+                                                                aria-invalid="{{ $errors->has('selected_delivery_point_id') ? 'true' : 'false' }}"
                                                             >
                                                             <div
                                                                 id="delivery-points-{{ $pointMethod }}"
@@ -326,7 +414,14 @@
 
                             <div class="checkout-field">
                                 <label for="comment" class="checkout-field__label">Komentārs pasūtījumam</label>
-                                <textarea id="comment" name="comment" rows="4" class="checkout-field__input checkout-field__textarea" placeholder="Papildu informācija par pasūtījumu.">{{ old('comment') }}</textarea>
+                                <textarea
+                                    id="comment"
+                                    name="comment"
+                                    rows="4"
+                                    @class(['checkout-field__input', 'checkout-field__textarea', $inputErrorClasses => $errors->has('comment')])
+                                    placeholder="Papildu informācija par pasūtījumu."
+                                    aria-invalid="{{ $errors->has('comment') ? 'true' : 'false' }}"
+                                >{{ old('comment') }}</textarea>
                                 @error('comment')
                                     <p class="checkout-field__error">{{ $message }}</p>
                                 @enderror

@@ -420,10 +420,6 @@
                     const syncSectionFields = (section, active) => {
                         section.querySelectorAll('input, textarea, select').forEach((field) => {
                             field.disabled = !active;
-
-                            if (field.dataset.deliveryRequired) {
-                                field.required = active && field.dataset.deliveryRequired === 'address';
-                            }
                         });
                     };
 
@@ -683,6 +679,7 @@
                     const selected = root.querySelector('[data-delivery-point-selected]');
                     const provider = root.dataset.provider;
                     const endpoint = root.dataset.searchUrl;
+                    const selectedPoint = root.dataset.selectedPoint ? JSON.parse(root.dataset.selectedPoint) : null;
                     const deliveryRoot = root.closest('[data-delivery-selector]');
                     const methodInput = deliveryRoot?.querySelector('[data-delivery-method-input]');
                     const hiddenInput = deliveryRoot?.querySelector('[data-delivery-point-id-input]');
@@ -837,7 +834,34 @@
                             closePanel();
                         }
                     });
+
+                    if (selectedPoint && String(selectedPoint.id || '') === String(hiddenInput.value || '')) {
+                        if (!input.value) {
+                            input.value = selectedPoint.name || '';
+                        }
+
+                        renderSelected(selectedPoint);
+                    }
                 });
+
+                const checkoutErrorSummary = document.querySelector('[data-checkout-error-summary]');
+
+                if (checkoutErrorSummary) {
+                    window.requestAnimationFrame(() => {
+                        checkoutErrorSummary.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start',
+                        });
+
+                        checkoutErrorSummary.focus({ preventScroll: true });
+
+                        const firstInvalidField = document.querySelector('[aria-invalid="true"]');
+
+                        if (firstInvalidField) {
+                            firstInvalidField.focus({ preventScroll: true });
+                        }
+                    });
+                }
             });
         </script>
     </body>
