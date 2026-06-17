@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewOrderAdminMail;
+use App\Mail\OrderCustomerConfirmationMail;
 use App\Models\DeliveryPoint;
 use App\Models\Order;
 use App\Models\Product;
@@ -12,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -182,6 +186,9 @@ class CheckoutController extends Controller
 
             return $order;
         });
+
+        $order->loadMissing('orderItems');
+        $this->sendOrderEmails($order);
 
         session()->forget('cart');
 
@@ -419,5 +426,44 @@ class CheckoutController extends Controller
     private function extractPostalCode(array $properties): ?string
     {
         return filled($properties['postcode'] ?? null) ? trim((string) $properties['postcode']) : null;
+    }
+
+    private function sendOrderEmails(Order $order): void
+    {
+        $adminEmail = (string) config('mail.admin.address', '');
+
+        if ($adminEmail !== '') {
+            try {
+                Mail::to($adminEmail)->send(new NewOrderAdminMail($order));
+
+                Log::info('Order admin email sent', [
+                    'order_id' => $order->id,
+                    'to' => $adminEmail,
+                ]);
+            } catch (\Throwable $e) {
+                Log::error('Order admin email failed', [
+                    'order_id' => $order->id,
+                    'to' => $adminEmail,
+                    'message' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if ($order->customer_email !== '') {
+            try {
+                Mail::to($order->customer_email)->send(new OrderCustomerConfirmationMail($order));
+
+                Log::info('Order customer email sent', [
+                    'order_id' => $order->id,
+                    'to' => $order->customer_email,
+                ]);
+            } catch (\Throwable $e) {
+                Log::warning('Order customer email failed', [
+                    'order_id' => $order->id,
+                    'to' => $order->customer_email,
+                    'message' => $e->getMessage(),
+                ]);
+            }
+        }
     }
 }

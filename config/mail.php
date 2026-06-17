@@ -116,4 +116,9 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    'admin' => [
+        'address' => env('ADMIN_EMAIL', env('MAIL_FROM_ADDRESS', 'hello@example.com')),
+        'name' => env('ADMIN_NAME', 'Top Care Group'),
+    ],
+
 ];
