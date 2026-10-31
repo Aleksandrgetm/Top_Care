@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 $pages = [
+    '/blogs' => [
+        'title' => 'Blogs | Jaunumi un noderīgi raksti | Top Care Group',
+        'description' => 'Padomi, aktualitātes un noderīga informācija par būvniecību, renovāciju un īpašumu uzturēšanu.',
+        'canonical' => '/blogs',
+    ],
     '/' => [
         'page_slug' => 'sakums',
         'title' => 'Top Care Group | Buvnieciba, renovacija un ipasumu uzturesana Latvija',
@@ -60,6 +65,12 @@ $pages = [
 Route::get('/sitemap.xml', function () {
     $today = now()->toDateString();
     $urls = [
+        [
+            'loc' => 'https://topcare.lv/blogs',
+            'lastmod' => $today,
+            'changefreq' => 'weekly',
+            'priority' => '0.7',
+        ],
         [
             'loc' => 'https://topcare.lv/',
             'lastmod' => $today,

@@ -1,5 +1,6 @@
 ﻿<script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import SoroBlog from './components/SoroBlog.vue';
 
 const isMenuOpen = ref(false);
 const isScrolled = ref(false);
@@ -173,6 +174,7 @@ const navigation = [
     { label: 'Galerija', path: '/galerija' },
     { label: 'Par mums', path: '/par-mums' },
     { label: 'Pirms / Pēc', path: '/pirms-pec' },
+    { label: 'Blogs', path: '/blogs' },
     { label: 'Kontakti', path: '/kontakti' },
 ];
 
@@ -574,6 +576,11 @@ const contactSubmitError = ref('');
 const isSubmittingContactForm = ref(false);
 
 const pageMeta = {
+    '/blogs': {
+        title: 'Blogs | Jaunumi un noderīgi raksti | Top Care Group',
+        description: 'Padomi, aktualitātes un noderīga informācija par būvniecību, renovāciju un īpašumu uzturēšanu.',
+        canonical: '/blogs',
+    },
     '/': {
         title: 'Top Care Group | Būvniecība, renovācija un īpašumu uzturēšana',
         description: 'SIA Top Care Group nodrošina būvniecības, renovācijas un īpašumu uzturēšanas pakalpojumus privātpersonām, uzņēmumiem un namu apsaimniekotājiem visā Latvijā.',
@@ -859,7 +866,9 @@ onMounted(() => {
         descriptionTag?.setAttribute('content', meta.description);
         ogDescriptionTag?.setAttribute('content', meta.description);
         ogTitleTag?.setAttribute('content', meta.title);
-        canonicalTag?.setAttribute('href', new URL(meta.canonical, window.location.origin).toString());
+        if (currentPath !== '/blogs' || !new URLSearchParams(window.location.search).has('post')) {
+            canonicalTag?.setAttribute('href', new URL(meta.canonical, window.location.origin).toString());
+        }
     }
 
     revealObserver = new IntersectionObserver(
@@ -1019,7 +1028,8 @@ onBeforeUnmount(() => {
         </header>
 
         <main>
-            <template v-if="isHomePage">
+            <SoroBlog v-if="currentPath === '/blogs'" />
+            <template v-else-if="isHomePage">
                 <section id="hero" class="relative isolate flex min-h-screen overflow-hidden bg-[#0b1a16]">
                     <div
                         class="absolute inset-0 bg-cover bg-center"
