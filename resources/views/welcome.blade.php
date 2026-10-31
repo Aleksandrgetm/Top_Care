@@ -14,7 +14,9 @@
         <meta property="og:image" content="{{ asset('images/logo.png') }}">
         <meta property="og:locale" content="lv_LV">
         <meta name="twitter:card" content="summary_large_image">
-        <link rel="canonical" href="{{ url($canonical ?? request()->getPathInfo()) }}">
+        @unless (request()->is('blogs') && request()->query->has('post'))
+            <link rel="canonical" href="{{ url($canonical ?? request()->getPathInfo()) }}">
+        @endunless
         <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
         <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
